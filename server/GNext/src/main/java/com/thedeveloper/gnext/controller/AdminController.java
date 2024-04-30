@@ -8,7 +8,6 @@ import com.thedeveloper.gnext.enums.MessageType;
 import com.thedeveloper.gnext.enums.UserRole;
 import com.thedeveloper.gnext.service.*;
 import com.thedeveloper.gnext.utils.Globals;
-import com.thedeveloper.gnext.utils.MessageUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

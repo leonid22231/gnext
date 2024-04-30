@@ -13,7 +13,7 @@ class _RestClient implements RestClient {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://45.159.250.175:8080/api/v1/';
+    baseUrl ??= 'http://192.168.0.11:8080/api/v1/';
   }
 
   final Dio _dio;
@@ -116,7 +116,7 @@ class _RestClient implements RestClient {
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     final _data = FormData();
-    if(file!=null){
+    if (file != null) {
       _data.files.add(MapEntry(
         'photo',
         MultipartFile.fromFileSync(
@@ -575,7 +575,7 @@ class _RestClient implements RestClient {
       'properties',
       jsonEncode(properties),
     ));
-    if(file!=null){
+    if (file != null) {
       _data.files.add(MapEntry(
         'file',
         MultipartFile.fromFileSync(
@@ -765,7 +765,7 @@ class _RestClient implements RestClient {
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     final _data = FormData();
-    if(file!=null){
+    if (file != null) {
       _data.files.add(MapEntry(
         'photo',
         MultipartFile.fromFileSync(

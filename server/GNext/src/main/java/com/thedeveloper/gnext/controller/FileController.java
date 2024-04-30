@@ -9,15 +9,19 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/file")
 @AllArgsConstructor
 @Slf4j
+@EnableAsync
 public class FileController {
     ImageService imageService;
     FileService fileService;
+    @Async
     @GetMapping("/image/{name}")
     public ResponseEntity<?> getAvatar(@PathVariable String name){
             try {
@@ -30,6 +34,7 @@ public class FileController {
     }
     @GetMapping("/file/{name}")
     @ResponseBody
+    @Async
     public ResponseEntity<Resource> serveFile(@PathVariable String name) {
         Resource file = fileService.loadAsResource(name);
 

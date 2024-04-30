@@ -2,7 +2,6 @@ package com.thedeveloper.gnext.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.thedeveloper.gnext.controller.models.AddressModel;
 import com.thedeveloper.gnext.controller.models.PropertiesModel;
 import com.thedeveloper.gnext.entity.AddressEntity;
 import com.thedeveloper.gnext.entity.OrderEntity;
@@ -13,18 +12,14 @@ import com.thedeveloper.gnext.service.OrderService;
 import com.thedeveloper.gnext.service.UserService;
 import com.thedeveloper.gnext.utils.Globals;
 import lombok.AllArgsConstructor;
-import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/v1/orders")
