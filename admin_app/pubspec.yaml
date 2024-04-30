@@ -32,9 +32,14 @@ dependencies:
   dio: ^5.4.1
   geocoding: ^3.0.0
   story: ^1.1.0
+  url_launcher: ^6.2.5
   video_player: ^2.8.3
   text_scroll: ^0.2.0
   tap_to_expand: ^0.6.1
+  shared_preferences: ^2.2.2
+  voice_message_package: ^2.1.4
+  audio_waveforms: ^1.0.5
+  device_info_plus: ^10.0.1
 icons_launcher:
   image_path: "assets/icon.png"
   platforms:

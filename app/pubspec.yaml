@@ -3,7 +3,7 @@ description: "GNext logistic application"
 
 publish_to: 'none'
 
-version: 3.5.0+4
+version: 3.6.6+4.8
 
 environment:
   sdk: '>=3.2.6 <4.0.0'
@@ -44,6 +44,8 @@ dependencies:
   voice_message_package: ^2.1.4
   audio_waveforms: ^1.0.5
   device_info_plus: ^10.0.1
+  flutter_paypal_payment: ^1.0.6
+  currency_converter: ^0.0.4
 
 icons_launcher:
   image_path: "assets/icon.png"

@@ -62,7 +62,7 @@ class UserProfile extends StatelessWidget{
                           onPressed: (){
                               Dio dio = Dio();
                               RestClient client = RestClient(dio);
-                              client.findChat(GlobalsWidgets.uid, user.uid).then((value){
+                              client.findChat(GlobalsWidgets.uid, user.uid, null).then((value){
                                 Navigator.push(context,
                                 MaterialPageRoute(builder: (context)=>CustomChatPage(showTitle: true,title: user.name, chatName: value)));
                               });

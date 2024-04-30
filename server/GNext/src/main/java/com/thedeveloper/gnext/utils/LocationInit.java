@@ -28,11 +28,9 @@ public class LocationInit implements CommandLineRunner {
         int cities = 0;
         for(CountryEntity country : countryEntityList){
             cities+= country.getCities().size();
-            _city:for(CityEntity city : country.getCities()){
+            for(CityEntity city : country.getCities()){
                 LocationEntity temp_location = locationService.findByCountryAndCity(country, city);
-                if(temp_location!=null){
-                    continue _city;
-                }else{
+                if(temp_location==null){
                     LocationEntity location = new LocationEntity();
                     location.setCountry(country);
                     location.setCity(city);

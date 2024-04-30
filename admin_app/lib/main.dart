@@ -9,6 +9,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import "package:admin_app/utils/globals.dart";
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'api/RestClient.dart';
 import 'api/entity/UserEntity.dart';
@@ -23,7 +24,12 @@ Future<void> main() async {
   if(auth.currentUser!=null){
     print("Current user not null");
     uid = auth.currentUser!.uid;
+    Dio dio = Dio();
+    RestClient client = RestClient(dio);
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    client.setUserUid(sharedPreferences.getString("phone")??"null", uid);
   }else{
+    (await SharedPreferences.getInstance()).remove("phone");
     print("Current user null");
   }
   runApp(const MyApp());

@@ -70,10 +70,10 @@ class S {
     );
   }
 
-  /// `Эвакуатор`
+  /// `Найти эвакуатор`
   String get page3 {
     return Intl.message(
-      'Эвакуатор',
+      'Найти эвакуатор',
       name: 'page3',
       desc: '',
       args: [],
@@ -100,20 +100,20 @@ class S {
     );
   }
 
-  /// `Переоборудование газелей`
+  /// `Переоборудование`
   String get page6 {
     return Intl.message(
-      'Переоборудование газелей',
+      'Переоборудование',
       name: 'page6',
       desc: '',
       args: [],
     );
   }
 
-  /// `Авторазбор газелей`
+  /// `Авторазбор`
   String get page7 {
     return Intl.message(
-      'Авторазбор газелей',
+      'Авторазбор',
       name: 'page7',
       desc: '',
       args: [],
@@ -210,6 +210,16 @@ class S {
     );
   }
 
+  /// `Зарегистрироваться`
+  String get reg {
+    return Intl.message(
+      'Зарегистрироваться',
+      name: 'reg',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Регистрация`
   String get register {
     return Intl.message(
@@ -280,11 +290,61 @@ class S {
     );
   }
 
+  /// `Фото профиля`
+  String get photo_profile {
+    return Intl.message(
+      'Фото профиля',
+      name: 'photo_profile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Добавьте фото профиля`
+  String get photo_profile_ {
+    return Intl.message(
+      'Добавьте фото профиля',
+      name: 'photo_profile_',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Фото газели спереди`
+  String get photo_gos {
+    return Intl.message(
+      'Фото газели спереди',
+      name: 'photo_gos',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Добавьте фото Газели спереди`
+  String get photo_gos_ {
+    return Intl.message(
+      'Добавьте фото Газели спереди',
+      name: 'photo_gos_',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Сохранить груз`
   String get save {
     return Intl.message(
       'Сохранить груз',
       name: 'save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Принимаю политику конфиденциальности`
+  String get accept {
+    return Intl.message(
+      'Принимаю политику конфиденциальности',
+      name: 'accept',
       desc: '',
       args: [],
     );
@@ -375,6 +435,16 @@ class S {
     return Intl.message(
       'Сумма',
       name: 'sum',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Минимальная сумма оплаты 1$`
+  String get min_sum {
+    return Intl.message(
+      'Минимальная сумма оплаты 1\$',
+      name: 'min_sum',
       desc: '',
       args: [],
     );
@@ -535,6 +605,56 @@ class S {
     return Intl.message(
       'Помощь с приложением',
       name: 'help',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Удаление аккаунта`
+  String get help_1 {
+    return Intl.message(
+      'Удаление аккаунта',
+      name: 'help_1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Связаться`
+  String get connect {
+    return Intl.message(
+      'Связаться',
+      name: 'connect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Сначала введите номер телефона!`
+  String get warning_2 {
+    return Intl.message(
+      'Сначала введите номер телефона!',
+      name: 'warning_2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Введите новый пароль`
+  String get enter_new_password {
+    return Intl.message(
+      'Введите новый пароль',
+      name: 'enter_new_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Введите сумму зачисления`
+  String get enter_money {
+    return Intl.message(
+      'Введите сумму зачисления',
+      name: 'enter_money',
       desc: '',
       args: [],
     );
@@ -730,11 +850,21 @@ class S {
     );
   }
 
-  /// `Специалист`
+  /// `Перевозчик`
   String get user_role_2 {
     return Intl.message(
-      'Специалист',
+      'Перевозчик',
       name: 'user_role_2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Выберите способ оплаты`
+  String get payment {
+    return Intl.message(
+      'Выберите способ оплаты',
+      name: 'payment',
       desc: '',
       args: [],
     );
@@ -829,6 +959,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Добавить груз`
+  String get preload_page1 {
+    return Intl.message(
+      'Добавить груз',
+      name: 'preload_page1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Стать перевозчиком`
+  String get preload_page2 {
+    return Intl.message(
+      'Стать перевозчиком',
+      name: 'preload_page2',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
@@ -837,6 +987,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   List<Locale> get supportedLocales {
     return const <Locale>[
       Locale.fromSubtags(languageCode: 'ru'),
+      Locale.fromSubtags(languageCode: 'kk'),
     ];
   }
 

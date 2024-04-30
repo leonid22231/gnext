@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "server/GNext"
+		},
+		{
+			"path": "app"
+		},
+		{
+			"path": "../../API/Gnext_API"
+		}
+	],
+	"settings": {
+		"java.compile.nullAnalysis.mode": "automatic"
+	}
+}

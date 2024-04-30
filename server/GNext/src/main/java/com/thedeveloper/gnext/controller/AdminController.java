@@ -3,9 +3,12 @@ package com.thedeveloper.gnext.controller;
 import com.thedeveloper.gnext.controller.models.StatisticModel;
 import com.thedeveloper.gnext.entity.*;
 import com.thedeveloper.gnext.enums.Categories;
+import com.thedeveloper.gnext.enums.CodeStatus;
+import com.thedeveloper.gnext.enums.MessageType;
 import com.thedeveloper.gnext.enums.UserRole;
 import com.thedeveloper.gnext.service.*;
 import com.thedeveloper.gnext.utils.Globals;
+import com.thedeveloper.gnext.utils.MessageUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -13,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Date;
 
 @RestController
 @RequestMapping("api/v1/admin")
@@ -31,6 +36,9 @@ public class AdminController {
     CompanyService companyService;
     AddressService addressService;
     ImageService fileService;
+    CodeService codeService;
+    AudioService audioService;
+    ImageService imageService;
     @GetMapping("/login")
     public ResponseEntity<?> login(@RequestParam String phone, @RequestParam String password){
         log.info("Phone admin {}", phone);
@@ -38,6 +46,18 @@ public class AdminController {
         if(user==null) return new ResponseEntity<>("Пользователя не существует", HttpStatus.BAD_REQUEST);
         if(!passwordEncoder.matches(password, user.getPassword())) return new ResponseEntity<>("Неверный пароль", HttpStatus.BAD_REQUEST);
         if(user.getRole()==UserRole.USER || user.getRole() == UserRole.SPECIALIST) return new ResponseEntity<>("Вход разрешен только для администратора", HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<>(codeService.sendCode(user), HttpStatus.OK);
+    }
+    @PostMapping("/login")
+    public ResponseEntity<?> loginConfirm(@RequestParam String phone, @RequestParam String uid){
+        UserEntity user = userService.findUserByPhone(phone);
+        CodeEntity currentCode = codeService.currentCodeUser(user);
+        currentCode.setStatus(CodeStatus.CLOSE);
+        currentCode.setEndDate(new Date());
+        codeService.save(currentCode);
+        user.setUid(uid);
+        userService.save(user);
 
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
@@ -75,6 +95,25 @@ public class AdminController {
         LocationEntity location = locationService.findByCountryAndCity(country,city);
         ChatEntity chat = chatService.findChatByLocationAndName(location, name);
         return new ResponseEntity<>(messageService.findMessagesByChat(chat), HttpStatus.OK);
+    }
+    @PostMapping("/file")
+    public ResponseEntity<?> file(@RequestParam String uid, @RequestParam MessageType type, @RequestParam MultipartFile file,@RequestParam Long countryId, @RequestParam Long cityId,  @RequestParam String name){
+        UserEntity user = userService.findUserByUid(uid);
+        LocationEntity location = locationService.findByCountryAndCity(countryService.findById(countryId), cityService.findById(cityId));
+        MessageEntity message = new MessageEntity();
+        message.setChat(chatService.findChatByLocationAndName(location,name));
+        message.setUser(user);
+        message.setTime(new Date());
+        message.setType(type);
+        if(type==MessageType.AUDIO){
+            audioService.store(file);
+            message.setContent(Globals.renameAudio(file.getOriginalFilename(), audioService));
+        }else{
+            imageService.store(file);
+            message.setContent(Globals.renameFile(file.getOriginalFilename(), imageService));
+        }
+        messageService.save(message);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
     @GetMapping("/filters")
     public ResponseEntity<?> filters(){
@@ -135,6 +174,7 @@ public class AdminController {
         }
         UserEntity user  = userService.findUserByUid(uid);
         user.setRole(UserRole.MANAGER);
+        user.setName(company.getName());
         userService.save(user);
         company.setManager(user);
         companyService.save(company);

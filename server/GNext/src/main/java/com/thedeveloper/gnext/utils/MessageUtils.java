@@ -16,7 +16,7 @@ public class MessageUtils {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://smsc.kz/sys/send.php?login="+API_LOGIN+"&psw="+API_PSW+"&phones="+number))
-                .POST(HttpRequest.BodyPublishers.ofString("mes=Ваш код для подтверждения: "+code))
+                .POST(HttpRequest.BodyPublishers.ofString("mes=G-next.kz Подтверждение: "+code))
                 .setHeader("cache-control", "no-cache")
                 .setHeader("content-type", "application/x-www-form-urlencoded")
                 .build();

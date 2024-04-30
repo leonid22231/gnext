@@ -12,10 +12,8 @@ import org.slf4j.Logger;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.time.Duration;
+import java.util.*;
 
 
 @Slf4j
@@ -112,6 +110,8 @@ public class Globals {
         return true;
     }
     public static void initChats(LocationService locationService, ChatService chatService, Logger log){
+        log.info("Start init chats");
+        Date date = new Date();
         String[] globalsChats = {
                 "evacuator",
                 "razbor",
@@ -134,12 +134,13 @@ public class Globals {
                     chat.setName(name);
                     chat.setLocation(location);
                     chatService.save(chat);
-                    log.info("{} {} создан", location.getCity().getName(),name);
+                    //log.info("{} {} создан", location.getCity().getName(),name);
                 }else{
-                    log.info("{} {} существует", location.getCity().getName(),name);
+                    //log.info("{} {} существует", location.getCity().getName(),name);
                 }
             }
         }
+        log.info("End init chats is {} minute", Duration.between(date.toInstant(), new Date().toInstant()).toMinutes());
     }
 
 }

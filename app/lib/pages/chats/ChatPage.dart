@@ -65,7 +65,7 @@ class _ChatPageState extends State<ChatPage>{
                       }
                       WidgetsBinding.instance
                           .addPostFrameCallback((_) => _key.currentState?.methodInChild(temp_unread));
-                      return _chat(_client(list[index].member1!, list[index].member2!), list[index].name, list[index].unread, list[index].lastMessage);
+                      return _chat(list[index],_client(list[index].member1!, list[index].member2!), list[index].name, list[index].unread, list[index].lastMessage);
                     },
                     separatorBuilder:(_,__){
                       return SizedBox(height: 1.h,);
@@ -99,7 +99,7 @@ class _ChatPageState extends State<ChatPage>{
                       }
                       WidgetsBinding.instance
                           .addPostFrameCallback((_) => _key.currentState?.methodInChild(temp_unread));
-                      return _chat(_client(list[index].member1!, list[index].member2!), list[index].name, list[index].unread, list[index].lastMessage);
+                      return _chat(list[index],_client(list[index].member1!, list[index].member2!), list[index].name, list[index].unread, list[index].lastMessage);
                     },
                     separatorBuilder:(_,__){
                       return SizedBox(height: 1.h,);
@@ -142,7 +142,7 @@ class _ChatPageState extends State<ChatPage>{
     RestClient client = RestClient(dio);
     return client.myChats(GlobalsWidgets.uid);
   }
-  Widget _chat(UserEntity user, String chatName, int unread, MessageEntity? lastMessage){
+  Widget _chat(ChatEntity chatEntity,UserEntity user, String chatName, int unread, MessageEntity? lastMessage){
     return InkWell(
       onTap: () async {
         if(user.role==UserRole.MANAGER){
@@ -153,13 +153,23 @@ class _ChatPageState extends State<ChatPage>{
 
               });
             });
-        }else{
+        }else if(chatEntity.company!=null && chatEntity.company!.manager!.uid!=GlobalsWidgets.uid){
+          CompanyEntity companyEntity = chatEntity.company!;
           Navigator.push(context,
-              MaterialPageRoute(builder: (context)=>CustomChatPage(showTitle: true,title: user.name, chatName: chatName))).then((value){
+              MaterialPageRoute(builder: (context)=>CustomChatPage(showTitle: true,title: companyEntity.name, chatName: chatName))).then((value){
             setState(() {
 
             });
           });
+        }else{
+          {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context)=>CustomChatPage(showTitle: true,title: user.name, chatName: chatName))).then((value){
+              setState(() {
+
+              });
+            });
+          }
         }
       },
       child: Stack(
@@ -173,9 +183,9 @@ class _ChatPageState extends State<ChatPage>{
             child: Padding(
               padding: EdgeInsets.all(5.w),
               child: Row(
-                mainAxisAlignment: user.role==UserRole.MANAGER?MainAxisAlignment.center:MainAxisAlignment.start,
+                mainAxisAlignment: (user.role==UserRole.MANAGER || chatEntity.company!=null && chatEntity.company!.manager!.uid!=GlobalsWidgets.uid)?MainAxisAlignment.center:MainAxisAlignment.start,
                 children: [
-                  user.role==UserRole.MANAGER?const SizedBox.shrink():ClipOval(
+                  (user.role==UserRole.MANAGER || chatEntity.company!=null && chatEntity.company!.manager!.uid!=GlobalsWidgets.uid)?const SizedBox.shrink():ClipOval(
                     child: SizedBox.fromSize(
                       size: const Size.fromRadius(25), // Image radius
                       child: Image.network(GlobalsWidgets.getPhoto(user.photo), fit: BoxFit.cover),
@@ -196,12 +206,19 @@ class _ChatPageState extends State<ChatPage>{
                         }else{
                           return SizedBox.shrink();
                         }
-                      }):Column(
+                      }):(chatEntity.company==null || chatEntity.company!.manager!.uid==GlobalsWidgets.uid)?Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text("${user.name} ${user.surname}"),
+                      (chatEntity.company!=null && chatEntity.company!.manager!.uid==GlobalsWidgets.uid)?Text("(${chatEntity.company!.name})"):SizedBox.shrink(),
                       Text("+${user.phone}")
+                    ],
+                  ):Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(chatEntity.company!.name),
+                      Text("+${chatEntity.company!.phone}")
                     ],
                   )
                 ],

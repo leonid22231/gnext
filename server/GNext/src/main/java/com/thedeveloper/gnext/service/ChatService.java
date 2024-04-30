@@ -1,6 +1,7 @@
 package com.thedeveloper.gnext.service;
 
 import com.thedeveloper.gnext.entity.ChatEntity;
+import com.thedeveloper.gnext.entity.CompanyEntity;
 import com.thedeveloper.gnext.entity.LocationEntity;
 import com.thedeveloper.gnext.entity.UserEntity;
 import com.thedeveloper.gnext.enums.ChatMode;
@@ -45,6 +46,15 @@ public class ChatService {
         ChatEntity chat = repository.findChatEntityByLocationAndMember1AndMember2(location,member1,member2);
         if(chat==null){
             chat = repository.findChatEntityByLocationAndMember1AndMember2(location, member2, member1);
+            return  chat;
+        }else{
+            return chat;
+        }
+    }
+    public ChatEntity findByMembersAndCompany(LocationEntity location, UserEntity member1, UserEntity member2, CompanyEntity company){
+        ChatEntity chat = repository.findChatEntityByLocationAndMember1AndMember2AndCompany(location,member1,member2, company);
+        if(chat==null){
+            chat = repository.findChatEntityByLocationAndMember1AndMember2AndCompany(location, member2, member1, company);
             return  chat;
         }else{
             return chat;

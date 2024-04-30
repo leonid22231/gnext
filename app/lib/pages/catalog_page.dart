@@ -96,8 +96,8 @@ class _CatalogPageState extends State<CatalogPage>{
                  ],
                ),
              ),
-              (companyEntity.manager!=null)?SizedBox(height: 1.h,):const SizedBox.shrink(),
-              (companyEntity.manager!=null)?Align(
+              (companyEntity.manager!=null && companyEntity.manager!.uid!=GlobalsWidgets.uid)?SizedBox(height: 1.h,):const SizedBox.shrink(),
+              (companyEntity.manager!=null && companyEntity.manager!.uid!=GlobalsWidgets.uid)?Align(
                 alignment: Alignment.center,
                 child: SizedBox(
                   child: OutlinedButton(
@@ -112,7 +112,7 @@ class _CatalogPageState extends State<CatalogPage>{
                       onPressed: (){
                         Dio dio = Dio();
                         RestClient client = RestClient(dio);
-                        client.findChat(GlobalsWidgets.uid, companyEntity.manager!.uid).then((value){
+                        client.findChat(GlobalsWidgets.uid, companyEntity.manager!.uid, null).then((value){
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context)=>CustomChatPage(showTitle: true,title: companyEntity.name, chatName: value)));
                         });

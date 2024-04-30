@@ -1,0 +1,32 @@
+{"properties": [
+  {
+    "name": "socket.host",
+    "type": "java.lang.String",
+    "description": "A description for 'socket.host'"
+  },
+  {
+    "name": "images.location",
+    "type": "java.lang.String",
+    "description": "A description for 'images.location'"
+  },
+  {
+    "name": "socket.port",
+    "type": "java.lang.String",
+    "description": "A description for 'socket.port'"
+  },
+  {
+    "name": "stories.location",
+    "type": "java.lang.String",
+    "description": "A description for 'stories.location'"
+  },
+  {
+    "name": "files.location",
+    "type": "java.lang.String",
+    "description": "A description for 'files.location'"
+  },
+  {
+    "name": "audio.location",
+    "type": "java.lang.String",
+    "description": "A description for 'audio.location'"
+  }
+]}

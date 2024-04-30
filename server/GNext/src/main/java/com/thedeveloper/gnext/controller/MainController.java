@@ -33,6 +33,8 @@ public class MainController {
     CompanyService companyService;
     MessageService messageService;
     CodeService codeService;
+    FileService fileService;
+    AddressService addressService;
     @GetMapping("/login")
     public ResponseEntity<?> login(@RequestParam String phone, @RequestParam String password){
         UserEntity user = userService.findUserByPhone(phone);
@@ -41,20 +43,27 @@ public class MainController {
             return new ResponseEntity<>("Неверный пароль", HttpStatus.FORBIDDEN);
         }else{
             userService.save(user);
-            return new ResponseEntity<>(codeService.sendRegisterCode(user), HttpStatus.OK);
+            return new ResponseEntity<>(user,HttpStatus.OK);
+//            if(user.getId()!=6){
+//                return new ResponseEntity<>(codeService.sendCode(user), HttpStatus.OK);
+//            }
+//            return new ResponseEntity<>(codeService.sendCode(user,"1111"), HttpStatus.OK);
         }
     }
     @PostMapping("/login")
     public ResponseEntity<?> loginConfirm(@RequestParam String phone, @RequestParam String uid){
-        UserEntity user = userService.findUserByPhone(phone);
+        return new ResponseEntity<>(saveUser(userService.findUserByPhone(phone), uid), HttpStatus.OK);
+    }
+    UserEntity saveUser(UserEntity user, String uid){
         CodeEntity currentCode = codeService.currentCodeUser(user);
         currentCode.setStatus(CodeStatus.CLOSE);
         currentCode.setEndDate(new Date());
         codeService.save(currentCode);
         user.setUid(uid);
         userService.save(user);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return  user;
     }
+
     @GetMapping("/uid")
     public ResponseEntity<?> getUid(@RequestParam String uid){
         UserEntity user = userService.findUserByUid(uid);
@@ -67,6 +76,7 @@ public class MainController {
         UserEntity user = userService.findUserByPhone(phone);
         if(user==null) return new ResponseEntity<>("Пользователь не найден", HttpStatus.NOT_FOUND);
         user.setUid(uid);
+        userService.save(user);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
     @PostMapping("/register")
@@ -80,22 +90,44 @@ public class MainController {
             user.setName(name);
             user.setSurname(surname);
             user.setUid(uid);
+            if(role==UserRole.SPECIALIST){
+                user.setSubscription(true);
+            }
             user.setLocation(location);
             if(number!=null) user.setNumber(number);
             user.setNotifyToken(notifyToken);
             user.setPhone(phone);
             user.setPassword(passwordEncoder.encode(password));
-            user.setRole(UserRole.USER);
             if(photo!=null){
                 imageService.store(photo);
                 String photo_ = Globals.renameFile(photo.getOriginalFilename(), imageService);
                 user.setPhoto(photo_);
             }
+            user.setCreateDate(new Date());
+            user.setSubStart(user.getCreateDate());
             log.info(user.toString());
             userService.save(user);
         }
-        return new ResponseEntity<>(codeService.sendRegisterCode(userService.findUserByPhone(phone)), HttpStatus.OK);
+        return new ResponseEntity<>(codeService.sendCode(userService.findUserByPhone(phone)), HttpStatus.OK);
     }
+    @GetMapping("/forgotPassword")
+    public ResponseEntity<?> forgotPassword(@RequestParam String phone) {
+        UserEntity user = userService.findUserByPhone(phone);
+        if(user!=null){
+            if(user.getId()!=6){
+                return new ResponseEntity<>(codeService.sendCode(user), HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>(codeService.sendCode(user,"1111"), HttpStatus.OK);
+            }
+        } else return new ResponseEntity<>("Пользователь не существует", HttpStatus.FORBIDDEN);
+    }
+    @PostMapping("/forgotPassword")
+    public ResponseEntity<?> forgotPassword(@RequestParam String phone, @RequestParam String password, @RequestParam String uid) {
+        UserEntity user = userService.findUserByPhone(phone);
+        user.setPassword(passwordEncoder.encode(password));
+        return new ResponseEntity<>(saveUser(user, uid), HttpStatus.OK);
+    }
+
     @PostMapping("/changePhoto")
     public ResponseEntity<?> changePhoto(@RequestParam String uid, @RequestBody MultipartFile photo){
         UserEntity user = userService.findUserByUid(uid);
@@ -114,14 +146,19 @@ public class MainController {
         return new ResponseEntity<>(user,HttpStatus.OK);
     }
     @GetMapping("/findChat")
-    public ResponseEntity<?> createChat(@RequestParam String uid, @RequestParam String client){
+    public ResponseEntity<?> createChat(@RequestParam String uid, @RequestParam String client, @RequestParam(required = false) Long companyId){
         UserEntity member1 = userService.findUserByUid(uid);
         UserEntity member2 = userService.findUserByUid(client);
-        ChatEntity temp_chat = chatService.findByMembers(member1.getLocation(), member1, member2);
+        ChatEntity temp_chat;
+        if(companyId==null) temp_chat = chatService.findByMembersAndCompany(member1.getLocation(), member1, member2, null);
+        else temp_chat = chatService.findByMembersAndCompany(member2.getLocation(), member2, member1, companyService.findById(companyId));
         if(temp_chat!=null) return new ResponseEntity<>(temp_chat.getName(), HttpStatus.OK);
         ChatEntity chat = new ChatEntity();
         chat.setMode(ChatMode.PRIVATE);
         chat.setName(UUID.randomUUID().toString());
+        if(companyId!=null){
+            chat.setCompany(companyService.findById(companyId));
+        }
         chat.setLocation(member1.getLocation());
         chat.setMember1(member1);
         chat.setMember2(member2);
@@ -211,12 +248,35 @@ public class MainController {
         UserEntity user = userService.findUserByUid(uid);
         return new ResponseEntity<>(companyService.findByCategory(category, user.getLocation()),HttpStatus.OK);
     }
+    @PostMapping("/createCompany")
+    public ResponseEntity<?> createCompany(@RequestParam String uid, @RequestParam Categories category, @RequestParam String name,@RequestParam(required = false) String phone, @RequestParam String street, @RequestParam String house, @RequestBody(required = false)MultipartFile photo){
+        UserEntity user = userService.findUserByUid(uid);
+        LocationEntity location = user.getLocation();
+        CompanyEntity company = new CompanyEntity();
+        company.setLocation(location);
+        company.setName(name);
+        if(phone!=null)
+            company.setPhone(phone);
+        else company.setPhone(user.getPhone());
+        if(photo!=null){
+            fileService.store(photo);
+            String _name = Globals.renameFile(photo.getOriginalFilename(), imageService);
+            company.setImage(_name);
+        }
+        AddressEntity address = new AddressEntity();
+        address.setCity(location.getCity().getName());
+        address.setStreet(street);
+        address.setHouse(house);
+        addressService.save(address);
+        company.setAddress(address);
+        company.setCategory(category);
+        company.setManager(user);
+        companyService.save(company);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
     @GetMapping("/companyByManager")
     public ResponseEntity<?> companyByManager(@RequestParam String uid){
         UserEntity user = userService.findUserByUid(uid);
         return new ResponseEntity<>(companyService.findByManager(user), HttpStatus.OK);
-    }
-    private String savePhoto() {
-        return "PhotoName";
     }
 }

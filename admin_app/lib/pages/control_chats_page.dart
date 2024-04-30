@@ -67,7 +67,7 @@ class _ControlChatsPage extends State<ControlChatsPage>{
     return InkWell(
       onTap: (){
         Navigator.push(context,
-        MaterialPageRoute(builder: (context)=>CustomChatPage(location: widget.location, title: getChatNameByDefaultName(chat.name), chatName: chat.name)));
+        MaterialPageRoute(builder: (context)=>CustomChatPage(location: widget.location, title: getChatNameByDefaultName(chat.name), chatName: chat.name, showTitle: true,)));
       },
       child: Ink(
         decoration: BoxDecoration(

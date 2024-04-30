@@ -38,6 +38,7 @@ Map<String, dynamic> _$MessageEntityToJson(MessageEntity instance) {
 }
 
 const _$MessageTypeEnumMap = {
-  MessageType.SYSTEM: 'SYSTEM',
   MessageType.USER: 'USER',
+  MessageType.AUDIO: 'AUDIO',
+  MessageType.PHOTO: 'PHOTO',
 };

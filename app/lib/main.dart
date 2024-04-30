@@ -6,6 +6,7 @@ import 'package:app/auth/login_page.dart';
 import 'package:app/firebase_options.dart';
 import 'package:app/generated/l10n.dart';
 import 'package:app/main_route.dart';
+import 'package:app/preload/preload_page.dart';
 import 'package:app/utils/GlobalsWidgets.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
@@ -23,20 +24,21 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FirebaseAuth auth = FirebaseAuth.instance;
-  _checkStoragePermission();
-  if(auth.currentUser!=null){
+  if (auth.currentUser != null) {
     print("Current user not null");
     GlobalsWidgets.uid = auth.currentUser!.uid;
     Dio dio = Dio();
     RestClient client = RestClient(dio);
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    client.setUserUid(sharedPreferences.getString("phone")??"null", GlobalsWidgets.uid);
-  }else{
+    client.setUserUid(
+        sharedPreferences.getString("phone") ?? "null", GlobalsWidgets.uid);
+  } else {
     (await SharedPreferences.getInstance()).remove("phone");
     print("Current user null");
   }
   runApp(const MyApp());
 }
+
 _checkStoragePermission() async {
   PermissionStatus status;
   if (Platform.isAndroid) {
@@ -63,16 +65,18 @@ _checkStoragePermission() async {
     case PermissionStatus.permanentlyDenied:
       return false;
     case PermissionStatus.provisional:
-      // TODO: Handle this case.
   }
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ResponsiveSizer(builder: (_,__,___){
+    Locale currentLocale = Locale(
+        Platform.localeName.split("_")[0], Platform.localeName.split("_")[1]);
+    debugPrint("Locale is $currentLocale");
+    return ResponsiveSizer(builder: (_, __, ___) {
       return MaterialApp(
         title: 'Gnext Logistics',
         localizationsDelegates: const [
@@ -82,34 +86,42 @@ class MyApp extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
         ],
         debugShowCheckedModeBanner: false,
-        supportedLocales:  const [
-          Locale('ru', ''),
+        supportedLocales: const [
+          Locale('ru', 'RU'),
+          Locale('kk', 'KZ'),
         ],
-        locale: const Locale("ru", ''),
+        locale: currentLocale,
         theme: ThemeData(
           useMaterial3: true,
         ),
-        home: GlobalsWidgets.uid.isNotEmpty?FutureBuilder(future: getUser(), builder: (context, snapshot){
-          if(snapshot.hasData){
-            GlobalsWidgets.name = snapshot.data!.name;
-            GlobalsWidgets.surname = snapshot.data!.surname;
-            GlobalsWidgets.image = snapshot.data!.photo;
-            GlobalsWidgets.role = snapshot.data!.role;
-            return MainRoute(userEntity: snapshot.data!,);
-          }else{
-            if(snapshot.error is DioException){
-              print("User error ${snapshot.error}");
-              FirebaseAuth.instance.signOut();
-              return const LoginPage();
-            }
-            print("User error ${snapshot.error}");
-            return const SizedBox.shrink();
-          }
-        }):const LoginPage(),
+        home: GlobalsWidgets.uid.isNotEmpty
+            ? FutureBuilder(
+                future: getUser(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    GlobalsWidgets.name = snapshot.data!.name;
+                    GlobalsWidgets.surname = snapshot.data!.surname;
+                    GlobalsWidgets.image = snapshot.data!.photo;
+                    GlobalsWidgets.role = snapshot.data!.role;
+                    return MainRoute(
+                      userEntity: snapshot.data!,
+                    );
+                  } else {
+                    if (snapshot.error is DioException) {
+                      print("Sign out 1 ${snapshot.error}");
+                      FirebaseAuth.instance.signOut();
+                      return const LoginPage();
+                    }
+                    print("Sign out 2 ${snapshot.error}");
+                    return const SizedBox.shrink();
+                  }
+                })
+            : PreloadPage(),
       );
     });
   }
-  Future<UserEntity> getUser(){
+
+  Future<UserEntity> getUser() {
     Dio dio = Dio();
     RestClient client = RestClient(dio);
     return client.getUserByUid(GlobalsWidgets.uid);

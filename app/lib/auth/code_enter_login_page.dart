@@ -10,9 +10,10 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CodeEnterLoginPage extends StatefulWidget{
-  const CodeEnterLoginPage({super.key,required this.code, required this.phone});
+  const CodeEnterLoginPage({super.key,required this.code, required this.phone, required this.niceCode});
   final String code;
   final String phone;
+  final Function() niceCode;
   @override
   State<StatefulWidget> createState() => _CodeEnterLoginPage();
 }
@@ -32,20 +33,7 @@ class _CodeEnterLoginPage extends State<CodeEnterLoginPage>{
             Pinput(
               onCompleted: (pin){
                 if(pin==widget.code){
-                  Dio dio = Dio();
-                  RestClient client = RestClient(dio);
-                  client.loginConfirm(widget.phone, GlobalsWidgets.uid).then((value) async {
-                    SharedPreferences pref = await SharedPreferences.getInstance();
-                    pref.setString("phone", widget.phone);
-                    GlobalsWidgets.name = value.name;
-                    GlobalsWidgets.role = value.role;
-                    GlobalsWidgets.image = value.photo;
-                    GlobalsWidgets.surname = value.surname;
-                    if(context.mounted){
-                      Navigator.pushAndRemoveUntil(context,
-                          MaterialPageRoute(builder: (context) => MainRoute(userEntity: value,)), (route) => false);
-                    }
-                  });
+                  widget.niceCode.call();
                 }else{
                   _displayErrorMotionToast(S.of(context).code_error);
                 }

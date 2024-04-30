@@ -7,6 +7,9 @@ part of 'ChatEntity.dart';
 // **************************************************************************
 
 ChatEntity _$ChatEntityFromJson(Map<String, dynamic> json) => ChatEntity(
+      company: json['company'] == null
+          ? null
+          : CompanyEntity.fromJson(json['company'] as Map<String, dynamic>),
       lastMessage: json['lastMessage'] == null
           ? null
           : MessageEntity.fromJson(json['lastMessage'] as Map<String, dynamic>),
@@ -29,6 +32,7 @@ Map<String, dynamic> _$ChatEntityToJson(ChatEntity instance) =>
       'name': instance.name,
       'member1': instance.member1,
       'member2': instance.member2,
+      'company': instance.company,
       'unread': instance.unread,
       'lastMessage': instance.lastMessage,
     };

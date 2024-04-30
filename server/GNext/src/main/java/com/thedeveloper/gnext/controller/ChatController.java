@@ -1,11 +1,14 @@
 package com.thedeveloper.gnext.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.thedeveloper.gnext.entity.ChatEntity;
 import com.thedeveloper.gnext.entity.MessageEntity;
 import com.thedeveloper.gnext.entity.UserEntity;
 import com.thedeveloper.gnext.enums.MessageType;
 import com.thedeveloper.gnext.service.*;
 import com.thedeveloper.gnext.utils.Globals;
+import com.thedeveloper.gnext.views.UserViews;
+
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -57,6 +60,7 @@ public class ChatController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @GetMapping("/{id}")
+    @JsonView(UserViews.MiniView.class)
     public ResponseEntity<List<MessageEntity>> messages(@RequestParam String uid,@PathVariable String id){
         UserEntity user = userService.findUserByUid(uid);
         List<MessageEntity> messages = messageService.findMessagesByChat(chatService.findById(id));

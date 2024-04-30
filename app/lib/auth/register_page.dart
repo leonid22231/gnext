@@ -8,6 +8,7 @@ import 'package:app/api/entity/CountryEntity.dart';
 import 'package:app/api/entity/enums/UserRole.dart';
 import 'package:app/auth/code_enter_login_page.dart';
 import 'package:app/generated/l10n.dart';
+import 'package:app/main_route.dart';
 import 'package:app/utils/GlobalsColors.dart';
 import 'package:app/utils/GlobalsWidgets.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
@@ -19,35 +20,60 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class RegisterPage extends StatefulWidget{
-  const RegisterPage({super.key});
+class RegisterPage extends StatefulWidget {
+  final UserRole? mode;
+  const RegisterPage({this.mode, super.key});
 
   @override
   State<StatefulWidget> createState() => _RegisterPage();
 }
-class _RegisterPage extends State<RegisterPage> with TickerProviderStateMixin{
-  String? name,surname, phone, number,password;
+
+class _RegisterPage extends State<RegisterPage> with TickerProviderStateMixin {
+  String? name, surname, phone, number, password;
   int selectedRole = 0;
   CountryEntity? selectedCountry;
   CityEntity? selectedCity;
   List<CityEntity>? cities;
   bool sec = false;
   File? file;
+  List<UserRole> roles = [UserRole.USER, UserRole.SPECIALIST];
   late TabController _controller;
   @override
   void initState() {
     super.initState();
     _controller = TabController(length: 2, vsync: this);
+    if (widget.mode != null) {
+      switch (widget.mode!) {
+        case UserRole.SPECIALIST:
+          {
+            WidgetsBinding.instance
+                .addPostFrameCallback((_) => _controller.animateTo(1));
+            setState(() {
+              selectedRole = 1;
+            });
+          }
+        case UserRole.USER:
+          WidgetsBinding.instance
+              .addPostFrameCallback((_) => _controller.animateTo(0));
+        default:
+          break;
+      }
+    }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 10.h,
         centerTitle: true,
-        title: Text(S.of(context).register, style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold),),
+        title: Text(
+          S.of(context).register,
+          style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -62,12 +88,11 @@ class _RegisterPage extends State<RegisterPage> with TickerProviderStateMixin{
                   backgroundColor: GlobalsColor.blue,
                   unselectedBackgroundColor: Colors.white,
                   unselectedLabelStyle: const TextStyle(color: Colors.black),
-                  labelStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                  onTap: (index){
+                  labelStyle: const TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                  onTap: (index) {
                     selectedRole = index;
-                    setState(() {
-
-                    });
+                    setState(() {});
                   },
                   tabs: [
                     Tab(
@@ -79,165 +104,222 @@ class _RegisterPage extends State<RegisterPage> with TickerProviderStateMixin{
                   ],
                 ),
               ),
-              Text(S.of(context).name, style: const TextStyle(fontWeight: FontWeight.bold),),
-              SizedBox(height: 1.h,),
+              Text(
+                S.of(context).name,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                height: 1.h,
+              ),
               SizedBox(
                 height: 8.h,
                 child: TextFormField(
-                  onChanged: (value){
+                  onChanged: (value) {
                     name = value;
                   },
                   decoration: InputDecoration(
                     hintText: S.of(context).name_,
                     enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(9),
-                        borderSide: const BorderSide(color: Color(0xffD9D9D9))
-                    ),
+                        borderSide: const BorderSide(color: Color(0xffD9D9D9))),
                     focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(9),
-                        borderSide: const BorderSide(color: Color(0xffD9D9D9))
-                    ),
+                        borderSide: const BorderSide(color: Color(0xffD9D9D9))),
                   ),
                 ),
               ),
-              SizedBox(height: 2.h,),
-              Text(S.of(context).surname, style: const TextStyle(fontWeight: FontWeight.bold),),
-              SizedBox(height: 1.h,),
+              SizedBox(
+                height: 2.h,
+              ),
+              Text(
+                S.of(context).surname,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                height: 1.h,
+              ),
               SizedBox(
                 height: 8.h,
                 child: TextFormField(
-                  onChanged: (value){
+                  onChanged: (value) {
                     surname = value;
                   },
                   decoration: InputDecoration(
                     hintText: S.of(context).surname_,
                     enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(9),
-                        borderSide: const BorderSide(color: Color(0xffD9D9D9))
-                    ),
+                        borderSide: const BorderSide(color: Color(0xffD9D9D9))),
                     focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(9),
-                        borderSide: const BorderSide(color: Color(0xffD9D9D9))
-                    ),
+                        borderSide: const BorderSide(color: Color(0xffD9D9D9))),
                   ),
                 ),
               ),
-              SizedBox(height: 2.h,),
-              Text(S.of(context).number_phone, style: const TextStyle(fontWeight: FontWeight.bold),),
-              SizedBox(height: 1.h,),
+              SizedBox(
+                height: 2.h,
+              ),
+              Text(
+                S.of(context).number_phone,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                height: 1.h,
+              ),
               SizedBox(
                 height: 8.h,
                 child: TextFormField(
-                  onChanged: (value){
+                  onChanged: (value) {
                     phone = value;
                   },
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  inputFormatters: [FilteringTextInputFormatter.allow(RegExp('[0-9.,]+')),],
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp('[0-9.,]+')),
+                  ],
                   decoration: InputDecoration(
                     hintText: S.of(context).number_phone_,
                     enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(9),
-                        borderSide: const BorderSide(color: Color(0xffD9D9D9))
-                    ),
+                        borderSide: const BorderSide(color: Color(0xffD9D9D9))),
                     focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(9),
-                        borderSide: const BorderSide(color: Color(0xffD9D9D9))
-                    ),
+                        borderSide: const BorderSide(color: Color(0xffD9D9D9))),
                   ),
                 ),
               ),
-              SizedBox(height: 2.h,),
-              Text(S.of(context).select_country, style: const TextStyle(fontWeight: FontWeight.bold),),
-              SizedBox(height: 1.h,),
+              SizedBox(
+                height: 2.h,
+              ),
+              Text(
+                S.of(context).select_country,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                height: 1.h,
+              ),
               FutureBuilder(
                   future: getCountries(),
-                  builder: (context, snapshot){
-                    if(snapshot.hasData){
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
                       return CustomDropdown<CountryEntity>(
                         items: snapshot.data!,
                         hintText: S.of(context).select_country,
                         decoration: CustomDropdownDecoration(
-                          closedBorder: Border.all(color: const Color(0xffD9D9D9)),
+                          closedBorder:
+                              Border.all(color: const Color(0xffD9D9D9)),
                           closedFillColor: Colors.transparent,
-                          expandedBorder: Border.all(color: const Color(0xffD9D9D9)),
+                          expandedBorder:
+                              Border.all(color: const Color(0xffD9D9D9)),
                           expandedFillColor: Colors.white,
                         ),
                         onChanged: (country) {
                           selectedCountry = country;
                           cities = selectedCountry!.cities;
-                          setState(() {
-
-                          });
+                          setState(() {});
                         },
                       );
-                    }else{
+                    } else {
                       return const SizedBox.shrink();
                     }
                   }),
-              selectedCountry==null?const SizedBox.shrink():_selectCity(cities!),
-              selectedRole==1?Text(S.of(context).gos_number, style: const TextStyle(fontWeight: FontWeight.bold),):const SizedBox.shrink(),
-              selectedRole==1?SizedBox(height: 1.h,):const SizedBox.shrink(),
-              selectedRole==1?SizedBox(
-                height: 8.h,
-                child: TextFormField(
-                  onChanged: (value){
-                    number = value;
-                  },
-                  decoration: InputDecoration(
-                    hintText: S.of(context).gos_number_,
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(9),
-                        borderSide: const BorderSide(color: Color(0xffD9D9D9))
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(9),
-                        borderSide: const BorderSide(color: Color(0xffD9D9D9))
-                    ),
-                  ),
-                ),
-              ):SizedBox.shrink(),
-              selectedRole==1?SizedBox(height: 2.h,):SizedBox.shrink(),
-              const Text("Пароль", style: TextStyle(fontWeight: FontWeight.bold),),
-              SizedBox(height: 1.h,),
+              selectedCountry == null
+                  ? const SizedBox.shrink()
+                  : _selectCity(cities!),
+              selectedRole == 1
+                  ? Text(
+                      S.of(context).gos_number,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    )
+                  : const SizedBox.shrink(),
+              selectedRole == 1
+                  ? SizedBox(
+                      height: 1.h,
+                    )
+                  : const SizedBox.shrink(),
+              selectedRole == 1
+                  ? SizedBox(
+                      height: 8.h,
+                      child: TextFormField(
+                        onChanged: (value) {
+                          number = value;
+                        },
+                        decoration: InputDecoration(
+                          hintText: S.of(context).gos_number_,
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(9),
+                              borderSide:
+                                  const BorderSide(color: Color(0xffD9D9D9))),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(9),
+                              borderSide:
+                                  const BorderSide(color: Color(0xffD9D9D9))),
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+              selectedRole == 1
+                  ? SizedBox(
+                      height: 2.h,
+                    )
+                  : const SizedBox.shrink(),
+              Text(
+                S.of(context).password,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                height: 1.h,
+              ),
               SizedBox(
                 height: 8.h,
                 child: TextFormField(
-                  onChanged: (value){
+                  onChanged: (value) {
                     password = value;
                   },
                   decoration: InputDecoration(
-                    hintText: "Введите пароль",
+                    hintText: S.of(context).password_,
                     enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(9),
-                        borderSide: const BorderSide(color: Color(0xffD9D9D9))
-                    ),
+                        borderSide: const BorderSide(color: Color(0xffD9D9D9))),
                     focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(9),
-                        borderSide: const BorderSide(color: Color(0xffD9D9D9))
-                    ),
+                        borderSide: const BorderSide(color: Color(0xffD9D9D9))),
                   ),
                 ),
               ),
-              SizedBox(height: 1.h,),
-              selectedRole==0?_photo("Фото профиля", "Добавьте фото профиля"):_photo("Фото газели спереди", "Добавьте фото Газели спереди"),
-              SizedBox(height: 1.h,),
+              SizedBox(
+                height: 1.h,
+              ),
+              selectedRole == 0
+                  ? _photo(
+                      S.of(context).photo_profile, S.of(context).photo_profile_)
+                  : _photo(S.of(context).photo_gos, S.of(context).photo_gos_),
+              SizedBox(
+                height: 1.h,
+              ),
               Row(
                 children: [
                   Checkbox(
-                      value: sec, 
-                      onChanged: (value){
+                      value: sec,
+                      onChanged: (value) {
                         setState(() {
                           sec = !sec;
                         });
                       }),
                   TextButton(
-                    onPressed: () { 
-                      launchUrl(Uri.parse("https://docs.google.com/document/d/1UbERkp4OQGCNS_4lDqu9GJxZhBJHpbJxhIkxeR0GPuk/edit?usp=drivesdk"));
+                    onPressed: () {
+                      launchUrl(Uri.parse(
+                          "https://docs.google.com/document/d/1UbERkp4OQGCNS_4lDqu9GJxZhBJHpbJxhIkxeR0GPuk/edit?usp=drivesdk"));
                     },
-                    child: Text("Принимаю политику конфиденциальности", style: TextStyle(fontSize: 14.sp),),)
+                    child: Text(
+                      S.of(context).accept,
+                      style: TextStyle(fontSize: 14.sp),
+                    ),
+                  )
                 ],
               ),
-              SizedBox(height: 3.h,),
+              SizedBox(
+                height: 3.h,
+              ),
               SizedBox(
                 height: 6.h,
                 width: double.maxFinite,
@@ -246,37 +328,91 @@ class _RegisterPage extends State<RegisterPage> with TickerProviderStateMixin{
                         backgroundColor: const Color(0xff317EFA),
                         side: BorderSide.none,
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(9)
-                        )
-                    ),
+                            borderRadius: BorderRadius.circular(9))),
                     onPressed: () async {
-                      if(sec && name!=null && name!.isNotEmpty && surname!=null && surname!.isNotEmpty && phone!=null && phone!.isNotEmpty  && password!=null && password!.isNotEmpty){
+                      if (sec &&
+                          name != null &&
+                          name!.isNotEmpty &&
+                          surname != null &&
+                          surname!.isNotEmpty &&
+                          phone != null &&
+                          phone!.isNotEmpty &&
+                          password != null &&
+                          password!.isNotEmpty) {
                         String phoneNumber = "";
-                        if(phone![0].contains("8")){
-                          phoneNumber+= phone!.replaceFirst("8", "7");
-                        }else{
-                          phoneNumber+= phone!;
+                        if (phone![0].contains("8")) {
+                          phoneNumber += phone!.replaceFirst("8", "7");
+                        } else {
+                          phoneNumber += phone!;
                         }
                         await FirebaseAuth.instance.signInAnonymously();
-                        GlobalsWidgets.uid = FirebaseAuth.instance.currentUser!.uid;
-                        String? messageToken = await FirebaseMessaging.instance.getToken();
+                        GlobalsWidgets.uid =
+                            FirebaseAuth.instance.currentUser!.uid;
+                        String? messageToken =
+                            await FirebaseMessaging.instance.getToken();
                         Dio dio = Dio();
                         RestClient client = RestClient(dio);
-                        client.register(phoneNumber, password!, name!, surname!, number, UserRole.values[selectedRole], selectedCountry!.id, selectedCity!.id, GlobalsWidgets.uid,messageToken!, file).then((value){
+                        client
+                            .register(
+                                phoneNumber,
+                                password!,
+                                name!,
+                                surname!,
+                                number,
+                                roles[selectedRole],
+                                selectedCountry!.id,
+                                selectedCity!.id,
+                                GlobalsWidgets.uid,
+                                messageToken!,
+                                file)
+                            .then((value) {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => CodeEnterLoginPage(code: value,phone: phoneNumber,)),
+                            MaterialPageRoute(
+                                builder: (context) => CodeEnterLoginPage(
+                                    code: value,
+                                    phone: phoneNumber,
+                                    niceCode: () {
+                                      Dio dio = Dio();
+                                      RestClient client = RestClient(dio);
+                                      client
+                                          .loginConfirm(
+                                              phoneNumber, GlobalsWidgets.uid)
+                                          .then((value) async {
+                                        SharedPreferences pref =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        pref.setString("phone", phoneNumber);
+                                        GlobalsWidgets.name = value.name;
+                                        GlobalsWidgets.role = value.role;
+                                        GlobalsWidgets.image = value.photo;
+                                        GlobalsWidgets.surname = value.surname;
+                                        if (context.mounted) {
+                                          Navigator.pushAndRemoveUntil(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      MainRoute(
+                                                        userEntity: value,
+                                                      )),
+                                              (route) => false);
+                                        }
+                                      });
+                                    })),
                           );
-                        }).onError((error, stackTrace){
-                          if(error is DioException){
+                        }).onError((error, stackTrace) {
+                          if (error is DioException) {
                             _displayErrorMotionToast(error.response!.data);
                           }
-
                         });
-                      }else{
-                        _displayErrorMotionToast("Заполните все пустые поля!");
+                      } else {
+                        _displayErrorMotionToast(S.of(context).warning_1);
                       }
-                    }, child: const Text("Зарегистрироваться", style: TextStyle(color: Colors.white),)),
+                    },
+                    child: Text(
+                      S.of(context).reg,
+                      style: const TextStyle(color: Colors.white),
+                    )),
               ),
             ],
           ),
@@ -284,54 +420,79 @@ class _RegisterPage extends State<RegisterPage> with TickerProviderStateMixin{
       ),
     );
   }
-  Future<List<CountryEntity>> getCountries(){
+
+  Future<List<CountryEntity>> getCountries() {
     Dio dio = Dio();
     RestClient client = RestClient(dio);
     return client.getCountries();
   }
-  Widget _selectCity(List<CityEntity> list){
+
+  Widget _selectCity(List<CityEntity> list) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: 2.h,),
-        const Text("Выберите город", style: TextStyle(fontWeight: FontWeight.bold),),
-        SizedBox(height: 1.h,),
+        SizedBox(
+          height: 2.h,
+        ),
+        Text(
+          S.of(context).select_city,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        SizedBox(
+          height: 1.h,
+        ),
         CustomDropdown<CityEntity>(
-                  items: list,
-                  hintText: "Выберите город",
-                  decoration: CustomDropdownDecoration(
-                    closedBorder: Border.all(color: Color(0xffD9D9D9)),
-                    closedFillColor: Colors.transparent,
-                    expandedBorder: Border.all(color: Color(0xffD9D9D9)),
-                    expandedFillColor: Colors.white,
-                  ),
-                  onChanged: (city) {
-                    selectedCity = city;
-                  },
-                )
+          items: list,
+          hintText: S.of(context).select_city,
+          decoration: CustomDropdownDecoration(
+            closedBorder: Border.all(color: const Color(0xffD9D9D9)),
+            closedFillColor: Colors.transparent,
+            expandedBorder: Border.all(color: const Color(0xffD9D9D9)),
+            expandedFillColor: Colors.white,
+          ),
+          onChanged: (city) {
+            selectedCity = city;
+          },
+        )
       ],
     );
   }
-  Widget _photo(String title, String text){
+
+  Widget _photo(String title, String text) {
     return InkWell(
       onTap: () async {
         final ImagePicker picker = ImagePicker();
-        final XFile? video = await picker.pickImage(source: ImageSource.gallery);
-        print("Media ${video!.name}");
+        final XFile? video =
+            await picker.pickImage(source: ImageSource.gallery);
+        debugPrint("Media ${video!.name}");
         file = File.fromUri(Uri.parse(video.path));
       },
       child: Ink(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: const TextStyle(fontWeight: FontWeight.bold),),
-            SizedBox(height: 1.h,),
+            Text(
+              title,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: 1.h,
+            ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(Icons.photo_camera_outlined,size: 10.w,),
-                SizedBox(width: 5.w,),
-                Text(text, style: TextStyle(fontSize: 18.sp,fontWeight: FontWeight.bold, color: Color(0xff797979)))
+                Icon(
+                  Icons.photo_camera_outlined,
+                  size: 10.w,
+                ),
+                SizedBox(
+                  width: 5.w,
+                ),
+                Text(text,
+                    style: TextStyle(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xff797979)))
               ],
             ),
           ],
@@ -339,11 +500,12 @@ class _RegisterPage extends State<RegisterPage> with TickerProviderStateMixin{
       ),
     );
   }
+
   void _displayErrorMotionToast(String error) {
     MotionToast.error(
-      title: const Text(
-        'Ошибка',
-        style: TextStyle(
+      title: Text(
+        S.of(context).error,
+        style: const TextStyle(
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -356,4 +518,3 @@ class _RegisterPage extends State<RegisterPage> with TickerProviderStateMixin{
     ).show(context);
   }
 }
-

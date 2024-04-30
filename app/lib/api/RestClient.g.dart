@@ -13,7 +13,7 @@ class _RestClient implements RestClient {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://192.168.0.11:8080/api/v1/';
+    baseUrl ??= 'http://45.159.250.175:8080/api/v1/';
   }
 
   final Dio _dio;
@@ -21,7 +21,7 @@ class _RestClient implements RestClient {
   String? baseUrl;
 
   @override
-  Future<String> login(
+  Future<UserEntity> login(
     String phone,
     String password,
   ) async {
@@ -32,23 +32,24 @@ class _RestClient implements RestClient {
     };
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _result = await _dio.fetch<String>(_setStreamType<String>(Options(
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<UserEntity>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
     )
-        .compose(
-          _dio.options,
-          'user/login',
-          queryParameters: queryParameters,
-          data: _data,
-        )
-        .copyWith(
-            baseUrl: _combineBaseUrls(
-          _dio.options.baseUrl,
-          baseUrl,
-        ))));
-    final value = _result.data!;
+            .compose(
+              _dio.options,
+              'user/login',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = UserEntity.fromJson(_result.data!);
     return value;
   }
 
@@ -97,7 +98,7 @@ class _RestClient implements RestClient {
     int cityId,
     String uid,
     String notifyToken,
-    File? photo,
+    File? file,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
@@ -115,12 +116,12 @@ class _RestClient implements RestClient {
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     final _data = FormData();
-    if(photo!=null){
+    if(file!=null){
       _data.files.add(MapEntry(
         'photo',
         MultipartFile.fromFileSync(
-          photo.path,
-          filename: photo.path.split(Platform.pathSeparator).last,
+          file.path,
+          filename: file.path.split(Platform.pathSeparator).last,
         ),
       ));
     }
@@ -271,6 +272,99 @@ class _RestClient implements RestClient {
     var value = _result.data!
         .map((dynamic i) => MessageEntity.fromJson(i as Map<String, dynamic>))
         .toList();
+    return value;
+  }
+
+  @override
+  Future<void> walletEvent(
+    String uid,
+    WalletEvent type,
+    double sum,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'uid': uid,
+      r'type': type.name,
+      r'sum': sum,
+    };
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    await _dio.fetch<void>(_setStreamType<void>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'user/walletEvent',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        ))));
+  }
+
+  @override
+  Future<String> forgotPassword(String phone) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'phone': phone};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<String>(_setStreamType<String>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'user/forgotPassword',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        ))));
+    final value = _result.data!;
+    return value;
+  }
+
+  @override
+  Future<UserEntity> forgotPasswordConfirm(
+    String phone,
+    String password,
+    String uid,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'phone': phone,
+      r'password': password,
+      r'uid': uid,
+    };
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<UserEntity>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'user/forgotPassword',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = UserEntity.fromJson(_result.data!);
     return value;
   }
 
@@ -618,12 +712,15 @@ class _RestClient implements RestClient {
   Future<String> findChat(
     String uid,
     String client,
+    int? companyId,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'uid': uid,
       r'client': client,
+      r'companyId': companyId,
     };
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _result = await _dio.fetch<String>(_setStreamType<String>(Options(
@@ -644,6 +741,55 @@ class _RestClient implements RestClient {
         ))));
     final value = _result.data!;
     return value;
+  }
+
+  @override
+  Future<void> createCompany(
+    String uid,
+    Categories category,
+    String name,
+    String? phone,
+    String street,
+    String house,
+    File? file,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'uid': uid,
+      r'category': category.name,
+      r'name': name,
+      r'phone': phone,
+      r'street': street,
+      r'house': house,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    final _data = FormData();
+    if(file!=null){
+      _data.files.add(MapEntry(
+        'photo',
+        MultipartFile.fromFileSync(
+          file.path,
+          filename: file.path.split(Platform.pathSeparator).last,
+        ),
+      ));
+    }
+    await _dio.fetch<void>(_setStreamType<void>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'user/createCompany',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        ))));
   }
 
   @override

@@ -4,48 +4,67 @@ import 'package:admin_app/api/RestClient.dart';
 import 'package:admin_app/api/entity/LocationEntity.dart';
 import 'package:admin_app/api/entity/MessageEntity.dart';
 import 'package:admin_app/api/entity/StorisEntity.dart';
+import 'package:admin_app/api/entity/enums/MessageType.dart';
+import 'package:admin_app/api/entity/enums/StoryType.dart';
 import 'package:admin_app/api/entity/enums/UserRole.dart';
 import 'package:admin_app/models/UserStoryModel.dart';
+import 'package:admin_app/pages/story_view.dart';
+import 'package:admin_app/utils/globals.dart';
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:socket_io_client/socket_io_client.dart';
-import 'package:admin_app/utils/globals.dart';
-import 'package:admin_app/api/entity/enums/StoryType.dart';
+import 'package:voice_message_package/voice_message_package.dart';
+
+import 'generated/l10n.dart';
+
 class CustomChatPage extends StatefulWidget{
-  LocationEntity location;
-  String title;
-  String chatName;
-  bool? privateMode;
-  bool? subscription;
-  bool? history;
-  CustomChatPage({required this.location,this.privateMode,required this.title,required this.chatName,this.subscription,this.history, super.key});
+  final String title;
+  final String chatName;
+  final bool? subscription;
+  final bool? history;
+  final bool showTitle;
+  final LocationEntity location;
+  final UserRole? readOnlyUser;
+  final Function(int count)? onUpdate;
+  const CustomChatPage({this.onUpdate,required this.location,this.readOnlyUser,required this.showTitle,required this.title,required this.chatName,this.subscription,this.history, super.key});
 
   @override
   State<StatefulWidget> createState() => _CustomChatPage();
 }
 class _CustomChatPage extends State<CustomChatPage>{
   Future<List<MessageEntity>> messages = Future.value([]);
+  late final RecorderController recorderController;
   List<UserStoryModel> allStories = [];
   late Socket socket;
   final TextEditingController _controller = TextEditingController();
   bool storyLoad = false;
   String name = "";
-  bool privateMode = false;
   bool subscription = false;
   bool history = false;
+  bool showTitle = true;
+  UserRole? readOnlyUser;
+  bool audio = true;
+  bool isRecording = false;
+  bool isRecordingCompleted = false;
   @override
   void initState() {
     super.initState();
+    _initialiseControllers();
     name = widget.chatName;
     getMessages();
     connectToServer();
+  }
+  void _initialiseControllers() {
+    recorderController = RecorderController()
+      ..androidEncoder = AndroidEncoder.aac
+      ..androidOutputFormat = AndroidOutputFormat.mpeg4
+      ..iosEncoder = IosEncoder.kAudioFormatMPEG4AAC
+      ..sampleRate = 44100;
   }
   @override
   void dispose() {
@@ -54,8 +73,8 @@ class _CustomChatPage extends State<CustomChatPage>{
   }
   @override
   Widget build(BuildContext context) {
-    if(widget.privateMode!=null){
-      privateMode = widget.privateMode!;
+    if(widget.readOnlyUser!=null){
+      readOnlyUser = widget.readOnlyUser!;
     }
     if(widget.subscription!=null){
       subscription = widget.subscription!;
@@ -63,17 +82,19 @@ class _CustomChatPage extends State<CustomChatPage>{
     if(widget.history!=null){
       history = widget.history!;
     }
+    showTitle = widget.showTitle;
     return Scaffold(
-        appBar: AppBar(
+        backgroundColor: Colors.white,
+        appBar: showTitle?AppBar(
           centerTitle: true,
           title: Text(widget.title,style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w700)),
-        ),
+        ):null,
         body: Padding(
           padding: EdgeInsets.all(5.w),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              history?_storis():SizedBox.shrink(),
+              history?_storis():const SizedBox.shrink(),
               Expanded(child: FutureBuilder(
                   future: messages,
                   builder: (context, snapshot){
@@ -82,11 +103,12 @@ class _CustomChatPage extends State<CustomChatPage>{
                         width: double.maxFinite,
                         child: ListView(
                           reverse: true,
-                          children: snapshot.data!.reversed.map((message) => InkWell(
-                            // onTap: subscription?(){
-                            //   Navigator.push(context,
-                            //       MaterialPageRoute(builder: (context)=>UserProfile(user: message.user,)));
-                            // }:null,
+                          children: snapshot.data!.reversed.map((message) => message.type==MessageType.USER?InkWell(
+                            onTap: subscription&&(message.user.role!=UserRole.ADMIN&&message.user.role!=UserRole.MANAGER)?(){
+                              //TODO:  UserProfile!!!! ToDay
+                              // Navigator.push(context,
+                              //     MaterialPageRoute(builder: (context)=>UserProfile(user: message.user,)));
+                            }:null,
                             child: ChatBubble(
                                 margin: const EdgeInsets.only(bottom: 20),
                                 clipper: ChatBubbleClipper1(type: _getType(message)),
@@ -103,20 +125,20 @@ class _CustomChatPage extends State<CustomChatPage>{
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           _getAlignment(message)==Alignment.topRight?Text(
-                                            DateTime.now().difference(message.time).inHours<24?DateFormat("(HH:mm)").format(message.time.toLocal()):DateFormat("(dd.MM HH:mm)").format(message.time.toLocal()),
+                                            DateTime.now().difference(message.time).inHours<12?DateFormat("(HH:mm)").format(message.time.toLocal()):DateFormat("(dd.MM HH:mm)").format(message.time.toLocal()),
                                             textAlign: TextAlign.end,
                                             style: TextStyle(fontSize: 12.sp,color: _getType(message)==BubbleType.sendBubble?Colors.white.withOpacity(0.6):Colors.black.withOpacity(0.6)),
                                           ):const SizedBox.shrink(),
-                                          _getAlignment(message)==Alignment.topRight?SizedBox(width: 2.w,):SizedBox.shrink(),
+                                          _getAlignment(message)==Alignment.topRight?SizedBox(width: 2.w,):const SizedBox.shrink(),
                                           Text(
-                                            (message.user.role==UserRole.USER||message.user.role==UserRole.SPECIALIST)?"${message.user.name}:":widget.title,
+                                            (message.user.role==UserRole.USER||message.user.role==UserRole.SPECIALIST||(message.user.uid==uid && message.user.role==UserRole.MANAGER))?"${message.user.name}:":widget.title,
                                             style: TextStyle(color: _getType(message)==BubbleType.sendBubble?Colors.white:Colors.black),
                                           ),
                                           subscription&&message.user.uid!=uid&&(message.user.role!=UserRole.ADMIN&&message.user.role!=UserRole.MANAGER)?SizedBox(width: 2.w,):const SizedBox.shrink(),
-                                          subscription&&message.user.uid!=uid&&(message.user.role!=UserRole.ADMIN&&message.user.role!=UserRole.MANAGER)?Icon(Icons.person, color: mainColor,):SizedBox.shrink(),
+                                          subscription&&message.user.uid!=uid&&(message.user .role!=UserRole.ADMIN&&message.user.role!=UserRole.MANAGER)?Icon(Icons.person, color: mainColor,):const SizedBox.shrink(),
                                           _getAlignment(message)==Alignment.topLeft?SizedBox(width: 2.w,):const SizedBox.shrink(),
                                           _getAlignment(message)==Alignment.topLeft?Text(
-                                            DateTime.now().difference(message.time).inHours<24?DateFormat("(HH:mm)").format(message.time.toLocal()):DateFormat("(dd.MM HH:mm)").format(message.time.toLocal()),
+                                            DateTime.now().difference(message.time).inHours<12?DateFormat("(HH:mm)").format(message.time.toLocal()):DateFormat("(dd.MM HH:mm)").format(message.time.toLocal()),
                                             textAlign: TextAlign.end,
                                             style: TextStyle(fontSize: 12.sp,color: _getType(message)==BubbleType.sendBubble?Colors.white.withOpacity(0.6):Colors.black.withOpacity(0.6)),
                                           ):const SizedBox.shrink()
@@ -131,47 +153,258 @@ class _CustomChatPage extends State<CustomChatPage>{
                                   ),
                                 )
                             ),
+                          ):message.type==MessageType.AUDIO?InkWell(
+                            onTap: subscription&&(message.user.role!=UserRole.ADMIN&&message.user.role!=UserRole.MANAGER)?(){
+                              //TODO: UserProfile
+                              // Navigator.push(context,
+                              //     MaterialPageRoute(builder: (context)=>UserProfile(user: message.user,)));
+                            }:null,
+                            child: Align(
+                              alignment: message.user.uid==uid?Alignment.centerRight:Alignment.centerLeft,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  _getAlignment(message)==Alignment.topRight?Text(
+                                    DateTime.now().difference(message.time).inHours<12?DateFormat("(HH:mm)").format(message.time.toLocal()):DateFormat("(dd.MM HH:mm)").format(message.time.toLocal()),
+                                    textAlign: TextAlign.end,
+                                    style: TextStyle(fontSize: 12.sp,color: _getType(message)==BubbleType.sendBubble?Colors.black.withOpacity(0.6):Colors.black.withOpacity(0.6)),
+                                  ):const SizedBox.shrink(),
+                                  VoiceMessageView(
+                                    activeSliderColor: mainColor,
+                                    circlesColor: mainColor,
+                                    controller: VoiceController(
+                                      audioSrc: "http://$ip:8080/api/v1/chat/audio/${message.content}",
+                                      maxDuration: const Duration(days: 1),
+                                      isFile: false,
+                                      onComplete: () {},
+                                      onPause: () {},
+                                      onPlaying: () {},
+                                      onError: (err) {},
+                                    ),
+                                  ),
+                                  _getAlignment(message)==Alignment.topLeft?Text(
+                                    DateTime.now().difference(message.time).inHours<12?DateFormat("(HH:mm)").format(message.time.toLocal()):DateFormat("(dd.MM HH:mm)").format(message.time.toLocal()),
+                                    textAlign: TextAlign.end,
+                                    style: TextStyle(fontSize: 12.sp,color: _getType(message)==BubbleType.sendBubble?Colors.black.withOpacity(0.6):Colors.black.withOpacity(0.6)),
+                                  ):const SizedBox.shrink()
+                                ],
+                              ),
+                            ),
+                          ):InkWell(
+                            onTap: subscription&&(message.user.role!=UserRole.ADMIN&&message.user.role!=UserRole.MANAGER)?(){
+                              //TODO: UserProfile
+                              // Navigator.push(context,
+                              //     MaterialPageRoute(builder: (context)=>UserProfile(user: message.user,)));
+                            }:null,
+                            child: ChatBubble(
+                                margin: const EdgeInsets.only(bottom: 20),
+                                clipper: ChatBubbleClipper1(type: _getType(message)),
+                                alignment: _getAlignment(message),
+                                backGroundColor: _getBackGround(message),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                    maxWidth: 70.w,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: _getAlignment(message)==Alignment.topRight?CrossAxisAlignment.end:CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          _getAlignment(message)==Alignment.topRight?Text(
+                                            DateTime.now().difference(message.time).inHours<12?DateFormat("(HH:mm)").format(message.time.toLocal()):DateFormat("(dd.MM HH:mm)").format(message.time.toLocal()),
+                                            textAlign: TextAlign.end,
+                                            style: TextStyle(fontSize: 12.sp,color: _getType(message)==BubbleType.sendBubble?Colors.white.withOpacity(0.6):Colors.black.withOpacity(0.6)),
+                                          ):const SizedBox.shrink(),
+                                          _getAlignment(message)==Alignment.topRight?SizedBox(width: 2.w,):const SizedBox.shrink(),
+                                          Text(
+                                            (message.user.role==UserRole.USER||message.user.role==UserRole.SPECIALIST||(message.user.uid==uid && message.user.role==UserRole.MANAGER))?"${message.user.name}:":widget.title,
+                                            style: TextStyle(color: _getType(message)==BubbleType.sendBubble?Colors.white:Colors.black),
+                                          ),
+                                          subscription&&message.user.uid!=uid&&(message.user.role!=UserRole.ADMIN&&message.user.role!=UserRole.MANAGER)?SizedBox(width: 2.w,):const SizedBox.shrink(),
+                                          subscription&&message.user.uid!=uid&&(message.user .role!=UserRole.ADMIN&&message.user.role!=UserRole.MANAGER)?Icon(Icons.person, color: mainColor,):const SizedBox.shrink(),
+                                          _getAlignment(message)==Alignment.topLeft?SizedBox(width: 2.w,):const SizedBox.shrink(),
+                                          _getAlignment(message)==Alignment.topLeft?Text(
+                                            DateTime.now().difference(message.time).inHours<12?DateFormat("(HH:mm)").format(message.time.toLocal()):DateFormat("(dd.MM HH:mm)").format(message.time.toLocal()),
+                                            textAlign: TextAlign.end,
+                                            style: TextStyle(fontSize: 12.sp,color: _getType(message)==BubbleType.sendBubble?Colors.white.withOpacity(0.6):Colors.black.withOpacity(0.6)),
+                                          ):const SizedBox.shrink()
+                                        ],
+                                      ),
+                                      Image.network(getPhoto(message.content)),
+                                    ],
+                                  ),
+                                )
+                            ),
                           )).toList(),
                         ),
                       );
                     }else{
-                      print("Error ${snapshot.error}");
-                      return Text("Загрузка...");
+                      debugPrint("Error ${snapshot.error}");
+                      return const Text("Загрузка...");
                     }
                   })),
-              !privateMode?SizedBox(
-                height: 7.h,
-                width: double.maxFinite,
-                child: TextFormField(
-                  controller: _controller,
-                  decoration: InputDecoration(
-                    hintText: "Введите сообщение",
-                    hintStyle: TextStyle(fontSize: 16.sp),
-                    suffixIcon: InkWell(
-                      onTap: (){
-                        print("Send message");
-                        if(_controller.value.text.isNotEmpty && _controller.value.text.replaceAll(" ", "").isNotEmpty){
-                          sendMessage();
-                        }
-                      },
-                      child: Icon(Icons.send),
-                    ),
-                    contentPadding: EdgeInsets.only(left: 5.w).copyWith(top: 2.h, bottom: 2.h),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: BorderSide(color: border)
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: BorderSide(color: border)
-                    ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    child: isRecording ? AudioWaveforms(
+                      enableGesture: true,
+                      size: Size(50.w, 50),
+                      recorderController: recorderController,
+                      waveStyle: const WaveStyle(
+                        waveColor: Colors.white,
+                        extendWaveform: true,
+                        showMiddleLine: false,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12.0),
+                        color: const Color(0xFF1E1B26),
+                      ),
+                      padding: const EdgeInsets.only(left: 18),
+                      margin: const EdgeInsets.symmetric(horizontal: 15),
+                    ) : Container(
+                        width: 100.w - 25.w,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF1E1B26),
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        padding: const EdgeInsets.only(left: 18),
+                        //margin: const EdgeInsets.symmetric(horizontal: 15),
+                        child: TextField(
+                          readOnly: false,
+                          style: const TextStyle(color: Colors.white),
+                          controller: _controller,
+                          decoration: InputDecoration(
+                            hintText: S.of(context).text,
+                            hintStyle: const TextStyle(color: Colors.white54),
+                            border: InputBorder.none,
+                            prefixIcon: IconButton(
+                              padding: EdgeInsets.zero,
+                              onPressed: (){
+                                showDialog(context: context, builder: (context){
+                                  return AlertDialog(
+                                    title: Text(S.of(context).add_photo),
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        SizedBox(
+                                          width: double.maxFinite,
+                                          height: 5.h,
+                                          child: OutlinedButton(
+                                              onPressed: () async {
+                                                final ImagePicker picker = ImagePicker();
+                                                final XFile? image = await picker.pickImage(source: ImageSource.gallery, preferredCameraDevice: CameraDevice.rear);
+                                                debugPrint("Media ${image!.name}");
+                                                File file = File.fromUri(Uri.parse(image.path));
+                                                Dio dio = Dio();
+                                                RestClient client = RestClient(dio);
+                                                client.fileMessage(uid,widget.location.country.id, widget.location.city.id, widget.chatName, MessageType.PHOTO, file).then((value){
+                                                  getMessages();
+                                                  Navigator.pop(context);
+                                                }).onError((error, stackTrace){
+                                                  debugPrint("Error image $error");
+                                                });
+                                              },
+                                              style: OutlinedButton.styleFrom(
+                                                  side: BorderSide.none,
+                                                  backgroundColor: Colors.white
+                                              ),
+                                              child: Text(S.of(context).photo, style: const TextStyle(color: Color(0xff317EFA)),)),
+
+                                        ),
+                                        SizedBox(height: 1.h,),
+                                        SizedBox(
+                                          width: double.maxFinite,
+                                          height: 5.h,
+                                          child: OutlinedButton(
+                                              onPressed: () async {
+                                                final ImagePicker picker = ImagePicker();
+                                                final XFile? image = await picker.pickImage(source: ImageSource.camera);
+                                                debugPrint("Media ${image!.name}");
+                                                File file = File.fromUri(Uri.parse(image.path));
+                                                Dio dio = Dio();
+                                                RestClient client = RestClient(dio);
+                                                client.fileMessage(uid,widget.location.country.id, widget.location.city.id, widget.chatName, MessageType.PHOTO, file).then((value){
+                                                  getMessages();
+                                                  Navigator.pop(context);
+                                                }).onError((error, stackTrace){
+                                                  debugPrint("Error image $error");
+                                                });
+                                              },
+                                              style: OutlinedButton.styleFrom(
+                                                  side: BorderSide.none,
+                                                  backgroundColor: Colors.white
+                                              ),
+                                              child: Text(S.of(context).photo_, style: const TextStyle(color: Color(0xff317EFA)),)),
+
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                });
+                              },
+                              icon: Icon(
+                                isRecording ? Icons.refresh : Icons.photo_camera_outlined,
+                                color: Colors.white,
+                              ),
+                            ),
+                            suffixIcon: IconButton(
+                              padding: EdgeInsets.zero,
+                              onPressed: _refreshWave,
+                              icon: Icon(
+                                isRecording ? Icons.refresh : Icons.send,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        )),
                   ),
-                ),
-              ):const SizedBox.shrink()
+                  SizedBox(width: 1.w),
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: _startOrStopRecording,
+                    icon: Icon(isRecording ? Icons.stop : Icons.mic, size: 8.w,),
+                    color: Colors.black,
+
+                  ),
+                ],
+              )
             ],
           ),
         )
     );
+  }
+  void _startOrStopRecording() async {
+    try {
+      if (isRecording) {
+        recorderController.reset();
+        var path = await recorderController.stop(false);
+        debugPrint(path);
+        File file = File(path!);
+        debugPrint("Recorded file size: ${file.lengthSync()}");
+        Dio dio = Dio();
+        RestClient client = RestClient(dio);
+        client.fileMessage(uid,widget.location.country.id, widget.location.city.id, widget.chatName, MessageType.AUDIO, file).then((value){
+          getMessages();
+        });
+      } else {
+        await recorderController.record(); // Path is optional
+      }
+    } catch (e) {
+      debugPrint("E ${e.toString()}");
+    } finally {
+      setState(() {
+        isRecording = !isRecording;
+      });
+    }
+  }
+
+  void _refreshWave() {
+    if (isRecording) recorderController.refresh();
+    sendMessage();
   }
   Widget _storis(){
     return FutureBuilder(future: getStories(), builder: (context, snapshot){
@@ -216,34 +449,51 @@ class _CustomChatPage extends State<CustomChatPage>{
               userStoryModel
           );
         }
-        print("List l ${list.length}");
+        debugPrint("List l ${list.length}");
         allStories.addAll(
             list
         );
-        List<Widget> widgets = [
-          currentUser("${name} (Вы)", currentUserStories.isEmpty),
-        ];
-        widgets.addAll(list.map((e) => user(e.user!.name, false, true)).toList());
-        return SizedBox(
-          height: 12.h,
-          width: double.maxFinite,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: ListView.separated(
-              shrinkWrap: true,
+        for(int i = 0; i > allStories.length; i++){
+          list[i].index = i;
+        }
+        if(currentUserStories.isNotEmpty){
+          for(int i = 0; i < list.length; i++){
+            list[i].index = i+1;
+          }
+        }else{
+          for(int i = 0; i < list.length; i++){
+            list[i].index = i;
+          }
+        }
+        List<Widget> widgets = [];
+        debugPrint("Role ${UserRole.ADMIN}");
+        widgets.add(currentUser("${UserRole.ADMIN} (Вы)", currentUserStories.isEmpty));
+        widgets.addAll(list.map((e) => user(e.user!.name, false, true, e.index!, e.user!.photo)).toList());
+
+        if(storis.length<2&&currentUserStories.isNotEmpty){
+          return const SizedBox.shrink();
+        }else{
+          return SizedBox(
+            height: 12.h,
+            width: double.maxFinite,
+            child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              itemBuilder: (BuildContext context, int index) {
-                return widgets[index];
-              },
-              itemCount: widgets.length,
-              separatorBuilder: (BuildContext context, int index) {
-                return SizedBox(width: 2.w,);
-              },
+              child: ListView.separated(
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (BuildContext context, int index) {
+                  return widgets[index];
+                },
+                itemCount: widgets.length,
+                separatorBuilder: (BuildContext context, int index) {
+                  return SizedBox(width: 2.w,);
+                },
+              ),
             ),
-          ),
-        );
+          );
+        }
       }else{
-        return Text("Загрузка...");
+        return Text(S.of(context).loading);
       }
     });
   }
@@ -254,14 +504,14 @@ class _CustomChatPage extends State<CustomChatPage>{
   }
   Widget currentUser(String name, bool active){
     return InkWell(
-      // onLongPress: !active?(){
-      //   Navigator.push(context,
-      //       MaterialPageRoute(builder: (context)=>StoryViewPage(usersStory: allStories)));
-      // }:null,
+      onLongPress: !active?(){
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context)=>StoryViewPage(usersStory: allStories)));
+      }:null,
       onTap: () async {
         showDialog(context: context, builder: (context){
           return AlertDialog(
-            title: Text("Добавить историю"),
+            title: Text(S.of(context).add_stor),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -272,26 +522,26 @@ class _CustomChatPage extends State<CustomChatPage>{
                       onPressed: () async {
                         final ImagePicker picker = ImagePicker();
                         final XFile? image = await picker.pickImage(source: ImageSource.gallery, preferredCameraDevice: CameraDevice.rear);
-                        print("Media ${image!.name}");
+                        debugPrint("Media ${image!.name}");
                         File file = File.fromUri(Uri.parse(image.path));
                         Dio dio = Dio();
                         RestClient client = RestClient(dio);
                         String id = await client.getChatId(uid, widget.chatName);
-                        print("ID ${id}");
+                        debugPrint("ID $id");
                         client.addStory(id, uid, StoryType.PHOTO, file).then((value){
                           setState(() {
 
                           });
                           Navigator.pop(context);
                         }).onError((error, stackTrace){
-                          print("Error image ${error}");
+                          debugPrint("Error image $error");
                         });
                       },
                       style: OutlinedButton.styleFrom(
                           side: BorderSide.none,
                           backgroundColor: Colors.white
                       ),
-                      child: Text("Фото", style: TextStyle(color: Color(0xff317EFA)),)),
+                      child: Text(S.of(context).photo, style: const TextStyle(color: Color(0xff317EFA)),)),
 
                 ),
                 SizedBox(height: 1.h,),
@@ -302,26 +552,26 @@ class _CustomChatPage extends State<CustomChatPage>{
                       onPressed: () async {
                         final ImagePicker picker = ImagePicker();
                         final XFile? image = await picker.pickImage(source: ImageSource.camera);
-                        print("Media ${image!.name}");
+                        debugPrint("Media ${image!.name}");
                         File file = File.fromUri(Uri.parse(image.path));
                         Dio dio = Dio();
                         RestClient client = RestClient(dio);
                         String id = await client.getChatId(uid, widget.chatName);
-                        print("ID ${id}");
+                        debugPrint("ID $id");
                         client.addStory(id, uid, StoryType.PHOTO, file).then((value){
                           setState(() {
 
                           });
                           Navigator.pop(context);
                         }).onError((error, stackTrace){
-                          print("Error image ${error}");
+                          debugPrint("Error image $error");
                         });
                       },
                       style: OutlinedButton.styleFrom(
                           side: BorderSide.none,
                           backgroundColor: Colors.white
                       ),
-                      child: Text("Фото (Камера)", style: TextStyle(color: Color(0xff317EFA)),)),
+                      child: Text(S.of(context).photo_, style: const TextStyle(color: Color(0xff317EFA)),)),
 
                 ),
                 SizedBox(height: 2.h,),
@@ -332,7 +582,7 @@ class _CustomChatPage extends State<CustomChatPage>{
                       onPressed: () async {
                         final ImagePicker picker = ImagePicker();
                         final XFile? video = await picker.pickVideo(source: ImageSource.gallery);
-                        print("Media ${video!.name}");
+                        debugPrint("Media ${video!.name}");
                         File file = File.fromUri(Uri.parse(video.path));
                         Dio dio = Dio();
                         RestClient client = RestClient(dio);
@@ -348,7 +598,7 @@ class _CustomChatPage extends State<CustomChatPage>{
                           side: BorderSide.none,
                           backgroundColor: Colors.white
                       ),
-                      child: const Text("Видео", style: TextStyle(color: Color(0xff317EFA)),)),
+                      child: Text(S.of(context).video, style: const TextStyle(color: Color(0xff317EFA)),)),
 
                 ),
                 SizedBox(height: 1.h,),
@@ -359,7 +609,7 @@ class _CustomChatPage extends State<CustomChatPage>{
                       onPressed: () async {
                         final ImagePicker picker = ImagePicker();
                         final XFile? video = await picker.pickVideo(source: ImageSource.camera, preferredCameraDevice: CameraDevice.rear);
-                        print("Media ${video!.name}");
+                        debugPrint("Media ${video!.name}");
                         File file = File.fromUri(Uri.parse(video.path));
                         Dio dio = Dio();
                         RestClient client = RestClient(dio);
@@ -375,7 +625,7 @@ class _CustomChatPage extends State<CustomChatPage>{
                           side: BorderSide.none,
                           backgroundColor: Colors.white
                       ),
-                      child: const Text("Видео (Камера)", style: TextStyle(color: Color(0xff317EFA)),)),
+                      child: Text(S.of(context).video_, style: const TextStyle(color: Color(0xff317EFA)),)),
 
                 )
               ],
@@ -434,7 +684,7 @@ class _CustomChatPage extends State<CustomChatPage>{
                         color: mainColor
                     ),
                     child: Align(alignment: Alignment.center,child: Icon(Icons.add, color: Colors.white,size: 2.h,),),
-                  ):SizedBox.shrink()
+                  ):const SizedBox.shrink()
                 ],
               ),
               Text(name)
@@ -445,12 +695,12 @@ class _CustomChatPage extends State<CustomChatPage>{
       ),
     );
   }
-  Widget user(String name, bool active,bool current){
+  Widget user(String name, bool active,bool current, int index,String? photo){
     return InkWell(
       onTap: !current?() async {
         showDialog(context: context, builder: (context){
           return AlertDialog(
-            title: Text("Добавить историю"),
+            title: Text(S.of(context).add_stor),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -461,23 +711,23 @@ class _CustomChatPage extends State<CustomChatPage>{
                       onPressed: () async {
                         final ImagePicker picker = ImagePicker();
                         final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-                        print("Media ${image!.name}");
+                        debugPrint("Media ${image!.name}");
                         File file = File.fromUri(Uri.parse(image.path));
                         Dio dio = Dio();
                         RestClient client = RestClient(dio);
                         String id = await client.getChatId(uid, widget.chatName);
-                        print("ID ${id}");
+                        debugPrint("ID $id");
                         client.addStory(id, uid, StoryType.PHOTO, file).then((value){
 
                         }).onError((error, stackTrace){
-                          print("Error image ${error}");
+                          debugPrint("Error image $error");
                         });
                       },
                       style: OutlinedButton.styleFrom(
                           side: BorderSide.none,
                           backgroundColor: Colors.white
                       ),
-                      child: Text("Фото", style: TextStyle(color: Color(0xff317EFA)),)),
+                      child: Text(S.of(context).photo, style: const TextStyle(color: Color(0xff317EFA)),)),
 
                 ),
                 SizedBox(height: 2.h,),
@@ -488,7 +738,7 @@ class _CustomChatPage extends State<CustomChatPage>{
                       onPressed: () async {
                         final ImagePicker picker = ImagePicker();
                         final XFile? video = await picker.pickVideo(source: ImageSource.gallery);
-                        print("Media ${video!.name}");
+                        debugPrint("Media ${video!.name}");
                         File file = File.fromUri(Uri.parse(video.path));
                         Dio dio = Dio();
                         RestClient client = RestClient(dio);
@@ -501,14 +751,17 @@ class _CustomChatPage extends State<CustomChatPage>{
                           side: BorderSide.none,
                           backgroundColor: Colors.white
                       ),
-                      child: Text("Видео", style: TextStyle(color: Color(0xff317EFA)),)),
+                      child: Text(S.of(context).video, style: const TextStyle(color: Color(0xff317EFA)),)),
 
                 )
               ],
             ),
           );
         });
-      }:null,
+      }:(){
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context)=>StoryViewPage(usersStory: allStories, index: index,)));
+      },
       child: Row(
         children: [
           Column(
@@ -535,7 +788,7 @@ class _CustomChatPage extends State<CustomChatPage>{
                             ),
                           ),
                         ),
-                      ):SizedBox.shrink(),
+                      ):const SizedBox.shrink(),
                       storyLoad||current?ClipOval(
                         child: SizedBox.fromSize(
                           size: const Size.fromRadius(27), // Image radius
@@ -543,11 +796,11 @@ class _CustomChatPage extends State<CustomChatPage>{
                             color: Colors.white,
                           ),
                         ),
-                      ):SizedBox.shrink(),
+                      ):const SizedBox.shrink(),
                       ClipOval(
                         child: SizedBox.fromSize(
                           size: const Size.fromRadius(25), // Image radius
-                          child: Image.network(getUserPhoto(), fit: BoxFit.cover),
+                          child: Image.network(getPhoto(photo), fit: BoxFit.cover),
                         ),
                       ),
                     ],
@@ -560,7 +813,7 @@ class _CustomChatPage extends State<CustomChatPage>{
                         color: mainColor
                     ),
                     child: Align(alignment: Alignment.center,child: Icon(Icons.add, color: Colors.white,size: 2.h,),),
-                  ):SizedBox.shrink()
+                  ):const SizedBox.shrink()
                 ],
               ),
               Text(name)
@@ -612,7 +865,7 @@ class _CustomChatPage extends State<CustomChatPage>{
   }
   void connectToServer() {
     try {
-      print("Connect to room ${name}");
+      debugPrint("Connect to room $name");
       OptionBuilder optionBuilder = OptionBuilder();
       Map<String, dynamic> opt = optionBuilder
           .disableAutoConnect()
@@ -624,7 +877,7 @@ class _CustomChatPage extends State<CustomChatPage>{
       opt.addAll({
         "forceNew": true
       });
-      socket = io('http://${ip}:8081', opt);
+      socket = io('http://$ip:8081', opt);
       socket.connect();
       socket.on('connect', (_){
         debugPrint("Connect");
@@ -645,18 +898,20 @@ class _CustomChatPage extends State<CustomChatPage>{
   Future<void> getMessages() async {
     Dio dio = Dio();
     RestClient client = RestClient(dio);
-    print("Uid ${uid} name $name");
+    debugPrint("Uid $uid name $name");
+    String id = await client.getChatId(uid, name);
+    debugPrint("ChatId $id");
     setState(() {
-      messages = client.getMessagesByLocation(widget.location.country.id, widget.location.city.id,widget.chatName);
+      messages = client.getMessagesByLocation(widget.location.country.id, widget.location.city.id, widget.chatName);
     });
   }
 
   Future<void> sendMessage() async {
-    print("Send");
+    debugPrint("Send");
     socket.emit("send_message", {
       "content":_controller.value.text
     });
-    _controller.clear();
+    _controller.text = '';
     getMessages();
     setState(() {
 

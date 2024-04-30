@@ -13,7 +13,7 @@ class _RestClient implements RestClient {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://45.67.35.206:8080/api/v1/';
+    baseUrl ??= 'http://45.159.250.175:8080/api/v1/';
   }
 
   final Dio _dio;
@@ -131,6 +131,39 @@ class _RestClient implements RestClient {
   }
 
   @override
+  Future<UserEntity> setUserUid(
+    String phone,
+    String uid,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'phone': phone,
+      r'uid': uid,
+    };
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<UserEntity>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'user/uid',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = UserEntity.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<List<MessageEntity>> getMessages(String id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -157,6 +190,51 @@ class _RestClient implements RestClient {
         .map((dynamic i) => MessageEntity.fromJson(i as Map<String, dynamic>))
         .toList();
     return value;
+  }
+
+  @override
+  Future<void> fileMessage(
+    String uid,
+    int countryId,
+    int cityId,
+    String name,
+    MessageType type,
+    File file,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'uid': uid,
+      r'countryId': countryId,
+      r'cityId': cityId,
+      r'name': name,
+      r'type': type.name,
+    };
+    final _headers = <String, dynamic>{};
+    final _data = FormData();
+    _data.files.add(MapEntry(
+      'file',
+      MultipartFile.fromFileSync(
+        file.path,
+        filename: file.path.split(Platform.pathSeparator).last,
+      ),
+    ));
+    await _dio.fetch<void>(_setStreamType<void>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+      contentType: 'multipart/form-data',
+    )
+        .compose(
+          _dio.options,
+          'admin/file',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        ))));
   }
 
   @override
@@ -206,15 +284,13 @@ class _RestClient implements RestClient {
     };
     final _headers = <String, dynamic>{};
     final _data = FormData();
-    if(file!=null){
-      _data.files.add(MapEntry(
-        'file',
-        MultipartFile.fromFileSync(
-          file.path,
-          filename: file.path.split(Platform.pathSeparator).last,
-        ),
-      ));
-    }
+    _data.files.add(MapEntry(
+      'file',
+      MultipartFile.fromFileSync(
+        file.path,
+        filename: file.path.split(Platform.pathSeparator).last,
+      ),
+    ));
     await _dio.fetch<void>(_setStreamType<void>(Options(
       method: 'POST',
       headers: _headers,
@@ -505,7 +581,7 @@ class _RestClient implements RestClient {
   }
 
   @override
-  Future<UserEntity> adminLogin(
+  Future<String> adminLogin(
     String phone,
     String password,
   ) async {
@@ -516,9 +592,41 @@ class _RestClient implements RestClient {
     };
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<String>(_setStreamType<String>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'admin/login',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        ))));
+    final value = _result.data!;
+    return value;
+  }
+
+  @override
+  Future<UserEntity> loginConfirm(
+    String phone,
+    String uid,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'phone': phone,
+      r'uid': uid,
+    };
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
     final _result = await _dio
         .fetch<Map<String, dynamic>>(_setStreamType<UserEntity>(Options(
-      method: 'GET',
+      method: 'POST',
       headers: _headers,
       extra: _extra,
     )
@@ -794,6 +902,36 @@ class _RestClient implements RestClient {
         .compose(
           _dio.options,
           'admin/filters/delete',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        ))));
+  }
+
+  @override
+  Future<void> changeRole(
+    String uid,
+    UserRole role,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'uid': uid,
+      r'role': role.name,
+    };
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    await _dio.fetch<void>(_setStreamType<void>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'admin/changeRole',
           queryParameters: queryParameters,
           data: _data,
         )

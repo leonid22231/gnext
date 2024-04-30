@@ -1,5 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
-
+import 'package:http/http.dart' as http;
 import 'package:address_search_field/address_search_field.dart';
 import 'package:app/api/RestClient.dart';
 import 'package:app/api/entity/PropertiesEntity.dart';
@@ -76,6 +77,7 @@ class _CreateCargoState extends State<CreateCargoPage>{
                     geoMethods: GeoMethods(googleApiKey: GlobalsWidgets.API_KEY, language: "ru"),
                     controller: kudaController,
                     onDone: (Address address) => kuda = address,
+
                     builder: AddressDialogBuilder(
                         hintText: S.of(context).search,
                         continueText: S.of(context).ok,
@@ -220,12 +222,42 @@ class _CreateCargoState extends State<CreateCargoPage>{
                           outcity = true;
                         }
                         if(dateTime1!=null && description!=null && dateTime2!=null && price>0 && kuda!=null){
-                          List<Placemark> placemarks1 = await placemarkFromCoordinates(destinationAddress!.coords!.latitude, destinationAddress!.coords!.longitude);
-                          Placemark p1 = placemarks1.first;
-                          List<Placemark> placemarks2 = await placemarkFromCoordinates(kuda!.coords!.latitude, kuda!.coords!.longitude);
-                          Placemark p2 = placemarks2.first;
-                          AddressModel addressFrom = AddressModel(p1.street, p1.subThoroughfare, p1.locality!);
-                          AddressModel addressTo = AddressModel(p2.street, p2.subThoroughfare, p2.locality!);
+                          http.Response dest = await http.get(Uri.parse('https://maps.googleapis.com/maps/api/place/details/json?place_id=${destinationAddress!.placeId}&key=AIzaSyDiqxR05PppZDGdbTUxTMYN92dmbrEumbc&language=ru'));
+                          http.Response kuda_ = await http.get(Uri.parse('https://maps.googleapis.com/maps/api/place/details/json?place_id=${kuda!.placeId}&key=AIzaSyDiqxR05PppZDGdbTUxTMYN92dmbrEumbc&language=ru'));
+                          String city1 = "",city2 = "";
+                          String? house1,house2;
+                          String? street1,street2;
+                          var json_dest1 = jsonDecode(dest.body);
+                          var array_dest1 = json_dest1["result"]["address_components"];
+                          for(int i = 0; i < array_dest1.length; i++){
+                            var array_dest_type1 = array_dest1[i]["types"];
+                            for(int j = 0; j < array_dest_type1.length; j++){
+                              if(array_dest_type1[j]=="locality"){
+                                city1 = array_dest1[i]["long_name"];
+                              }else if(array_dest_type1[j]=="route"){
+                                street1 = array_dest1[i]["long_name"];
+                              }else if(array_dest_type1[j]=="street_number"){
+                                  house1 = array_dest1[i]["long_name"];
+                              }
+                            }
+                          }
+                          var json_dest2 = jsonDecode(kuda_.body);
+                          var array_dest2 = json_dest2["result"]["address_components"];
+                          for(int i = 0; i < array_dest2.length; i++){
+                            var array_dest_type2 = array_dest2[i]["types"];
+                            for(int j = 0; j < array_dest_type2.length; j++){
+                              if(array_dest_type2[j]=="locality"){
+                                city2 = array_dest2[i]["long_name"];
+                              }else if(array_dest_type2[j]=="route"){
+                                street2 = array_dest2[i]["long_name"];
+                              }else if(array_dest_type2[j]=="street_number"){
+                                house2 = array_dest2[i]["long_name"];
+                              }
+                            }
+                          }
+
+                          AddressModel addressFrom = AddressModel(street1, house1, city1);
+                          AddressModel addressTo = AddressModel(street2, house2, city2);
                           debugPrint("addressFrom $addressFrom");
                           debugPrint("addressTo $addressTo");
                           PropertiesModel properties = PropertiesModel(addressTo, addressFrom);

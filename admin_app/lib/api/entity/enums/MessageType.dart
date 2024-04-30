@@ -1,3 +1,3 @@
 enum MessageType{
-  SYSTEM,USER;
+  USER,AUDIO,PHOTO;
 }

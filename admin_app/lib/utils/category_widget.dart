@@ -39,13 +39,15 @@ class _CategoryWidget extends State<CategoryWidget> with TickerProviderStateMixi
       size = null;
     }else{
       count = widget.companies.length;
-      size = (count!+3 * 8.5.h) + (count!).h;
+      print("Count $count");
+      size = (count!*6.h)+(count! * 1.h) + 6.h;
       print("Size $size");
     }
     return TapToExpand(
           borderRadius: 50,
           color: mainColor,
           openedHeight: size,
+          scrollable: true,
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

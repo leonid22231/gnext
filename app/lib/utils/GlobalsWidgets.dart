@@ -5,10 +5,11 @@ class GlobalsWidgets{
   //192.168.0.11
   //45.67.35.206
   static String API_KEY = "AIzaSyBy9BVbIC9M_jbMT4yBF-uRJoCUTZTAX1o";
-  static String ip = "192.168.0.11";
+  static String ip = "45.159.250.175";
   static String uid = "";
   static String name = "";
   static String surname = "";
+  static double wallet = 0;
   static UserRole role = UserRole.USER;
   static String? image;
   static List<String> chats = [
@@ -37,8 +38,5 @@ class GlobalsWidgets{
   }
   static String getStoryVideo(String video){
     return 'http://${GlobalsWidgets.ip}:8080/api/v1/storis/video/$video';
-  }
-  static Widget _card(){
-    return SizedBox();
   }
 }

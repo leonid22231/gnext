@@ -1,5 +1,6 @@
 import 'package:admin_app/api/RestClient.dart';
 import 'package:admin_app/auth/code_enter_login_page.dart';
+import 'package:admin_app/utils/globals.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -111,30 +112,16 @@ class _LoginPage extends State<LoginPage>{
                   }else{
                     phoneNumber+= phone!;
                   }
-                  client.adminLogin(phoneNumber, password!).then((value){
-                    print("User uid ${value.uid}");
-                    FirebaseAuth.instance.verifyPhoneNumber(
-                        phoneNumber: "+$phoneNumber",
-                        verificationCompleted: (_){
-                          print("Complete");
-                        },
-                        verificationFailed: (_){
-                          print("Failed");
-                        },
-                        codeSent: (_,__){
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => CodeEnterLoginPage(verifyId: _, userEntity: value,)),
-                          );
-                        },
-                        codeAutoRetrievalTimeout: (_){
-                          print("TimeOut");
-                        }
-                    );
+                  client.adminLogin(phoneNumber, password!).then((value) async {
+                    await FirebaseAuth.instance.signInAnonymously();
+                    uid = FirebaseAuth.instance.currentUser!.uid;
+                    if(context.mounted){
+                      Navigator.pushAndRemoveUntil(context,
+                          MaterialPageRoute(builder: (context) => CodeEnterLoginPage(code: value,phone: phoneNumber,)), (route) => false);
+                    }
                   }).onError((error, stackTrace){
-                    print("Mb error ${error}");
                     if(error is DioException){
-                     _displayErrorMotionToast(error.response!.data);
+                      _displayErrorMotionToast(error.response!.data);
                     }
                   });
               }, child: const Text("Войти", style: TextStyle(color: Colors.white),),

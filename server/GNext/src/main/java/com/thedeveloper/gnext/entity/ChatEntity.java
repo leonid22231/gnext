@@ -27,6 +27,8 @@ public class ChatEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "member2", nullable = true, referencedColumnName = "phone")
     UserEntity member2;
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
+    CompanyEntity company;
     @Transient
     int unread;
     @JsonManagedReference

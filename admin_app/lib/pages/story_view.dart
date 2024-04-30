@@ -1,7 +1,7 @@
-import 'package:app/api/entity/enums/StoryType.dart';
-import 'package:app/generated/l10n.dart';
-import 'package:app/pages/models/UserStoryModel.dart';
-import 'package:app/utils/GlobalsWidgets.dart';
+import 'package:admin_app/api/entity/enums/StoryType.dart';
+import 'package:admin_app/generated/l10n.dart';
+import 'package:admin_app/models/UserStoryModel.dart';
+import 'package:admin_app/utils/globals.dart';
 import 'package:flutter/material.dart';
 import 'package:story/story_image.dart';
 import 'package:story/story_page_view.dart';
@@ -60,7 +60,7 @@ class _StoryViewPage extends State<StoryViewPage>{
                     );
                   },
                   imageProvider: NetworkImage(
-                    GlobalsWidgets.getStoryPhoto(story.content),
+                    getStoryPhoto(story.content),
                   ),
                   fit: BoxFit.fitWidth,
                 ),
@@ -115,7 +115,7 @@ class _StoryViewPage extends State<StoryViewPage>{
                       width: 32,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: NetworkImage(GlobalsWidgets.getPhoto(user.photo)),
+                          image: NetworkImage(getPhoto(user.photo)),
                           fit: BoxFit.cover,
                         ),
                         shape: BoxShape.circle,
@@ -172,7 +172,7 @@ Future<void> restartController(String content) async {
 
     _controller = VideoPlayerController.networkUrl(
       Uri.parse(
-        GlobalsWidgets.getStoryVideo(content),
+        getStoryVideo(content),
       ),
     );
       init = true;

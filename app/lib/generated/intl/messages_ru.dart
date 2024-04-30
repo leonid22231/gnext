@@ -22,6 +22,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "accept": MessageLookupByLibrary.simpleMessage(
+            "Принимаю политику конфиденциальности"),
         "add": MessageLookupByLibrary.simpleMessage("Добавить"),
         "add_money": MessageLookupByLibrary.simpleMessage("Пополнить счёт"),
         "add_option": MessageLookupByLibrary.simpleMessage("Добавить груз"),
@@ -33,6 +35,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "chat": MessageLookupByLibrary.simpleMessage("Чат"),
         "city": MessageLookupByLibrary.simpleMessage("По городу"),
         "code_error": MessageLookupByLibrary.simpleMessage("Неверный код!"),
+        "connect": MessageLookupByLibrary.simpleMessage("Связаться"),
         "create_1": MessageLookupByLibrary.simpleMessage("Маршрут"),
         "create_2": MessageLookupByLibrary.simpleMessage("Откуда"),
         "create_3": MessageLookupByLibrary.simpleMessage("Куда"),
@@ -49,6 +52,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Изменить местоположение"),
         "end": MessageLookupByLibrary.simpleMessage("Завершить"),
         "enter_code": MessageLookupByLibrary.simpleMessage("Введите код"),
+        "enter_money":
+            MessageLookupByLibrary.simpleMessage("Введите сумму зачисления"),
+        "enter_new_password":
+            MessageLookupByLibrary.simpleMessage("Введите новый пароль"),
         "error": MessageLookupByLibrary.simpleMessage("Ошибка"),
         "exit": MessageLookupByLibrary.simpleMessage("Выход"),
         "files": MessageLookupByLibrary.simpleMessage(
@@ -59,7 +66,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "gos_number": MessageLookupByLibrary.simpleMessage("Госномер"),
         "gos_number_": MessageLookupByLibrary.simpleMessage("Введите госномер"),
         "help": MessageLookupByLibrary.simpleMessage("Помощь с приложением"),
+        "help_1": MessageLookupByLibrary.simpleMessage("Удаление аккаунта"),
         "loading": MessageLookupByLibrary.simpleMessage("Загрузка..."),
+        "min_sum": MessageLookupByLibrary.simpleMessage(
+            "Минимальная сумма оплаты 1\$"),
         "name": MessageLookupByLibrary.simpleMessage("Имя"),
         "name_": MessageLookupByLibrary.simpleMessage("Введите имя"),
         "no_city": MessageLookupByLibrary.simpleMessage("Межгород"),
@@ -74,19 +84,31 @@ class MessageLookup extends MessageLookupByLibrary {
         "page10": MessageLookupByLibrary.simpleMessage("Грузчики"),
         "page11": MessageLookupByLibrary.simpleMessage("Автосалон"),
         "page2": MessageLookupByLibrary.simpleMessage("Поиск груза"),
-        "page3": MessageLookupByLibrary.simpleMessage("Эвакуатор"),
+        "page3": MessageLookupByLibrary.simpleMessage("Найти эвакуатор"),
         "page4": MessageLookupByLibrary.simpleMessage("Справочник"),
         "page5": MessageLookupByLibrary.simpleMessage("СТО"),
-        "page6":
-            MessageLookupByLibrary.simpleMessage("Переоборудование газелей"),
-        "page7": MessageLookupByLibrary.simpleMessage("Авторазбор газелей"),
+        "page6": MessageLookupByLibrary.simpleMessage("Переоборудование"),
+        "page7": MessageLookupByLibrary.simpleMessage("Авторазбор"),
         "page8": MessageLookupByLibrary.simpleMessage("Свап"),
         "page9": MessageLookupByLibrary.simpleMessage("Авторынок"),
         "password": MessageLookupByLibrary.simpleMessage("Пароль"),
         "password_": MessageLookupByLibrary.simpleMessage("Введите пароль"),
         "pay": MessageLookupByLibrary.simpleMessage("Оплата"),
+        "payment":
+            MessageLookupByLibrary.simpleMessage("Выберите способ оплаты"),
         "photo": MessageLookupByLibrary.simpleMessage("Фото"),
         "photo_": MessageLookupByLibrary.simpleMessage("Фото (Камера)"),
+        "photo_gos":
+            MessageLookupByLibrary.simpleMessage("Фото газели спереди"),
+        "photo_gos_": MessageLookupByLibrary.simpleMessage(
+            "Добавьте фото Газели спереди"),
+        "photo_profile": MessageLookupByLibrary.simpleMessage("Фото профиля"),
+        "photo_profile_":
+            MessageLookupByLibrary.simpleMessage("Добавьте фото профиля"),
+        "preload_page1": MessageLookupByLibrary.simpleMessage("Добавить груз"),
+        "preload_page2":
+            MessageLookupByLibrary.simpleMessage("Стать перевозчиком"),
+        "reg": MessageLookupByLibrary.simpleMessage("Зарегистрироваться"),
         "register": MessageLookupByLibrary.simpleMessage("Регистрация"),
         "save": MessageLookupByLibrary.simpleMessage("Сохранить груз"),
         "search": MessageLookupByLibrary.simpleMessage("Поиск"),
@@ -102,10 +124,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "typing": MessageLookupByLibrary.simpleMessage("Написать"),
         "user": MessageLookupByLibrary.simpleMessage("Пользователь"),
         "user_role_1": MessageLookupByLibrary.simpleMessage("Пользователь"),
-        "user_role_2": MessageLookupByLibrary.simpleMessage("Специалист"),
+        "user_role_2": MessageLookupByLibrary.simpleMessage("Перевозчик"),
         "video": MessageLookupByLibrary.simpleMessage("Видео"),
         "video_": MessageLookupByLibrary.simpleMessage("Видео (Камера)"),
         "warning_1":
-            MessageLookupByLibrary.simpleMessage("Заполните все пустые поля")
+            MessageLookupByLibrary.simpleMessage("Заполните все пустые поля"),
+        "warning_2": MessageLookupByLibrary.simpleMessage(
+            "Сначала введите номер телефона!")
       };
 }

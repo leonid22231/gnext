@@ -42,6 +42,9 @@ public class UserService {
         }
         return  list;
     }
+    public List<UserEntity> findAfterSevenDays(){
+        return userRepository.findAfterSevenDays();
+    }
     private void addAll(List<UserEntity> list,List<UserEntity> users){
         us:for(UserEntity user : users){
             for(UserEntity userEntity : list){

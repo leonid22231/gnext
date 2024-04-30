@@ -21,5 +21,101 @@ class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ru';
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-  static Map<String, Function> _notInlinedMessages(_) => <String, Function>{};
+  static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "accept": MessageLookupByLibrary.simpleMessage(
+            "Принимаю политику конфиденциальности"),
+        "add": MessageLookupByLibrary.simpleMessage("Добавить"),
+        "add_money": MessageLookupByLibrary.simpleMessage("Пополнить счёт"),
+        "add_option": MessageLookupByLibrary.simpleMessage("Добавить груз"),
+        "add_photo": MessageLookupByLibrary.simpleMessage("Добавить фото"),
+        "add_stor": MessageLookupByLibrary.simpleMessage("Добавить историю"),
+        "address": MessageLookupByLibrary.simpleMessage("Адрес:"),
+        "call": MessageLookupByLibrary.simpleMessage("Позвонить"),
+        "cancel": MessageLookupByLibrary.simpleMessage("Отмена"),
+        "chat": MessageLookupByLibrary.simpleMessage("Чат"),
+        "city": MessageLookupByLibrary.simpleMessage("По городу"),
+        "code_error": MessageLookupByLibrary.simpleMessage("Неверный код!"),
+        "create_1": MessageLookupByLibrary.simpleMessage("Маршрут"),
+        "create_2": MessageLookupByLibrary.simpleMessage("Откуда"),
+        "create_3": MessageLookupByLibrary.simpleMessage("Куда"),
+        "create_4": MessageLookupByLibrary.simpleMessage("Когда"),
+        "date": MessageLookupByLibrary.simpleMessage("Дата загрузки"),
+        "date_": MessageLookupByLibrary.simpleMessage("Дата разгрузки"),
+        "date_pick": MessageLookupByLibrary.simpleMessage("Выберите дату"),
+        "desc": MessageLookupByLibrary.simpleMessage("Описание"),
+        "doc": MessageLookupByLibrary.simpleMessage("Документы"),
+        "dog": MessageLookupByLibrary.simpleMessage("Договорная"),
+        "download_file": MessageLookupByLibrary.simpleMessage("Скачать файл"),
+        "edit": MessageLookupByLibrary.simpleMessage("Изменить"),
+        "edit_location":
+            MessageLookupByLibrary.simpleMessage("Изменить местоположение"),
+        "end": MessageLookupByLibrary.simpleMessage("Завершить"),
+        "enter_code": MessageLookupByLibrary.simpleMessage("Введите код"),
+        "error": MessageLookupByLibrary.simpleMessage("Ошибка"),
+        "exit": MessageLookupByLibrary.simpleMessage("Выход"),
+        "files": MessageLookupByLibrary.simpleMessage(
+            "Например, фото груза. Форматы: GIF, JPEG, PNG, TXT, PDF, DOC и тд."),
+        "forgot_password":
+            MessageLookupByLibrary.simpleMessage("Забыли пароль?"),
+        "go_to_chat": MessageLookupByLibrary.simpleMessage("Перейти в чат"),
+        "gos_number": MessageLookupByLibrary.simpleMessage("Госномер"),
+        "gos_number_": MessageLookupByLibrary.simpleMessage("Введите госномер"),
+        "help": MessageLookupByLibrary.simpleMessage("Помощь с приложением"),
+        "loading": MessageLookupByLibrary.simpleMessage("Загрузка..."),
+        "name": MessageLookupByLibrary.simpleMessage("Имя"),
+        "name_": MessageLookupByLibrary.simpleMessage("Введите имя"),
+        "no_city": MessageLookupByLibrary.simpleMessage("Межгород"),
+        "not_fount": MessageLookupByLibrary.simpleMessage("Не найдено"),
+        "number_phone": MessageLookupByLibrary.simpleMessage("Номер телефона"),
+        "number_phone_":
+            MessageLookupByLibrary.simpleMessage("Введите номер телефона"),
+        "ok": MessageLookupByLibrary.simpleMessage("Подтвердить"),
+        "option1": MessageLookupByLibrary.simpleMessage("Межгород"),
+        "option2": MessageLookupByLibrary.simpleMessage("По городу"),
+        "page1": MessageLookupByLibrary.simpleMessage("Грузоперевозки"),
+        "page10": MessageLookupByLibrary.simpleMessage("Грузчики"),
+        "page11": MessageLookupByLibrary.simpleMessage("Автосалон"),
+        "page2": MessageLookupByLibrary.simpleMessage("Поиск груза"),
+        "page3": MessageLookupByLibrary.simpleMessage("Эвакуатор"),
+        "page4": MessageLookupByLibrary.simpleMessage("Справочник"),
+        "page5": MessageLookupByLibrary.simpleMessage("СТО"),
+        "page6":
+            MessageLookupByLibrary.simpleMessage("Переоборудование газелей"),
+        "page7": MessageLookupByLibrary.simpleMessage("Авторазбор газелей"),
+        "page8": MessageLookupByLibrary.simpleMessage("Свап"),
+        "page9": MessageLookupByLibrary.simpleMessage("Авторынок"),
+        "password": MessageLookupByLibrary.simpleMessage("Пароль"),
+        "password_": MessageLookupByLibrary.simpleMessage("Введите пароль"),
+        "pay": MessageLookupByLibrary.simpleMessage("Оплата"),
+        "photo": MessageLookupByLibrary.simpleMessage("Фото"),
+        "photo_": MessageLookupByLibrary.simpleMessage("Фото (Камера)"),
+        "photo_gos":
+            MessageLookupByLibrary.simpleMessage("Фото газели спереди"),
+        "photo_gos_": MessageLookupByLibrary.simpleMessage(
+            "Добавьте фото Газели спереди"),
+        "photo_profile": MessageLookupByLibrary.simpleMessage("Фото профиля"),
+        "photo_profile_":
+            MessageLookupByLibrary.simpleMessage("Добавьте фото профиля"),
+        "reg": MessageLookupByLibrary.simpleMessage("Зарегистрироваться"),
+        "register": MessageLookupByLibrary.simpleMessage("Регистрация"),
+        "save": MessageLookupByLibrary.simpleMessage("Сохранить груз"),
+        "search": MessageLookupByLibrary.simpleMessage("Поиск"),
+        "search_": MessageLookupByLibrary.simpleMessage("Поиск груза"),
+        "select_city": MessageLookupByLibrary.simpleMessage("Выберите город"),
+        "select_country":
+            MessageLookupByLibrary.simpleMessage("Выберите страну"),
+        "signin": MessageLookupByLibrary.simpleMessage("Вход"),
+        "sum": MessageLookupByLibrary.simpleMessage("Сумма"),
+        "surname": MessageLookupByLibrary.simpleMessage("Фамилия"),
+        "surname_": MessageLookupByLibrary.simpleMessage("Введите фамилию"),
+        "text": MessageLookupByLibrary.simpleMessage("Текст..."),
+        "typing": MessageLookupByLibrary.simpleMessage("Написать"),
+        "user": MessageLookupByLibrary.simpleMessage("Пользователь"),
+        "user_role_1": MessageLookupByLibrary.simpleMessage("Пользователь"),
+        "user_role_2": MessageLookupByLibrary.simpleMessage("Специалист"),
+        "video": MessageLookupByLibrary.simpleMessage("Видео"),
+        "video_": MessageLookupByLibrary.simpleMessage("Видео (Камера)"),
+        "warning_1":
+            MessageLookupByLibrary.simpleMessage("Заполните все пустые поля")
+      };
 }

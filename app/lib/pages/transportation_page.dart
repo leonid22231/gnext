@@ -1,6 +1,7 @@
 import 'package:app/api/RestClient.dart';
 import 'package:app/api/entity/OrderEntity.dart';
 import 'package:app/api/entity/enums/Mode.dart';
+import 'package:app/api/entity/enums/UserRole.dart';
 import 'package:app/generated/l10n.dart';
 import 'package:app/pages/seconds/order_page.dart';
 import 'package:app/utils/GlobalsColors.dart';
@@ -12,7 +13,8 @@ import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class TransportationPage extends StatefulWidget{
-  const TransportationPage({super.key});
+  final bool sub;
+  const TransportationPage({required this.sub,super.key});
 
   @override
   State<StatefulWidget> createState() => TransportationPageState();
@@ -73,7 +75,7 @@ class TransportationPageState extends State<TransportationPage> with TickerProvi
                     itemBuilder: (context,index) {
                       OrderEntity order = list[index];
                       return InkWell(
-                        onTap: (){
+                        onTap: (GlobalsWidgets.role==UserRole.USER || (widget.sub && GlobalsWidgets.role==UserRole.SPECIALIST))?(){
                           Navigator.of(context).push(
                               MaterialPageRoute(builder: (context)=>OrderPage(order: order))
                           ).then((value){
@@ -81,7 +83,7 @@ class TransportationPageState extends State<TransportationPage> with TickerProvi
 
                             });
                           });
-                        },
+                        }:null,
                         child: Container(
                           width: double.maxFinite,
                           decoration: BoxDecoration(
@@ -96,14 +98,14 @@ class TransportationPageState extends State<TransportationPage> with TickerProvi
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text("${order.addressFrom.street}, ${order.addressFrom.house} ->", style: TextStyle(fontSize: 14.sp, color: Colors.white, fontWeight: FontWeight.bold),),
+                                    Text("${order.addressFrom.street}, ${order.addressFrom.house??""} ->", style: TextStyle(fontSize: 14.sp, color: Colors.white, fontWeight: FontWeight.bold),),
                                     Text("${order.price.round()} ₸", style: TextStyle(fontSize: 16.sp, color: Colors.white, fontWeight: FontWeight.bold),)
                                   ],
                                 ),
                                 SizedBox(height: 1.h,),
                                 Row(
                                   children: [
-                                    Text("${order.addressTo.street}, ${order.addressTo.house}", style: TextStyle(fontSize: 14.sp, color: Colors.white, fontWeight: FontWeight.bold))
+                                    Text("${order.addressTo.street}, ${order.addressTo.house??""}", style: TextStyle(fontSize: 14.sp, color: Colors.white, fontWeight: FontWeight.bold))
                                   ],
                                 ),
                                 SizedBox(height: 1.h,),
@@ -150,7 +152,7 @@ class TransportationPageState extends State<TransportationPage> with TickerProvi
                     itemBuilder: (context,index) {
                       OrderEntity order = list[index];
                       return InkWell(
-                        onTap: (){
+                        onTap: (GlobalsWidgets.role==UserRole.USER || (widget.sub && GlobalsWidgets.role==UserRole.SPECIALIST))?(){
                           Navigator.of(context).push(
                               MaterialPageRoute(builder: (context)=>OrderPage(order: order))
                           ).then((value){
@@ -158,7 +160,7 @@ class TransportationPageState extends State<TransportationPage> with TickerProvi
 
                             });
                           });
-                        },
+                        }:null,
                         child: Container(
                           width: double.maxFinite,
                           decoration: BoxDecoration(

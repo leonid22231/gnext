@@ -2,6 +2,7 @@ import 'package:app/api/RestClient.dart';
 import 'package:app/api/entity/OrderEntity.dart';
 import 'package:app/generated/l10n.dart';
 import 'package:app/pages/seconds/chat_page.dart';
+import 'package:app/pages/seconds/user_profile.dart';
 import 'package:app/utils/GlobalsWidgets.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -42,14 +43,14 @@ class OrderPage extends StatelessWidget{
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("${order.addressFrom.street}, ${order.addressFrom.house} ->", style: TextStyle(fontSize: 16.sp, color: Colors.white, fontWeight: FontWeight.bold),),
+                          Text("${order.addressFrom.street}, ${order.addressFrom.house??""} ->", style: TextStyle(fontSize: 16.sp, color: Colors.white, fontWeight: FontWeight.bold),),
                           SizedBox(height: 1.h,),
                           Text(
                             "${DateFormat("dd EE.").format(order.startDate.toLocal())} - ${DateFormat("dd EE, MMM").format(order.endDate.toLocal())}",
                             style: TextStyle(color: const Color(0xffCFCFCF), fontSize: 16.sp, fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: 2.h,),
-                          Text("${order.addressTo.street}, ${order.addressTo.house}", style: TextStyle(fontSize: 16.sp, color: Colors.white, fontWeight: FontWeight.bold))
+                          Text("${order.addressTo.street}, ${order.addressTo.house??""}", style: TextStyle(fontSize: 16.sp, color: Colors.white, fontWeight: FontWeight.bold))
                         ],
                       )
                     ],
@@ -126,15 +127,15 @@ class OrderPage extends StatelessWidget{
                             onPressed: (){
                               Dio dio = Dio();
                               RestClient client = RestClient(dio);
-                              client.findChat(GlobalsWidgets.uid, order.creator.uid).then((value){
+                              client.findChat(GlobalsWidgets.uid, order.creator.uid,null).then((value){
                                 Navigator.push(context,
-                                    MaterialPageRoute(builder: (context)=>CustomChatPage(showTitle: true,title: order.creator.name, chatName: value)));
+                                    MaterialPageRoute(builder: (context)=>UserProfile(user: order.creator,)));
                               });
                             },
                             style: OutlinedButton.styleFrom(
                                 side: const BorderSide(color: Colors.white)
                             ),
-                            child: Text(S.of(context).typing, style: const TextStyle(color: Colors.white),)),
+                            child: Text(S.of(context).connect, style: const TextStyle(color: Colors.white),)),
 
                       ),
                       SizedBox(height: 2.h,),

@@ -1,6 +1,7 @@
 import 'package:admin_app/api/RestClient.dart';
 import 'package:admin_app/api/entity/UserEntity.dart';
 import 'package:admin_app/api/entity/enums/UserRole.dart';
+import 'package:admin_app/userprofile_page.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -147,7 +148,9 @@ class _ControlUsersPage extends State<ControlUsersPage>{
       onTap: selectMode?(){
             Navigator.pop(context, user);
       }:(){
-
+          debugPrint("Click");
+          Navigator.push(context,
+          MaterialPageRoute(builder: (context)=>UserProfile(user: user)));
       },
       borderRadius: BorderRadius.circular(15),
       child: Stack(
@@ -202,7 +205,11 @@ class _ControlUsersPage extends State<ControlUsersPage>{
       onTap: selectMode?(){
           Navigator.pop(context, user);
       }:(){
-
+        debugPrint("Click");
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context)=>UserProfile(user: user))).then((value) => setState(() {
+              
+            }));
       },
       borderRadius: BorderRadius.circular(50),
       child: Ink(
