@@ -1,0 +1,3 @@
+enum StoryType{
+  PHOTO,VIDEO;
+}

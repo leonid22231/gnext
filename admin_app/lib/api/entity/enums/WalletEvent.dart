@@ -1,0 +1,3 @@
+enum WalletEvent{
+  PAYMENT,ADD,SUBTRACT,ADJUST;
+}

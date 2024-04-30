@@ -1,0 +1,222 @@
+package com.thedeveloper.gnext.controller;
+
+import com.thedeveloper.gnext.entity.*;
+import com.thedeveloper.gnext.enums.*;
+import com.thedeveloper.gnext.service.*;
+import com.thedeveloper.gnext.utils.MessageUtils;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import com.thedeveloper.gnext.utils.Globals;
+
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
+@RestController
+@RequestMapping("api/v1/user")
+@AllArgsConstructor
+@Slf4j
+public class MainController {
+    UserService userService;
+    PasswordEncoder passwordEncoder;
+    ImageService imageService;
+    LocationService locationService;
+    CountryService countryService;
+    CityService cityService;
+    WalletEventService walletEventService;
+    ChatService chatService;
+    CompanyService companyService;
+    MessageService messageService;
+    CodeService codeService;
+    @GetMapping("/login")
+    public ResponseEntity<?> login(@RequestParam String phone, @RequestParam String password){
+        UserEntity user = userService.findUserByPhone(phone);
+        if(user==null) return new ResponseEntity<>("Пользователь не найден", HttpStatus.NOT_FOUND);
+        if(!passwordEncoder.matches(password,user.getPassword())){
+            return new ResponseEntity<>("Неверный пароль", HttpStatus.FORBIDDEN);
+        }else{
+            userService.save(user);
+            return new ResponseEntity<>(codeService.sendRegisterCode(user), HttpStatus.OK);
+        }
+    }
+    @PostMapping("/login")
+    public ResponseEntity<?> loginConfirm(@RequestParam String phone, @RequestParam String uid){
+        UserEntity user = userService.findUserByPhone(phone);
+        CodeEntity currentCode = codeService.currentCodeUser(user);
+        currentCode.setStatus(CodeStatus.CLOSE);
+        currentCode.setEndDate(new Date());
+        codeService.save(currentCode);
+        user.setUid(uid);
+        userService.save(user);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+    @GetMapping("/uid")
+    public ResponseEntity<?> getUid(@RequestParam String uid){
+        UserEntity user = userService.findUserByUid(uid);
+        if(user==null) return new ResponseEntity<>("Пользователь не найден", HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+    @PostMapping("/uid")
+    public ResponseEntity<?> setUid(@RequestParam String phone, @RequestParam String uid){
+        UserEntity user = userService.findUserByPhone(phone);
+        if(user==null) return new ResponseEntity<>("Пользователь не найден", HttpStatus.NOT_FOUND);
+        user.setUid(uid);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestParam UserRole role,@RequestParam String phone, @RequestParam String password, @RequestParam String name, @RequestParam String surname,@RequestParam(required = false) String number,@RequestParam Long countryId, @RequestParam Long cityId, @RequestParam String uid,@RequestParam String notifyToken, @RequestBody(required = false) MultipartFile photo){
+        if(userService.findUserByPhone(phone)!=null){
+            return new ResponseEntity<>("Пользователь существует", HttpStatus.FORBIDDEN);
+        }else{
+            LocationEntity location = locationService.findByCountryAndCity(countryService.findById(countryId), cityService.findById(cityId));
+            UserEntity user = new UserEntity();
+            user.setRole(role);
+            user.setName(name);
+            user.setSurname(surname);
+            user.setUid(uid);
+            user.setLocation(location);
+            if(number!=null) user.setNumber(number);
+            user.setNotifyToken(notifyToken);
+            user.setPhone(phone);
+            user.setPassword(passwordEncoder.encode(password));
+            user.setRole(UserRole.USER);
+            if(photo!=null){
+                imageService.store(photo);
+                String photo_ = Globals.renameFile(photo.getOriginalFilename(), imageService);
+                user.setPhoto(photo_);
+            }
+            log.info(user.toString());
+            userService.save(user);
+        }
+        return new ResponseEntity<>(codeService.sendRegisterCode(userService.findUserByPhone(phone)), HttpStatus.OK);
+    }
+    @PostMapping("/changePhoto")
+    public ResponseEntity<?> changePhoto(@RequestParam String uid, @RequestBody MultipartFile photo){
+        UserEntity user = userService.findUserByUid(uid);
+        imageService.store(photo);
+        String photo_ = Globals.renameFile(photo.getOriginalFilename(), imageService);
+        user.setPhoto(photo_);
+        userService.save(user);
+        return new ResponseEntity<>(photo_,HttpStatus.OK);
+    }
+    @PostMapping("/changeLocation")
+    public ResponseEntity<?> changeLocation(@RequestParam String uid,@RequestParam Long countryId, @RequestParam Long cityId){
+        UserEntity user = userService.findUserByUid(uid);
+        LocationEntity location = locationService.findByCountryAndCity(countryService.findById(countryId), cityService.findById(cityId));
+        user.setLocation(location);
+        userService.save(user);
+        return new ResponseEntity<>(user,HttpStatus.OK);
+    }
+    @GetMapping("/findChat")
+    public ResponseEntity<?> createChat(@RequestParam String uid, @RequestParam String client){
+        UserEntity member1 = userService.findUserByUid(uid);
+        UserEntity member2 = userService.findUserByUid(client);
+        ChatEntity temp_chat = chatService.findByMembers(member1.getLocation(), member1, member2);
+        if(temp_chat!=null) return new ResponseEntity<>(temp_chat.getName(), HttpStatus.OK);
+        ChatEntity chat = new ChatEntity();
+        chat.setMode(ChatMode.PRIVATE);
+        chat.setName(UUID.randomUUID().toString());
+        chat.setLocation(member1.getLocation());
+        chat.setMember1(member1);
+        chat.setMember2(member2);
+        chatService.save(chat);
+
+        return new ResponseEntity<>(chat.getName(), HttpStatus.OK);
+    }
+    @GetMapping("/chats")
+    public ResponseEntity<?> findChats(@RequestParam String uid){
+        UserEntity user = userService.findUserByUid(uid);
+        List<ChatEntity> list = chatService.findByUser(user);
+        for(ChatEntity chat : list){
+            List<MessageEntity> messages = messageService.findMessagesByChat(chat);
+            if(!messages.isEmpty()){
+                chat.setLastMessage(messages.get(messages.size()-1));
+            }
+            int count = 0;
+            for(MessageEntity message : messages){
+                boolean read = false;
+                for(UserEntity userReader : message.getReaders()){
+                    if(userReader.getId().equals(user.getId())){
+                        read = true;
+                        break;
+                    }
+                }
+                if(!read){
+                    count++;
+                }
+            }
+            chat.setUnread(count);
+        }
+
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+    @PostMapping("/sub")
+    public ResponseEntity<?> setSubscription(@RequestParam String uid, @RequestParam boolean enable){
+        UserEntity user = userService.findUserByUid(uid);
+        user.setSubscription(enable);
+        userService.save(user);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @PostMapping("/walletEvent")
+    public ResponseEntity<?> walletEvent(@RequestParam String uid, @RequestParam WalletEventType type, @RequestParam double sum){
+        UserEntity user = userService.findUserByUid(uid);
+        WalletEventEntity event = new WalletEventEntity();
+        event.setType(type);
+        event.setResult(EventResult.DONE);
+        event.setUser(user);
+        event.setOld_sum(user.getWallet());
+        event.setSum(sum);
+        event.setDate(new Date());
+        switch (type){
+            case ADD:{
+                user.setWallet(user.getWallet()+sum);
+                break;
+            }
+            case SUBTRACT:{
+                user.setWallet(user.getWallet()-sum);
+                break;
+            }
+            case PAYMENT:{
+                if(sum<=user.getWallet()){
+                    user.setWallet(user.getWallet()-sum);
+                }else{
+                    event.setResult(EventResult.ERROR);
+                    walletEventService.save(event);
+                    return new ResponseEntity<>("Недостаточно средств для оплаты!",HttpStatus.BAD_REQUEST);
+                }
+                break;
+            }
+            case ADJUST:{
+                user.setWallet(sum);
+                break;
+            }
+        }
+        walletEventService.save(event);
+        userService.save(user);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @GetMapping("/walletHistory")
+    public ResponseEntity<?> findWalletHistory(@RequestParam String uid){
+        UserEntity user = userService.findUserByUid(uid);
+        return new ResponseEntity<>(walletEventService.findByUser(user), HttpStatus.OK);
+    }
+    @GetMapping("/companies")
+    public ResponseEntity<?> findCompanies(@RequestParam String uid, @RequestParam Categories category){
+        UserEntity user = userService.findUserByUid(uid);
+        return new ResponseEntity<>(companyService.findByCategory(category, user.getLocation()),HttpStatus.OK);
+    }
+    @GetMapping("/companyByManager")
+    public ResponseEntity<?> companyByManager(@RequestParam String uid){
+        UserEntity user = userService.findUserByUid(uid);
+        return new ResponseEntity<>(companyService.findByManager(user), HttpStatus.OK);
+    }
+    private String savePhoto() {
+        return "PhotoName";
+    }
+}

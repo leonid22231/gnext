@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "777574916207",
+    "project_id": "gnext-a9f45",
+    "storage_bucket": "gnext-a9f45.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:777574916207:android:ca6016de3bad575a41ad9a",
+        "android_client_info": {
+          "package_name": "com.thedeveloper.admin_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKnDsUJ_l6tqzcQtk07Pw32_4FvK8YAiA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:777574916207:android:6e94128922232d2141ad9a",
+        "android_client_info": {
+          "package_name": "com.thedeveloper.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKnDsUJ_l6tqzcQtk07Pw32_4FvK8YAiA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
