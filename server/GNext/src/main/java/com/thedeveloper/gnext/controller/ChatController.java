@@ -60,7 +60,6 @@ public class ChatController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @GetMapping("/{id}")
-    @JsonView(UserViews.MiniView.class)
     public ResponseEntity<List<MessageEntity>> messages(@RequestParam String uid,@PathVariable String id){
         UserEntity user = userService.findUserByUid(uid);
         List<MessageEntity> messages = messageService.findMessagesByChat(chatService.findById(id));
