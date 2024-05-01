@@ -6,22 +6,18 @@ part of 'CompanyEntity.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-CompanyEntity _$CompanyEntityFromJson(Map<String, dynamic> json) =>
-    CompanyEntity(
+CompanyEntity _$CompanyEntityFromJson(Map<String, dynamic> json) => CompanyEntity(
       id: json['id'] as int,
       name: json['name'] as String,
       phone: json['phone'] as String,
-      manager: json['manager'] == null
-          ? null
-          : UserEntity.fromJson(json['manager'] as Map<String, dynamic>),
+      manager: json['manager'] == null ? null : UserEntity.fromJson(json['manager'] as Map<String, dynamic>),
       image: json['image'] as String?,
       address: AddressEntity.fromJson(json['address'] as Map<String, dynamic>),
       category: $enumDecode(_$CategoriesEnumMap, json['category']),
       city: CityEntity.fromJson(json['city'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$CompanyEntityToJson(CompanyEntity instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$CompanyEntityToJson(CompanyEntity instance) => <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
       'phone': instance.phone,
@@ -32,10 +28,4 @@ Map<String, dynamic> _$CompanyEntityToJson(CompanyEntity instance) =>
       'image': instance.image,
     };
 
-const _$CategoriesEnumMap = {
-  Categories.info: 'info',
-  Categories.sto: 'sto',
-  Categories.swap: 'swap',
-  Categories.modify: 'modify',
-  Categories.auto: 'auto',
-};
+const _$CategoriesEnumMap = {Categories.info: 'info', Categories.sto: 'sto', Categories.swap: 'swap', Categories.modify: 'modify', Categories.auto: 'auto', Categories.shop: 'shop'};

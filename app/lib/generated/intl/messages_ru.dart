@@ -36,10 +36,23 @@ class MessageLookup extends MessageLookupByLibrary {
         "city": MessageLookupByLibrary.simpleMessage("По городу"),
         "code_error": MessageLookupByLibrary.simpleMessage("Неверный код!"),
         "connect": MessageLookupByLibrary.simpleMessage("Связаться"),
+        "create": MessageLookupByLibrary.simpleMessage("Создать"),
         "create_1": MessageLookupByLibrary.simpleMessage("Маршрут"),
         "create_2": MessageLookupByLibrary.simpleMessage("Откуда"),
         "create_3": MessageLookupByLibrary.simpleMessage("Куда"),
         "create_4": MessageLookupByLibrary.simpleMessage("Когда"),
+        "create_shop":
+            MessageLookupByLibrary.simpleMessage("Создать объявление"),
+        "create_shop_house":
+            MessageLookupByLibrary.simpleMessage("Введите номер дома"),
+        "create_shop_house_":
+            MessageLookupByLibrary.simpleMessage("Номер дома"),
+        "create_shop_name":
+            MessageLookupByLibrary.simpleMessage("Введите название"),
+        "create_shop_name_": MessageLookupByLibrary.simpleMessage("Название"),
+        "create_shop_street":
+            MessageLookupByLibrary.simpleMessage("Введите улицу"),
+        "create_shop_street_": MessageLookupByLibrary.simpleMessage("Улица"),
         "date": MessageLookupByLibrary.simpleMessage("Дата загрузки"),
         "date_": MessageLookupByLibrary.simpleMessage("Дата разгрузки"),
         "date_pick": MessageLookupByLibrary.simpleMessage("Выберите дату"),
@@ -60,6 +73,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "exit": MessageLookupByLibrary.simpleMessage("Выход"),
         "files": MessageLookupByLibrary.simpleMessage(
             "Например, фото груза. Форматы: GIF, JPEG, PNG, TXT, PDF, DOC и тд."),
+        "files_photo": MessageLookupByLibrary.simpleMessage(
+            "Фото. Форматы JPEG, PNG и тд."),
         "forgot_password":
             MessageLookupByLibrary.simpleMessage("Забыли пароль?"),
         "go_to_chat": MessageLookupByLibrary.simpleMessage("Перейти в чат"),
@@ -130,6 +145,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "warning_1":
             MessageLookupByLibrary.simpleMessage("Заполните все пустые поля"),
         "warning_2": MessageLookupByLibrary.simpleMessage(
-            "Сначала введите номер телефона!")
+            "Сначала введите номер телефона!"),
+        "warning_3":
+            MessageLookupByLibrary.simpleMessage("Выберите фотографию!")
       };
 }

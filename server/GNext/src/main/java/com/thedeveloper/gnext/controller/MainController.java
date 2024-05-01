@@ -255,7 +255,7 @@ public class MainController {
             company.setPhone(phone);
         else company.setPhone(user.getPhone());
         if(photo!=null){
-            fileService.store(photo);
+            imageService.store(photo);
             String _name = Globals.renameFile(photo.getOriginalFilename(), imageService);
             company.setImage(_name);
         }

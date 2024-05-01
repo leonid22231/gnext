@@ -63,7 +63,7 @@ public class FileService implements StorageService {
             }
         }
         public void saveFileInFileSystem(MultipartFile file) throws IOException {
-            System.out.println("Uploading file to local file system: {}"+ file.getOriginalFilename());
+            log.info("Uploading file to local file system: {}", file.getOriginalFilename());
 
             if (!Files.exists(rootLocation)) {
                 Files.createDirectories(rootLocation);
