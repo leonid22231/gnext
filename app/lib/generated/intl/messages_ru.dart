@@ -124,6 +124,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "preload_page1": MessageLookupByLibrary.simpleMessage("Добавить груз"),
         "preload_page2":
             MessageLookupByLibrary.simpleMessage("Стать перевозчиком"),
+        "price": MessageLookupByLibrary.simpleMessage("Цена"),
+        "price_": MessageLookupByLibrary.simpleMessage("Введите цену"),
         "reg": MessageLookupByLibrary.simpleMessage("Зарегистрироваться"),
         "register": MessageLookupByLibrary.simpleMessage("Регистрация"),
         "register_please": MessageLookupByLibrary.simpleMessage(

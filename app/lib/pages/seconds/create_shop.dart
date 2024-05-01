@@ -82,18 +82,19 @@ class _CreateShopState extends State<CreateShopPage> {
                 height: 2.h,
               ),
               Text(
-                "${S.of(context).create_shop_street_}*",
+                "${S.of(context).desc}*",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.sp),
               ),
               SizedBox(height: 1.h),
               SizedBox(
-                height: 8.h,
+                height: 10.h,
                 child: TextFormField(
                   onChanged: (value) {
                     street = value;
                   },
+                  maxLength: 60,
                   decoration: InputDecoration(
-                    hintText: S.of(context).create_shop_street,
+                    hintText: S.of(context).desc,
                     enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(9), borderSide: const BorderSide(color: Color(0xffD9D9D9))),
                     focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(9), borderSide: const BorderSide(color: Color(0xffD9D9D9))),
                   ),
@@ -103,7 +104,7 @@ class _CreateShopState extends State<CreateShopPage> {
                 height: 2.h,
               ),
               Text(
-                "${S.of(context).create_shop_house_}*",
+                "${S.of(context).price}*",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.sp),
               ),
               SizedBox(height: 1.h),
@@ -113,8 +114,12 @@ class _CreateShopState extends State<CreateShopPage> {
                   onChanged: (value) {
                     house = value;
                   },
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp('[0-9.,]+')),
+                  ],
                   decoration: InputDecoration(
-                    hintText: S.of(context).create_shop_house,
+                    hintText: S.of(context).price_,
                     enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(9), borderSide: const BorderSide(color: Color(0xffD9D9D9))),
                     focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(9), borderSide: const BorderSide(color: Color(0xffD9D9D9))),
                   ),
