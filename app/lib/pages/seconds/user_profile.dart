@@ -8,9 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class UserProfile extends StatelessWidget{
+class UserProfile extends StatelessWidget {
   final UserEntity user;
-  const UserProfile({required this.user,super.key});
+  const UserProfile({required this.user, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -41,53 +41,76 @@ class UserProfile extends StatelessWidget{
                         child: Image.network(GlobalsWidgets.getPhoto(user.photo), fit: BoxFit.cover),
                       ),
                     ),
-                    SizedBox(height: 2.h,),
-                    Text("${user.name} ${user.surname}", style: TextStyle(color: Colors.white, fontSize: 18.sp, fontWeight: FontWeight.bold),),
-                    SizedBox(height: 1.h,),
-                    Text("+${user.phone}", textAlign: TextAlign.start,style: TextStyle(fontSize: 18.sp,color: Colors.white),),
-                    SizedBox(height: 1.h,),
+                    SizedBox(
+                      height: 2.h,
+                    ),
+                    Text(
+                      "${user.name} ${user.surname}",
+                      style: TextStyle(color: Colors.white, fontSize: 18.sp, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      height: 1.h,
+                    ),
+                    Text(
+                      "+${user.phone}",
+                      textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 18.sp, color: Colors.white),
+                    ),
+                    SizedBox(
+                      height: 1.h,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.location_history, color: Colors.white,size: 10.w,),
-                        SizedBox(width: 3.w,),
-                        Text("${user.location.city}",style: TextStyle(fontSize: 18.sp,color: Colors.white))
+                        Icon(
+                          Icons.location_history,
+                          color: Colors.white,
+                          size: 10.w,
+                        ),
+                        SizedBox(
+                          width: 3.w,
+                        ),
+                        Text("${user.city}", style: TextStyle(fontSize: 18.sp, color: Colors.white))
                       ],
                     ),
                     const Spacer(),
-                    GlobalsWidgets.uid!=user.uid?SizedBox(
-                      width: double.maxFinite,
-                      height: 5.h,
-                      child: OutlinedButton(
-                          onPressed: (){
-                              Dio dio = Dio();
-                              RestClient client = RestClient(dio);
-                              client.findChat(GlobalsWidgets.uid, user.uid, null).then((value){
-                                Navigator.push(context,
-                                MaterialPageRoute(builder: (context)=>CustomChatPage(showTitle: true,title: user.name, chatName: value)));
-                              });
-                          },
-                          style: OutlinedButton.styleFrom(
-                              side: const BorderSide(color: Colors.white)
-                          ),
-                          child: Text(S.of(context).typing, style: const TextStyle(color: Colors.white),)),
-
-                    ):const SizedBox.shrink(),
-                    SizedBox(height: 1.h,),
-                    GlobalsWidgets.uid!=user.uid?SizedBox(
-                      width: double.maxFinite,
-                      height: 5.h,
-                      child: OutlinedButton(
-                          onPressed: (){
-                            launchUrl(Uri.parse("tel://+${user.phone}"));
-                          },
-                          style: OutlinedButton.styleFrom(
-                              side: BorderSide.none,
-                              backgroundColor: Colors.white
-                          ),
-                          child: Text(S.of(context).call, style: const TextStyle(color: Color(0xff317EFA)),)),
-
-                    ):const SizedBox.shrink()
+                    GlobalsWidgets.uid != user.uid
+                        ? SizedBox(
+                            width: double.maxFinite,
+                            height: 5.h,
+                            child: OutlinedButton(
+                                onPressed: () {
+                                  Dio dio = Dio();
+                                  RestClient client = RestClient(dio);
+                                  client.findChat(GlobalsWidgets.uid, user.uid, null).then((value) {
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => CustomChatPage(showTitle: true, title: user.name, chatName: value)));
+                                  });
+                                },
+                                style: OutlinedButton.styleFrom(side: const BorderSide(color: Colors.white)),
+                                child: Text(
+                                  S.of(context).typing,
+                                  style: const TextStyle(color: Colors.white),
+                                )),
+                          )
+                        : const SizedBox.shrink(),
+                    SizedBox(
+                      height: 1.h,
+                    ),
+                    GlobalsWidgets.uid != user.uid
+                        ? SizedBox(
+                            width: double.maxFinite,
+                            height: 5.h,
+                            child: OutlinedButton(
+                                onPressed: () {
+                                  launchUrl(Uri.parse("tel://+${user.phone}"));
+                                },
+                                style: OutlinedButton.styleFrom(side: BorderSide.none, backgroundColor: Colors.white),
+                                child: Text(
+                                  S.of(context).call,
+                                  style: const TextStyle(color: Color(0xff317EFA)),
+                                )),
+                          )
+                        : const SizedBox.shrink()
                   ],
                 ),
               ),
@@ -97,5 +120,4 @@ class UserProfile extends StatelessWidget{
       ),
     );
   }
-
 }

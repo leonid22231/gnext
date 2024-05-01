@@ -2,7 +2,6 @@
 
 import 'package:app/api/entity/ChatEntity.dart';
 import 'package:app/api/entity/UserEntity.dart';
-import 'package:app/api/entity/UserEntityMessage.dart';
 import 'package:app/api/entity/enums/MessageType.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -14,18 +13,11 @@ class MessageEntity {
   String content;
   MessageType type;
   ChatEntity? chat;
-  UserEntityMessage user;
+  UserEntity user;
   DateTime time;
 
-  MessageEntity(
-      {required this.id,
-      required this.content,
-      required this.type,
-      this.chat,
-      required this.user,
-      required this.time});
+  MessageEntity({required this.id, required this.content, required this.type, this.chat, required this.user, required this.time});
 
-  factory MessageEntity.fromJson(Map<String, dynamic> json) =>
-      _$MessageEntityFromJson(json);
+  factory MessageEntity.fromJson(Map<String, dynamic> json) => _$MessageEntityFromJson(json);
   Map<String, dynamic> toJson() => _$MessageEntityToJson(this);
 }

@@ -66,4 +66,9 @@ public class LocationController {
         cityService.delete(city);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    @GetMapping("/country/byCity")
+    public ResponseEntity<?> findCountryByCity(@RequestParam("id")Long id){
+        CityEntity city = cityService.findById(id);
+        return new ResponseEntity<>(countryService.findCountryByCity(city), HttpStatus.OK);
+    }
 }

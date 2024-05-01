@@ -17,8 +17,7 @@ CompanyEntity _$CompanyEntityFromJson(Map<String, dynamic> json) =>
       image: json['image'] as String?,
       address: AddressEntity.fromJson(json['address'] as Map<String, dynamic>),
       category: $enumDecode(_$CategoriesEnumMap, json['category']),
-      location:
-          LocationEntity.fromJson(json['location'] as Map<String, dynamic>),
+      city: CityEntity.fromJson(json['city'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$CompanyEntityToJson(CompanyEntity instance) =>
@@ -29,7 +28,7 @@ Map<String, dynamic> _$CompanyEntityToJson(CompanyEntity instance) =>
       'manager': instance.manager,
       'address': instance.address,
       'category': _$CategoriesEnumMap[instance.category]!,
-      'location': instance.location,
+      'city': instance.city,
       'image': instance.image,
     };
 
