@@ -11,6 +11,7 @@ import 'package:app/pages/catalog_page.dart';
 import 'package:app/pages/search_page.dart';
 import 'package:app/pages/seconds/chat_page.dart';
 import 'package:app/pages/seconds/create_cargo.dart';
+import 'package:app/pages/seconds/create_shop.dart';
 import 'package:app/pages/transportation_page.dart';
 import 'package:app/utils/GlobalsColors.dart';
 import 'package:app/utils/GlobalsWidgets.dart';
@@ -35,6 +36,7 @@ class _MainRouteState extends State<MainRoute> {
   int activeTab = 0;
   final GlobalKey<SliderDrawerState> _sliderDrawerKey = GlobalKey<SliderDrawerState>();
   final GlobalKey<TransportationPageState> _transportationKey = GlobalKey<TransportationPageState>();
+  final GlobalKey<CatalogPageState> _shopKey = GlobalKey<CatalogPageState>();
   String selectTab = "";
   List<String> pages = [];
   Mode selectedMode = Mode.CITY;
@@ -412,13 +414,8 @@ class _MainRouteState extends State<MainRoute> {
           FloatingActionButton(
             heroTag: "btn1",
             onPressed: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(
-                      builder: (context) => CreateCargoPage(
-                            mode: selectedMode,
-                          )))
-                  .then((value) {
-                _transportationKey.currentState?.update();
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateShopPage())).then((value) {
+                _shopKey.currentState?.update();
               });
             },
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
@@ -582,7 +579,7 @@ class _MainRouteState extends State<MainRoute> {
         category: Categories.swap,
       );
     } else if (title.contains(S.of(context).page9)) {
-      return const CatalogPage(category: Categories.shop);
+      return CatalogPage(key: _shopKey, category: Categories.shop);
     } else if (title.contains(S.of(context).page10)) {
       return CustomChatPage(key: const Key("chat_4"), subscription: widget.userEntity.subscription, history: true, showTitle: false, title: S.of(context).page10, chatName: GlobalsWidgets.chats[4]);
     } else if (title.contains(S.of(context).page11)) {

@@ -200,11 +200,31 @@ class S {
     );
   }
 
+  /// `Фото. Форматы JPEG, PNG и тд.`
+  String get files_photo {
+    return Intl.message(
+      'Фото. Форматы JPEG, PNG и тд.',
+      name: 'files_photo',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Заполните все пустые поля`
   String get warning_1 {
     return Intl.message(
       'Заполните все пустые поля',
       name: 'warning_1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Выберите фотографию!`
+  String get warning_3 {
+    return Intl.message(
+      'Выберите фотографию!',
+      name: 'warning_3',
       desc: '',
       args: [],
     );
@@ -975,6 +995,86 @@ class S {
     return Intl.message(
       'Стать перевозчиком',
       name: 'preload_page2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Создать объявление`
+  String get create_shop {
+    return Intl.message(
+      'Создать объявление',
+      name: 'create_shop',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Введите название`
+  String get create_shop_name {
+    return Intl.message(
+      'Введите название',
+      name: 'create_shop_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Название`
+  String get create_shop_name_ {
+    return Intl.message(
+      'Название',
+      name: 'create_shop_name_',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Введите улицу`
+  String get create_shop_street {
+    return Intl.message(
+      'Введите улицу',
+      name: 'create_shop_street',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Улица`
+  String get create_shop_street_ {
+    return Intl.message(
+      'Улица',
+      name: 'create_shop_street_',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Введите номер дома`
+  String get create_shop_house {
+    return Intl.message(
+      'Введите номер дома',
+      name: 'create_shop_house',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Номер дома`
+  String get create_shop_house_ {
+    return Intl.message(
+      'Номер дома',
+      name: 'create_shop_house_',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Создать`
+  String get create {
+    return Intl.message(
+      'Создать',
+      name: 'create',
       desc: '',
       args: [],
     );

@@ -14,7 +14,9 @@
   "option2": "По городу",
   "go_to_chat": "Перейти в чат",
   "files": "Например, фото груза. Форматы: GIF, JPEG, PNG, TXT, PDF, DOC и тд.",
+  "files_photo": "Фото. Форматы JPEG, PNG и тд.",
   "warning_1": "Заполните все пустые поля",
+  "warning_3": "Выберите фотографию!",
   "reg": "Зарегистрироваться",
   "register": "Регистрация",
   "name": "Имя",
@@ -90,6 +92,14 @@
   "video": "Видео",
   "video_": "Видео (Камера)",
   "loading": "Загрузка...",
-  "preload_page1":"Добавить груз",
-  "preload_page2":"Стать перевозчиком"
+  "preload_page1": "Добавить груз",
+  "preload_page2": "Стать перевозчиком",
+  "create_shop": "Создать объявление",
+  "create_shop_name": "Введите название",
+  "create_shop_name_": "Название",
+  "create_shop_street": "Введите улицу",
+  "create_shop_street_": "Улица",
+  "create_shop_house": "Введите номер дома",
+  "create_shop_house_": "Номер дома",
+  "create": "Создать"
 }
