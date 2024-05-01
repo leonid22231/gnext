@@ -9,6 +9,7 @@ import 'package:app/api/entity/MessageEntity.dart';
 import 'package:app/api/entity/OrderEntity.dart';
 import 'package:app/api/entity/PropertiesEntity.dart';
 import 'package:app/api/entity/StorisEntity.dart';
+import 'package:app/api/entity/TransportationEntity.dart';
 import 'package:app/api/entity/UserEntity.dart';
 import 'package:app/api/entity/enums/Categories.dart';
 import 'package:app/api/entity/enums/MessageType.dart';
@@ -26,7 +27,7 @@ part 'RestClient.g.dart';
 //45.67.35.206
 //192.168.0.11
 //45.159.250.175
-@RestApi(baseUrl: 'http://45.159.250.175:8080/api/v1/')
+@RestApi(baseUrl: 'http://192.168.0.11:8080/api/v1/')
 abstract class RestClient {
   factory RestClient(Dio dio, {String baseUrl}) = _RestClient;
 
@@ -87,4 +88,13 @@ abstract class RestClient {
   Future<List<CompanyEntity>> findCompanies(@Query("uid") String uid, @Query("category") Categories category);
   @POST("orders/stop")
   Future<void> stopOrder(@Query("id") int id);
+  @POST("transportings/create")
+  @MultiPart()
+  Future<void> createTransporting(@Query("uid") String uid, @Query("price") double price, @Query("description") String description, @Query("outcity") bool outcity, @Query("date") DateTime date, @Part(name: "properties") PropertiesModel properties);
+  @GET("transportings/my")
+  Future<List<TransportationEntity>> findMyTransportation(@Query("uid") String uid, @Query("outcity") bool outcity);
+  @GET("transportings/active")
+  Future<List<TransportationEntity>> findActiveTransportation(@Query("uid") String uid, @Query("outcity") bool outcity);
+  @POST("transportings/stop")
+  Future<void> stopTransportation(@Query("id") int id);
 }

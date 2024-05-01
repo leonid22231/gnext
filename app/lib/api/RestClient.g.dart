@@ -13,7 +13,7 @@ class _RestClient implements RestClient {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://45.159.250.175:8080/api/v1/';
+    baseUrl ??= 'http://192.168.0.11:8080/api/v1/';
   }
 
   final Dio _dio;
@@ -895,6 +895,136 @@ class _RestClient implements RestClient {
         .compose(
           _dio.options,
           'orders/stop',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        ))));
+  }
+
+  @override
+  Future<void> createTransporting(
+    String uid,
+    double price,
+    String description,
+    bool outcity,
+    DateTime date,
+    PropertiesModel properties,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'uid': uid,
+      r'price': price,
+      r'description': description,
+      r'outcity': outcity,
+      r'date': date.toIso8601String(),
+    };
+    final _headers = <String, dynamic>{};
+    final _data = FormData();
+    _data.fields.add(MapEntry(
+      'properties',
+      jsonEncode(properties),
+    ));
+    await _dio.fetch<void>(_setStreamType<void>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+      contentType: 'multipart/form-data',
+    )
+        .compose(
+          _dio.options,
+          'transportings/create',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        ))));
+  }
+
+  @override
+  Future<List<TransportationEntity>> findMyTransportation(
+    String uid,
+    bool outcity,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'uid': uid,
+      r'outcity': outcity,
+    };
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<List<dynamic>>(_setStreamType<List<TransportationEntity>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'transportings/my',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        ))));
+    var value = _result.data!.map((dynamic i) => TransportationEntity.fromJson(i as Map<String, dynamic>)).toList();
+    return value;
+  }
+
+  @override
+  Future<List<TransportationEntity>> findActiveTransportation(
+    String uid,
+    bool outcity,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'uid': uid,
+      r'outcity': outcity,
+    };
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<List<dynamic>>(_setStreamType<List<TransportationEntity>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'transportings/active',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        ))));
+    var value = _result.data!.map((dynamic i) => TransportationEntity.fromJson(i as Map<String, dynamic>)).toList();
+    return value;
+  }
+
+  @override
+  Future<void> stopTransportation(int id) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'id': id};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    await _dio.fetch<void>(_setStreamType<void>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'transportings/stop',
           queryParameters: queryParameters,
           data: _data,
         )

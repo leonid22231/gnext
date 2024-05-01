@@ -9,18 +9,18 @@ import 'package:app/generated/l10n.dart';
 import 'package:app/pages/chats/ChatPage.dart';
 import 'package:app/pages/catalog_page.dart';
 import 'package:app/pages/search_page.dart';
+import 'package:app/pages/search_transportation_page.dart';
 import 'package:app/pages/seconds/chat_page.dart';
 import 'package:app/pages/seconds/create_cargo.dart';
 import 'package:app/pages/seconds/create_shop.dart';
+import 'package:app/pages/seconds/create_transportation_page.dart';
 import 'package:app/pages/transportation_page.dart';
 import 'package:app/utils/GlobalsColors.dart';
 import 'package:app/utils/GlobalsWidgets.dart';
 import 'package:app/utils/SliderBarMenu.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -40,6 +40,7 @@ class _MainRouteState extends State<MainRoute> {
   String selectTab = "";
   List<String> pages = [];
   Mode selectedMode = Mode.CITY;
+  Mode selectedModeEv = Mode.CITY;
   File? file;
   @override
   Widget build(BuildContext context) {
@@ -219,7 +220,7 @@ class _MainRouteState extends State<MainRoute> {
                                   ),
                                 ),
                               )
-                            : SizedBox.shrink(),
+                            : const SizedBox.shrink(),
                         Align(
                           alignment: Alignment.centerRight,
                           child: Row(
@@ -414,7 +415,7 @@ class _MainRouteState extends State<MainRoute> {
           FloatingActionButton(
             heroTag: "btn1",
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateShopPage())).then((value) {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const CreateShopPage())).then((value) {
                 _shopKey.currentState?.update();
               });
             },
@@ -440,6 +441,51 @@ class _MainRouteState extends State<MainRoute> {
               color: Colors.white,
             ),
           ),
+        ],
+      );
+    }
+    if (index == 2) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          widget.userEntity.role == UserRole.USER
+              ? FloatingActionButton(
+                  heroTag: "btn1",
+                  onPressed: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(
+                            builder: (context) => CreateTransportationPage(
+                                  createMode: selectedModeEv,
+                                )))
+                        .then((value) {
+                      _transportationKey.currentState?.update();
+                    });
+                  },
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                  backgroundColor: const Color(0xff317EFA),
+                  child: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                )
+              : const SizedBox.shrink(),
+          widget.userEntity.role == UserRole.USER
+              ? SizedBox(
+                  height: 2.h,
+                )
+              : const SizedBox.shrink(),
+          FloatingActionButton(
+            heroTag: "btn2",
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => CustomChatPage(key: const Key("chat_1"), subscription: widget.userEntity.subscription, history: true, showTitle: true, title: S.of(context).page3, chatName: GlobalsWidgets.chats[0])));
+            },
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            backgroundColor: const Color(0xff317EFA),
+            child: const Icon(
+              Icons.chat,
+              color: Colors.white,
+            ),
+          )
         ],
       );
     }
@@ -559,7 +605,13 @@ class _MainRouteState extends State<MainRoute> {
           },
           child: const SearchPage());
     } else if (title.contains(S.of(context).page3)) {
-      return CustomChatPage(key: const Key("chat_1"), subscription: widget.userEntity.subscription, history: true, showTitle: false, title: S.of(context).page3, chatName: GlobalsWidgets.chats[0]);
+      return NotificationListener<ChangeTransportModeNotify>(
+          onNotification: (m) {
+            selectedModeEv = m.mode;
+            setState(() {});
+            return true;
+          },
+          child: SearchTransportationPage());
     } else if (title.contains(S.of(context).page4)) {
       return const CatalogPage(
         category: Categories.info,
