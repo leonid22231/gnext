@@ -1,7 +1,7 @@
 package com.thedeveloper.gnext.service;
 
+import com.thedeveloper.gnext.entity.CityEntity;
 import com.thedeveloper.gnext.entity.CompanyEntity;
-import com.thedeveloper.gnext.entity.LocationEntity;
 import com.thedeveloper.gnext.entity.UserEntity;
 import com.thedeveloper.gnext.enums.Categories;
 import com.thedeveloper.gnext.repository.CompanyRepository;
@@ -14,8 +14,8 @@ import java.util.List;
 @AllArgsConstructor
 public class CompanyService {
     CompanyRepository repository;
-    public List<CompanyEntity> findByCategory(Categories category, LocationEntity location){
-        return repository.findCompanyEntityByCategoryAndLocation(category, location);
+    public List<CompanyEntity> findByCategory(Categories category, CityEntity city){
+        return repository.findCompanyEntityByCategoryAndCity(category, city);
     }
     public CompanyEntity findById(Long id){
         return repository.findCompanyEntityById(id);

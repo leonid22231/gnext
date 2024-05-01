@@ -117,8 +117,6 @@ class _CustomChatPage extends State<CustomChatPage> {
                       future: messages,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          Dio dio = Dio();
-                          RestClient client = RestClient(dio);
                           return SizedBox(
                             width: double.maxFinite,
                             child: ListView(
@@ -497,8 +495,7 @@ class _CustomChatPage extends State<CustomChatPage> {
                                                                   MaterialPageRoute(
                                                                       builder: (context) =>
                                                                           UserProfile(
-                                                                            user:
-                                                                                message.user,
+                                                                            user:message.user,
                                                                           )));
                                                             }
                                                           : null,

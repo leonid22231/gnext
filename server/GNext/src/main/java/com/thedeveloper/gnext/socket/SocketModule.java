@@ -49,7 +49,7 @@ public class SocketModule {
                 user = new UserEntity();
                 user.setName("Manager");
             }
-            room= user.getLocation().getCity().getId()+"_"+room;
+            room= user.getCity().getId()+"_"+room;
             client.joinRoom(room);
             if(room.contains("global")){
                 client.joinRoom("chats-"+uid);
@@ -70,7 +70,7 @@ public class SocketModule {
                 user = new UserEntity();
                 user.setName("Manager");
             }
-            room= user.getLocation().getCity().getId()+"_"+room;
+            room= user.getCity().getId()+"_"+room;
             client.leaveRoom(room);
             if(room.contains("global")){
                 client.leaveRoom("chats-"+uid);

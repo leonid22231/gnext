@@ -1,6 +1,6 @@
 package com.thedeveloper.gnext.service;
 
-import com.thedeveloper.gnext.entity.LocationEntity;
+import com.thedeveloper.gnext.entity.CityEntity;
 import com.thedeveloper.gnext.entity.OrderEntity;
 import com.thedeveloper.gnext.entity.UserEntity;
 import com.thedeveloper.gnext.repository.OrderRepository;
@@ -19,11 +19,11 @@ public class OrderService {
     public List<OrderEntity> findAll(){
         return repository.findAll();
     }
-    public List<OrderEntity> findActive(boolean outcity, LocationEntity location){
-        return repository.findOrderEntitiesByOutCityAndLocationAndActive(outcity, location, true);
+    public List<OrderEntity> findActive(boolean outcity, CityEntity city){
+        return repository.findOrderEntitiesByOutCityAndCityAndActive(outcity, city, true);
     }
-    public List<OrderEntity> findByCreator(UserEntity user, boolean outcity, LocationEntity location){
-        return repository.findOrderEntitiesByCreatorAndOutCityAndLocationAndActive(user, outcity, location, true);
+    public List<OrderEntity> findByCreator(UserEntity user, boolean outcity, CityEntity city){
+        return repository.findOrderEntitiesByCreatorAndOutCityAndCityAndActive(user, outcity, city, true);
     }
     public List<OrderEntity> findActive(){
         return repository.findOrderEntitiesByActive(true);

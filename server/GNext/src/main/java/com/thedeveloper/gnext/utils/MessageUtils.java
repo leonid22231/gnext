@@ -21,6 +21,6 @@ public class MessageUtils {
                 .setHeader("content-type", "application/x-www-form-urlencoded")
                 .build();
 
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 }

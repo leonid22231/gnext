@@ -30,8 +30,7 @@ Future<void> main() async {
     Dio dio = Dio();
     RestClient client = RestClient(dio);
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    client.setUserUid(
-        sharedPreferences.getString("phone") ?? "null", GlobalsWidgets.uid);
+    client.setUserUid(sharedPreferences.getString("phone") ?? "null", GlobalsWidgets.uid);
   } else {
     (await SharedPreferences.getInstance()).remove("phone");
     print("Current user null");
@@ -73,8 +72,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Locale currentLocale = Locale(
-        Platform.localeName.split("_")[0], Platform.localeName.split("_")[1]);
+    Locale currentLocale = Locale(Platform.localeName.split("_")[0], Platform.localeName.split("_")[1]);
     debugPrint("Locale is $currentLocale");
     return ResponsiveSizer(builder: (_, __, ___) {
       return MaterialApp(

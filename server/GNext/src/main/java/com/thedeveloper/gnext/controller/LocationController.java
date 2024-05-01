@@ -2,11 +2,9 @@ package com.thedeveloper.gnext.controller;
 
 import com.thedeveloper.gnext.entity.CityEntity;
 import com.thedeveloper.gnext.entity.CountryEntity;
-import com.thedeveloper.gnext.entity.LocationEntity;
 import com.thedeveloper.gnext.service.ChatService;
 import com.thedeveloper.gnext.service.CityService;
 import com.thedeveloper.gnext.service.CountryService;
-import com.thedeveloper.gnext.service.LocationService;
 import com.thedeveloper.gnext.utils.Globals;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +19,6 @@ import java.util.List;
 @AllArgsConstructor
 @Slf4j
 public class LocationController {
-    LocationService locationService;
     CountryService countryService;
     ChatService chatService;
     CityService cityService;
@@ -50,11 +47,7 @@ public class LocationController {
         cityService.save(city);
         country.getCities().add(city);
         countryService.save(country);
-        LocationEntity location = new LocationEntity();
-        location.setCountry(country);
-        location.setCity(city);
-        locationService.save(location);
-        Globals.initChats(locationService, chatService, log);
+        Globals.initChats(cityService, chatService, log);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
     @DeleteMapping("/city/delete")

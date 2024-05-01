@@ -35,8 +35,8 @@ Map<String, dynamic> _$UserEntityToJson(UserEntity instance) =>
     };
 
 const _$UserRoleEnumMap = {
-  UserRole.SPECIALIST: 'SPECIALIST',
   UserRole.USER: 'USER',
+  UserRole.SPECIALIST: 'SPECIALIST',
   UserRole.ADMIN: 'ADMIN',
   UserRole.MANAGER: 'MANAGER',
 };

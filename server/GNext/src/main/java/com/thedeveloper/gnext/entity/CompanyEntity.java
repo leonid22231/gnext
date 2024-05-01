@@ -21,6 +21,7 @@ public class CompanyEntity {
     @Enumerated(EnumType.STRING)
     Categories category;
     @ManyToOne
-    LocationEntity location;
+    @JoinColumn(name = "city", nullable = true,referencedColumnName = "name")
+    CityEntity city;
     String image;
 }

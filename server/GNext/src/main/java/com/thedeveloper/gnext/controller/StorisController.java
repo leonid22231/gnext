@@ -47,7 +47,7 @@ public class StorisController {
     @GetMapping("/chat")
     public ResponseEntity<?> getStory(@RequestParam("uid")String uid,@RequestParam("chat") String chat_name){
         UserEntity user = userService.findUserByUid(uid);
-        ChatEntity chat = chatService.findChatByLocationAndName(user.getLocation(),chat_name);
+        ChatEntity chat = chatService.findByCityAndName(user.getCity(),chat_name);
        return new ResponseEntity<>(storisService.getStorisByChat(chat), HttpStatus.OK);
     }
     @GetMapping("/photo/{name}")

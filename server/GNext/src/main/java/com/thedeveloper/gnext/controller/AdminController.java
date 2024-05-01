@@ -30,7 +30,6 @@ public class AdminController {
     CountryService countryService;
     CityService cityService;
     ChatService chatService;
-    LocationService locationService;
     FilterService filterService;
     CompanyService companyService;
     AddressService addressService;
@@ -84,23 +83,20 @@ public class AdminController {
     public ResponseEntity<?> chats(@RequestParam Long countryId,@RequestParam Long cityId){
         CountryEntity country = countryService.findById(countryId);
         CityEntity city = cityService.findById(cityId);
-        LocationEntity location = locationService.findByCountryAndCity(country,city);
-        return new ResponseEntity<>(chatService.findGlobals(location), HttpStatus.OK);
+        return new ResponseEntity<>(chatService.findGlobals(city), HttpStatus.OK);
     }
     @GetMapping("/chats/messages")
         public ResponseEntity<?> messages(@RequestParam Long countryId, @RequestParam Long cityId, @RequestParam String name){
         CountryEntity country = countryService.findById(countryId);
         CityEntity city = cityService.findById(cityId);
-        LocationEntity location = locationService.findByCountryAndCity(country,city);
-        ChatEntity chat = chatService.findChatByLocationAndName(location, name);
+        ChatEntity chat = chatService.findByCityAndName(city, name);
         return new ResponseEntity<>(messageService.findMessagesByChat(chat), HttpStatus.OK);
     }
     @PostMapping("/file")
     public ResponseEntity<?> file(@RequestParam String uid, @RequestParam MessageType type, @RequestParam MultipartFile file,@RequestParam Long countryId, @RequestParam Long cityId,  @RequestParam String name){
         UserEntity user = userService.findUserByUid(uid);
-        LocationEntity location = locationService.findByCountryAndCity(countryService.findById(countryId), cityService.findById(cityId));
         MessageEntity message = new MessageEntity();
-        message.setChat(chatService.findChatByLocationAndName(location,name));
+        message.setChat(chatService.findByCityAndName(cityService.findById(cityId),name));
         message.setUser(user);
         message.setTime(new Date());
         message.setType(type);
@@ -136,16 +132,14 @@ public class AdminController {
     public ResponseEntity<?> findCompanies(@RequestParam Long countryId, @RequestParam Long cityId,@RequestParam Categories category){
         CountryEntity country = countryService.findById(countryId);
         CityEntity city = cityService.findById(cityId);
-        LocationEntity location = locationService.findByCountryAndCity(country,city);
-        return new ResponseEntity<>(companyService.findByCategory(category,location),HttpStatus.OK);
+        return new ResponseEntity<>(companyService.findByCategory(category,city),HttpStatus.OK);
     }
     @PostMapping("/companies/add")
     public ResponseEntity<?> addCompany(@RequestParam Long countryId, @RequestParam Long cityId, @RequestParam Categories category, @RequestParam String name, @RequestParam String phone, @RequestParam String street, @RequestParam String house, @RequestBody(required = false)MultipartFile photo){
         CountryEntity country = countryService.findById(countryId);
         CityEntity city = cityService.findById(cityId);
-        LocationEntity location = locationService.findByCountryAndCity(country,city);
         CompanyEntity company = new CompanyEntity();
-        company.setLocation(location);
+        company.setCity(city);
         company.setName(name);
         company.setPhone(phone);
         if(photo!=null){
@@ -154,7 +148,7 @@ public class AdminController {
             company.setImage(_name);
         }
         AddressEntity address = new AddressEntity();
-        address.setCity(location.getCity().getName());
+        address.setCity(city.getName());
         address.setStreet(street);
         address.setHouse(house);
         addressService.save(address);

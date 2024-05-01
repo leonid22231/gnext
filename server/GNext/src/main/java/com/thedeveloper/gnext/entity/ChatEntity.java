@@ -15,8 +15,8 @@ public class ChatEntity {
     String id;
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "location", nullable = true,referencedColumnName = "city")
-    LocationEntity location;
+    @JoinColumn(name = "city", nullable = true,referencedColumnName = "name")
+    CityEntity city;
     @Enumerated(EnumType.STRING)
     ChatMode mode;
 

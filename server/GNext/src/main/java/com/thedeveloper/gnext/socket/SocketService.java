@@ -51,7 +51,7 @@ public class SocketService {
         String uid = params.get("uid").stream().collect(Collectors.joining());
         if(Globals.allowWord(message.getContent(), filterService)){
             UserEntity user = userService.findUserByUid(uid);
-            ChatEntity chat = chatService.findChatByLocationAndName(user.getLocation(),room);
+            ChatEntity chat = chatService.findByCityAndName(user.getCity(),room);
             MessageEntity message_ = new MessageEntity();
             message_.setContent(message.getContent());
             message_.setChat(chat);
@@ -61,7 +61,7 @@ public class SocketService {
             message_.getReaders().add(user);
             messageService.save(message_);
 
-            room = user.getLocation().getCity().getId()+"_"+room;
+            room = user.getCity().getId()+"_"+room;
             String temp_uid = "";
             if(chat.getMode().equals(ChatMode.PRIVATE)){
                 if(!Objects.equals(chat.getMember1().getUid(), uid)){

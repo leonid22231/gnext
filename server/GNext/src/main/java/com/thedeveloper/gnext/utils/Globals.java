@@ -1,8 +1,8 @@
 package com.thedeveloper.gnext.utils;
 
 import com.thedeveloper.gnext.entity.ChatEntity;
+import com.thedeveloper.gnext.entity.CityEntity;
 import com.thedeveloper.gnext.entity.FilterEntity;
-import com.thedeveloper.gnext.entity.LocationEntity;
 import com.thedeveloper.gnext.entity.MessageEntity;
 import com.thedeveloper.gnext.enums.ChatMode;
 import com.thedeveloper.gnext.enums.HistoryContent;
@@ -109,7 +109,7 @@ public class Globals {
         }
         return true;
     }
-    public static void initChats(LocationService locationService, ChatService chatService, Logger log){
+    public static void initChats(CityService cityService, ChatService chatService, Logger log){
         log.info("Start init chats");
         Date date = new Date();
         String[] globalsChats = {
@@ -126,18 +126,19 @@ public class Globals {
                 "swap",
                 "salon"
         };
-        for(LocationEntity location : locationService.findAll()){
+        for(CityEntity city : cityService.findAll()){
             for(String name : globalsChats){
-                if(chatService.findChatByLocationAndName(location,name)==null){
+                if(chatService.findByCityAndName(city,name)==null){
                     ChatEntity chat = new ChatEntity();
                     chat.setMode(ChatMode.GENERAL);
                     chat.setName(name);
-                    chat.setLocation(location);
+                    chat.setCity(city);
                     chatService.save(chat);
                     //log.info("{} {} создан", location.getCity().getName(),name);
-                }else{
-                    //log.info("{} {} существует", location.getCity().getName(),name);
                 }
+//                else{
+//                    //log.info("{} {} существует", location.getCity().getName(),name);
+//                }
             }
         }
         log.info("End init chats is {} minute", Duration.between(date.toInstant(), new Date().toInstant()).toMinutes());

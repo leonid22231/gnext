@@ -2,8 +2,13 @@ package com.thedeveloper.gnext.controller;
 
 import com.thedeveloper.gnext.service.FileService;
 import com.thedeveloper.gnext.service.ImageService;
+
+import io.netty.util.concurrent.Future;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.concurrent.CompletableFuture;
+
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,26 +28,26 @@ public class FileController {
     FileService fileService;
     @Async
     @GetMapping("/image/{name}")
-    public ResponseEntity<?> getAvatar(@PathVariable String name){
+    public CompletableFuture<ResponseEntity<?>> getAvatar(@PathVariable String name){
             try {
                 Resource image = imageService.loadAsResource(name);
-                return  ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(image);
+                return  CompletableFuture.completedFuture(ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(image));
             }catch (Exception e){
                 log.debug("Image Error {}", e.toString());
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                return CompletableFuture.completedFuture(new ResponseEntity<>(HttpStatus.NOT_FOUND));
             }
     }
     @GetMapping("/file/{name}")
     @ResponseBody
     @Async
-    public ResponseEntity<Resource> serveFile(@PathVariable String name) {
+    public CompletableFuture<ResponseEntity<Resource>> serveFile(@PathVariable String name) {
         Resource file = fileService.loadAsResource(name);
 
         if (file == null)
-            return ResponseEntity.notFound().build();
+            return CompletableFuture.completedFuture(ResponseEntity.notFound().build());
 
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+        return CompletableFuture.completedFuture(ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+        "attachment; filename=\"" + file.getFilename() + "\"").body(file));
     }
 
 }
