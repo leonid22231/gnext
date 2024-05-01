@@ -27,7 +27,7 @@ part 'RestClient.g.dart';
 //45.67.35.206
 //192.168.0.11
 //45.159.250.175
-@RestApi(baseUrl: 'http://192.168.0.11:8080/api/v1/')
+@RestApi(baseUrl: 'http://45.159.250.175:8080/api/v1/')
 abstract class RestClient {
   factory RestClient(Dio dio, {String baseUrl}) = _RestClient;
 

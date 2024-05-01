@@ -1109,6 +1109,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Цена`
+  String get price {
+    return Intl.message(
+      'Цена',
+      name: 'price',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Введите цену`
+  String get price_ {
+    return Intl.message(
+      'Введите цену',
+      name: 'price_',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -6,7 +6,7 @@ class GlobalsWidgets {
   //45.67.35.206
   //45.159.250.175
   static String API_KEY = "AIzaSyDiqxR05PppZDGdbTUxTMYN92dmbrEumbc";
-  static String ip = "192.168.0.11";
+  static String ip = "45.159.250.175";
   static String uid = "";
   static String name = "";
   static String surname = "";

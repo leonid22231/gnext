@@ -86,21 +86,59 @@ class CatalogPageState extends State<CatalogPage> {
                     ),
                   )
                 : const SizedBox.shrink(),
-            Row(
-              children: [
-                Text(
-                  S.of(context).address,
-                  style: TextStyle(fontSize: 15.sp, color: Colors.black.withOpacity(0.6)),
-                ),
-                SizedBox(
-                  width: 2.w,
-                ),
-                Text(
-                  "${companyEntity.address.street}, ${companyEntity.address.house}",
-                  style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w500),
-                )
-              ],
-            ),
+            companyEntity.image == null
+                ? Row(
+                    children: [
+                      Text(
+                        S.of(context).address,
+                        style: TextStyle(fontSize: 15.sp, color: Colors.black.withOpacity(0.6)),
+                      ),
+                      SizedBox(
+                        width: 2.w,
+                      ),
+                      Text(
+                        "${companyEntity.address.street}, ${companyEntity.address.house}",
+                        style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w500),
+                      )
+                    ],
+                  )
+                : Column(
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            "${S.of(context).desc}:",
+                            style: TextStyle(fontSize: 15.sp, color: Colors.black.withOpacity(0.6)),
+                          ),
+                          SizedBox(
+                            width: 2.w,
+                          ),
+                          Text(
+                            "${companyEntity.address.street}",
+                            style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w500),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 1.h,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            "${S.of(context).price}:",
+                            style: TextStyle(fontSize: 15.sp, color: Colors.black.withOpacity(0.6)),
+                          ),
+                          SizedBox(
+                            width: 2.w,
+                          ),
+                          Text(
+                            "${companyEntity.address.house} ₸",
+                            style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w500),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
             Divider(
               height: 1.h,
             ),
