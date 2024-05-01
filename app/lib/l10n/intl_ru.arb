@@ -101,5 +101,6 @@
   "create_shop_street_": "Улица",
   "create_shop_house": "Введите номер дома",
   "create_shop_house_": "Номер дома",
-  "create": "Создать"
+  "create": "Создать",
+  "register_please": "Зарегистрируйтесь или войдите чтобы посмотреть"
 }

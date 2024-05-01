@@ -1079,6 +1079,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Зарегистрируйтесь или войдите чтобы посмотреть`
+  String get register_please {
+    return Intl.message(
+      'Зарегистрируйтесь или войдите чтобы посмотреть',
+      name: 'register_please',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
