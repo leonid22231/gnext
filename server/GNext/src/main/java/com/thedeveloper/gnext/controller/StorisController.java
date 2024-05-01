@@ -12,17 +12,21 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.thedeveloper.gnext.utils.Globals;
 import reactor.core.publisher.Mono;
 
 import java.util.Date;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("api/v1/storis")
 @AllArgsConstructor
 @Slf4j
+@EnableAsync
 public class StorisController {
     ChatService chatService;
     UserService userService;
@@ -50,20 +54,21 @@ public class StorisController {
         ChatEntity chat = chatService.findByCityAndName(user.getCity(),chat_name);
        return new ResponseEntity<>(storisService.getStorisByChat(chat), HttpStatus.OK);
     }
+    @Async
     @GetMapping("/photo/{name}")
-    public ResponseEntity<?> getAvatar(@PathVariable String name){
+    public CompletableFuture<ResponseEntity<?>> getAvatar(@PathVariable String name){
         try {
             Resource image = imageService.loadAsResource(name);
-            return  ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(image);
+            return  CompletableFuture.completedFuture(ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(image));
         }catch (Exception e){
             log.debug("Image Error {}", e.toString());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return CompletableFuture.completedFuture(new ResponseEntity<>(HttpStatus.NOT_FOUND));
         }
     }
+    @Async
     @GetMapping(value = "/video/{name}",produces = "video/mp4")
-    public Mono<Resource> streamVideo(@PathVariable("name") String fileName) {
+    public CompletableFuture<Mono<Resource>> streamVideo(@PathVariable("name") String fileName) {
         Resource video = imageService.loadAsResource(fileName);
-
-        return Mono.fromSupplier(() -> video);
+        return CompletableFuture.completedFuture(Mono.fromSupplier(() -> video));
     }
 }

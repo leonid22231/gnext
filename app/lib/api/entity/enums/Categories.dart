@@ -1,3 +1,8 @@
-enum Categories{
-  info,sto,swap,modify,auto;
+enum Categories {
+  info,
+  sto,
+  swap,
+  modify,
+  auto,
+  shop;
 }

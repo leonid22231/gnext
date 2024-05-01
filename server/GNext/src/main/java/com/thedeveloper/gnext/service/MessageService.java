@@ -13,7 +13,7 @@ import java.util.List;
 public class MessageService {
     MessageRepository repository;
     public List<MessageEntity> findMessagesByChat(ChatEntity chat){
-        return repository.findMessageEntitiesByChatOrderByTimeAsc(chat);
+        return repository.findTop30MessageEntitiesByChatOrderByTimeDesc(chat);
     }
     public void save(MessageEntity message){
         repository.save(message);

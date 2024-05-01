@@ -14,7 +14,7 @@ MessageEntity _$MessageEntityFromJson(Map<String, dynamic> json) =>
       chat: json['chat'] == null
           ? null
           : ChatEntity.fromJson(json['chat'] as Map<String, dynamic>),
-      user: UserEntityMessage.fromJson(json['user'] as Map<String, dynamic>),
+      user: UserEntity.fromJson(json['user'] as Map<String, dynamic>),
       time: DateTime.parse(json['time'] as String),
     );
 

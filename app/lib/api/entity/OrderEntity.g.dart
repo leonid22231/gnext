@@ -12,8 +12,7 @@ OrderEntity _$OrderEntityFromJson(Map<String, dynamic> json) => OrderEntity(
       specialist: json['specialist'] == null
           ? null
           : UserEntity.fromJson(json['specialist'] as Map<String, dynamic>),
-      location:
-          LocationEntity.fromJson(json['location'] as Map<String, dynamic>),
+      city: CityEntity.fromJson(json['city'] as Map<String, dynamic>),
       addressTo:
           AddressEntity.fromJson(json['addressTo'] as Map<String, dynamic>),
       addressFrom:
@@ -34,7 +33,7 @@ Map<String, dynamic> _$OrderEntityToJson(OrderEntity instance) =>
       'id': instance.id,
       'creator': instance.creator,
       'specialist': instance.specialist,
-      'location': instance.location,
+      'city': instance.city,
       'addressTo': instance.addressTo,
       'addressFrom': instance.addressFrom,
       'price': instance.price,
