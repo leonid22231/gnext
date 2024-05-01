@@ -55,6 +55,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "create_shop_street_": MessageLookupByLibrary.simpleMessage("Улица"),
         "date": MessageLookupByLibrary.simpleMessage("Дата загрузки"),
         "date_": MessageLookupByLibrary.simpleMessage("Дата разгрузки"),
+        "date_create": MessageLookupByLibrary.simpleMessage("Когда забрать"),
         "date_pick": MessageLookupByLibrary.simpleMessage("Выберите дату"),
         "desc": MessageLookupByLibrary.simpleMessage("Описание"),
         "doc": MessageLookupByLibrary.simpleMessage("Документы"),
@@ -128,6 +129,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "register_please": MessageLookupByLibrary.simpleMessage(
             "Зарегистрируйтесь или войдите чтобы посмотреть"),
         "save": MessageLookupByLibrary.simpleMessage("Сохранить груз"),
+        "save_": MessageLookupByLibrary.simpleMessage("Сохранить"),
         "search": MessageLookupByLibrary.simpleMessage("Поиск"),
         "search_": MessageLookupByLibrary.simpleMessage("Поиск груза"),
         "select_city": MessageLookupByLibrary.simpleMessage("Выберите город"),

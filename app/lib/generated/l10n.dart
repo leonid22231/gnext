@@ -1089,6 +1089,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Когда забрать`
+  String get date_create {
+    return Intl.message(
+      'Когда забрать',
+      name: 'date_create',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Сохранить`
+  String get save_ {
+    return Intl.message(
+      'Сохранить',
+      name: 'save_',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
