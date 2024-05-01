@@ -125,6 +125,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Стать перевозчиком"),
         "reg": MessageLookupByLibrary.simpleMessage("Зарегистрироваться"),
         "register": MessageLookupByLibrary.simpleMessage("Регистрация"),
+        "register_please": MessageLookupByLibrary.simpleMessage(
+            "Зарегистрируйтесь или войдите чтобы посмотреть"),
         "save": MessageLookupByLibrary.simpleMessage("Сохранить груз"),
         "search": MessageLookupByLibrary.simpleMessage("Поиск"),
         "search_": MessageLookupByLibrary.simpleMessage("Поиск груза"),
