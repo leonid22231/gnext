@@ -21,8 +21,8 @@ public class OrderEntity {
     @JoinColumn(name = "specialist", nullable = true, referencedColumnName = "phone")
     UserEntity specialist;
     @ManyToOne
-    @JoinColumn(name = "location", nullable = true,referencedColumnName = "city")
-    LocationEntity location;
+    @JoinColumn(name = "city", nullable = true,referencedColumnName = "name")
+    CityEntity city;
     @ManyToOne
     @JoinColumn(name = "addressTo", nullable = true,referencedColumnName = "id")
     AddressEntity addressTo;

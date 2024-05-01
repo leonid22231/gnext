@@ -2,7 +2,6 @@ package com.thedeveloper.gnext.service;
 
 import com.thedeveloper.gnext.entity.CityEntity;
 import com.thedeveloper.gnext.entity.CountryEntity;
-import com.thedeveloper.gnext.entity.LocationEntity;
 import com.thedeveloper.gnext.repository.CountryRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

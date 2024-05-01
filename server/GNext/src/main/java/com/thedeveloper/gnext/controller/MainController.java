@@ -24,7 +24,6 @@ public class MainController {
     UserService userService;
     PasswordEncoder passwordEncoder;
     ImageService imageService;
-    LocationService locationService;
     CountryService countryService;
     CityService cityService;
     WalletEventService walletEventService;
@@ -83,7 +82,6 @@ public class MainController {
         if(userService.findUserByPhone(phone)!=null){
             return new ResponseEntity<>("Пользователь существует", HttpStatus.FORBIDDEN);
         }else{
-            LocationEntity location = locationService.findByCountryAndCity(countryService.findById(countryId), cityService.findById(cityId));
             UserEntity user = new UserEntity();
             user.setRole(role);
             user.setName(name);
@@ -92,7 +90,7 @@ public class MainController {
             if(role==UserRole.SPECIALIST){
                 user.setSubscription(true);
             }
-            user.setLocation(location);
+            user.setCity(cityService.findById(cityId));
             if(number!=null) user.setNumber(number);
             user.setNotifyToken(notifyToken);
             user.setPhone(phone);
@@ -139,8 +137,7 @@ public class MainController {
     @PostMapping("/changeLocation")
     public ResponseEntity<?> changeLocation(@RequestParam String uid,@RequestParam Long countryId, @RequestParam Long cityId){
         UserEntity user = userService.findUserByUid(uid);
-        LocationEntity location = locationService.findByCountryAndCity(countryService.findById(countryId), cityService.findById(cityId));
-        user.setLocation(location);
+        user.setCity(cityService.findById(cityId));
         userService.save(user);
         return new ResponseEntity<>(user,HttpStatus.OK);
     }
@@ -149,8 +146,8 @@ public class MainController {
         UserEntity member1 = userService.findUserByUid(uid);
         UserEntity member2 = userService.findUserByUid(client);
         ChatEntity temp_chat;
-        if(companyId==null) temp_chat = chatService.findByMembersAndCompany(member1.getLocation(), member1, member2, null);
-        else temp_chat = chatService.findByMembersAndCompany(member2.getLocation(), member2, member1, companyService.findById(companyId));
+        if(companyId==null) temp_chat = chatService.findByMembersAndCompany(member1.getCity(), member1, member2, null);
+        else temp_chat = chatService.findByMembersAndCompany(member2.getCity(), member2, member1, companyService.findById(companyId));
         if(temp_chat!=null) return new ResponseEntity<>(temp_chat.getName(), HttpStatus.OK);
         ChatEntity chat = new ChatEntity();
         chat.setMode(ChatMode.PRIVATE);
@@ -158,7 +155,7 @@ public class MainController {
         if(companyId!=null){
             chat.setCompany(companyService.findById(companyId));
         }
-        chat.setLocation(member1.getLocation());
+        chat.setCity(member1.getCity());
         chat.setMember1(member1);
         chat.setMember2(member2);
         chatService.save(chat);
@@ -245,14 +242,14 @@ public class MainController {
     @GetMapping("/companies")
     public ResponseEntity<?> findCompanies(@RequestParam String uid, @RequestParam Categories category){
         UserEntity user = userService.findUserByUid(uid);
-        return new ResponseEntity<>(companyService.findByCategory(category, user.getLocation()),HttpStatus.OK);
+        return new ResponseEntity<>(companyService.findByCategory(category, user.getCity()),HttpStatus.OK);
     }
     @PostMapping("/createCompany")
     public ResponseEntity<?> createCompany(@RequestParam String uid, @RequestParam Categories category, @RequestParam String name,@RequestParam(required = false) String phone, @RequestParam String street, @RequestParam String house, @RequestBody(required = false)MultipartFile photo){
         UserEntity user = userService.findUserByUid(uid);
-        LocationEntity location = user.getLocation();
+        CityEntity city = user.getCity();
         CompanyEntity company = new CompanyEntity();
-        company.setLocation(location);
+        company.setCity(city);
         company.setName(name);
         if(phone!=null)
             company.setPhone(phone);
@@ -263,7 +260,7 @@ public class MainController {
             company.setImage(_name);
         }
         AddressEntity address = new AddressEntity();
-        address.setCity(location.getCity().getName());
+        address.setCity(city.getName());
         address.setStreet(street);
         address.setHouse(house);
         addressService.save(address);

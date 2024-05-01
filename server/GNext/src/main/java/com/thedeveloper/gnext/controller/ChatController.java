@@ -7,7 +7,7 @@ import com.thedeveloper.gnext.entity.UserEntity;
 import com.thedeveloper.gnext.enums.MessageType;
 import com.thedeveloper.gnext.service.*;
 import com.thedeveloper.gnext.utils.Globals;
-import com.thedeveloper.gnext.views.UserViews;
+import com.thedeveloper.gnext.utils.Views;
 
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -27,13 +27,12 @@ import java.util.List;
 public class ChatController {
     ChatService chatService;
     MessageService messageService;
-    LocationService locationService;
     UserService userService;
     AudioService audioService;
     ImageService imageService;
     @GetMapping("/findId")
     public ResponseEntity<?> findChat(@RequestParam String uid, @RequestParam String name){
-        ChatEntity chat = chatService.findChatByLocationAndName(userService.findUserByUid(uid).getLocation(), name);
+        ChatEntity chat = chatService.findByCityAndName(userService.findUserByUid(uid).getCity(), name);
         if(chat==null) return new ResponseEntity<>("Чат не найден", HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(chat.getId(), HttpStatus.OK);
     }
@@ -45,7 +44,7 @@ public class ChatController {
     public ResponseEntity<?> file(@RequestParam String uid, @RequestParam MessageType type,@RequestParam MultipartFile file,@RequestParam String name){
         UserEntity user = userService.findUserByUid(uid);
         MessageEntity message = new MessageEntity();
-        message.setChat(chatService.findChatByLocationAndName(user.getLocation(),name));
+        message.setChat(chatService.findByCityAndName(user.getCity(),name));
         message.setUser(user);
         message.setTime(new Date());
         message.setType(type);
@@ -59,6 +58,7 @@ public class ChatController {
         messageService.save(message);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    @JsonView(Views.Message.class)
     @GetMapping("/{id}")
     public ResponseEntity<List<MessageEntity>> messages(@RequestParam String uid,@PathVariable String id){
         UserEntity user = userService.findUserByUid(uid);

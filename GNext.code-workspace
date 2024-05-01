@@ -8,6 +8,9 @@
 		},
 		{
 			"path": "../../API/Gnext_API"
+		},
+		{
+			"path": "admin_app"
 		}
 	],
 	"settings": {

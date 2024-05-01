@@ -36,7 +36,7 @@ public class OrdersController {
         UserEntity user = userService.findUserByUid(uid);
         OrderEntity orderEntity = new OrderEntity();
         orderEntity.setCreator(user);
-        orderEntity.setLocation(user.getLocation());
+        orderEntity.setCity(user.getCity());
         orderEntity.setCreateDate(new Date());
         orderEntity.setPrice(price);
         orderEntity.setDescription(description);
@@ -69,11 +69,11 @@ public class OrdersController {
     @GetMapping("/active")
     public ResponseEntity<?> activeOrders(@RequestParam String uid, @RequestParam boolean outcity){
         UserEntity user = userService.findUserByUid(uid);
-        return new ResponseEntity<>(orderService.findActive(outcity, user.getLocation()), HttpStatus.OK);
+        return new ResponseEntity<>(orderService.findActive(outcity, user.getCity()), HttpStatus.OK);
     }
     @GetMapping("/my")
     public ResponseEntity<?> userOrders(@RequestParam String uid, @RequestParam boolean outcity){
         UserEntity user = userService.findUserByUid(uid);
-        return new ResponseEntity<>(orderService.findByCreator(user, outcity, user.getLocation()), HttpStatus.OK);
+        return new ResponseEntity<>(orderService.findByCreator(user, outcity, user.getCity()), HttpStatus.OK);
     }
 }

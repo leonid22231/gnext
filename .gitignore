@@ -1,0 +1,2 @@
+app/*.g.dart
+app/lib/api/RestClient.g.dart
