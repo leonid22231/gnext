@@ -126,6 +126,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Стать перевозчиком"),
         "price": MessageLookupByLibrary.simpleMessage("Цена"),
         "price_": MessageLookupByLibrary.simpleMessage("Введите цену"),
+        "profile_1": MessageLookupByLibrary.simpleMessage("Договор оферты"),
+        "profile_2":
+            MessageLookupByLibrary.simpleMessage("Политика конфиденциальности"),
         "reg": MessageLookupByLibrary.simpleMessage("Зарегистрироваться"),
         "register": MessageLookupByLibrary.simpleMessage("Регистрация"),
         "register_please": MessageLookupByLibrary.simpleMessage(
@@ -144,6 +147,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "text": MessageLookupByLibrary.simpleMessage("Текст..."),
         "typing": MessageLookupByLibrary.simpleMessage("Написать"),
         "user": MessageLookupByLibrary.simpleMessage("Пользователь"),
+        "user_name": MessageLookupByLibrary.simpleMessage("имя_пользователя"),
         "user_role_1": MessageLookupByLibrary.simpleMessage("Пользователь"),
         "user_role_2": MessageLookupByLibrary.simpleMessage("Перевозчик"),
         "video": MessageLookupByLibrary.simpleMessage("Видео"),

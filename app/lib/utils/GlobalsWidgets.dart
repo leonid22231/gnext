@@ -10,6 +10,8 @@ class GlobalsWidgets {
   static String uid = "";
   static String name = "";
   static String surname = "";
+  static String? telegram;
+  static String? whatsapp;
   static double wallet = 0;
   static UserRole role = UserRole.USER;
   static String? image;

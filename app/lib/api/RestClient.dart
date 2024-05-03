@@ -97,4 +97,6 @@ abstract class RestClient {
   Future<List<TransportationEntity>> findActiveTransportation(@Query("uid") String uid, @Query("outcity") bool outcity);
   @POST("transportings/stop")
   Future<void> stopTransportation(@Query("id") int id);
+  @POST("user/save")
+  Future<void> saveUser(@Query("uid") String uid, @Query("telegram") String? telegram, @Query("whatsapp") String? whatsapp);
 }

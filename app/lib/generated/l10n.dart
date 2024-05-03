@@ -1129,6 +1129,36 @@ class S {
       args: [],
     );
   }
+
+  /// `имя_пользователя`
+  String get user_name {
+    return Intl.message(
+      'имя_пользователя',
+      name: 'user_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Договор оферты`
+  String get profile_1 {
+    return Intl.message(
+      'Договор оферты',
+      name: 'profile_1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Политика конфиденциальности`
+  String get profile_2 {
+    return Intl.message(
+      'Политика конфиденциальности',
+      name: 'profile_2',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

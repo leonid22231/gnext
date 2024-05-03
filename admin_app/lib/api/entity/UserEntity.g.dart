@@ -12,8 +12,7 @@ UserEntity _$UserEntityFromJson(Map<String, dynamic> json) => UserEntity(
       name: json['name'] as String,
       surname: json['surname'] as String,
       phone: json['phone'] as String,
-      location:
-          LocationEntity.fromJson(json['location'] as Map<String, dynamic>),
+      city: CityEntity.fromJson(json['city'] as Map<String, dynamic>),
       photo: json['photo'] as String?,
       role: $enumDecode(_$UserRoleEnumMap, json['role']),
       wallet: (json['wallet'] as num).toDouble(),
@@ -29,7 +28,7 @@ Map<String, dynamic> _$UserEntityToJson(UserEntity instance) =>
       'phone': instance.phone,
       'photo': instance.photo,
       'role': _$UserRoleEnumMap[instance.role]!,
-      'location': instance.location,
+      'city': instance.city,
       'wallet': instance.wallet,
       'subscription': instance.subscription,
     };

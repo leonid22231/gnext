@@ -74,6 +74,46 @@ class UserProfile extends StatelessWidget {
                       ],
                     ),
                     const Spacer(),
+                    (GlobalsWidgets.uid != user.uid && user.telegram != null)
+                        ? SizedBox(
+                            width: double.maxFinite,
+                            height: 5.h,
+                            child: OutlinedButton(
+                                onPressed: () {
+                                  launchUrl(Uri.parse("https://t.me/${user.telegram}"), mode: LaunchMode.externalApplication);
+                                },
+                                style: OutlinedButton.styleFrom(side: const BorderSide(color: Colors.white)),
+                                child: const Text(
+                                  "Telegram",
+                                  style: TextStyle(color: Colors.white),
+                                )),
+                          )
+                        : const SizedBox.shrink(),
+                    (GlobalsWidgets.uid != user.uid && user.telegram != null)
+                        ? SizedBox(
+                            height: 1.h,
+                          )
+                        : const SizedBox.shrink(),
+                    (GlobalsWidgets.uid != user.uid && user.telegram != null)
+                        ? SizedBox(
+                            width: double.maxFinite,
+                            height: 5.h,
+                            child: OutlinedButton(
+                                onPressed: () {
+                                  launchUrl(Uri.parse("https://wa.me/${user.whatsapp}"), mode: LaunchMode.externalApplication);
+                                },
+                                style: OutlinedButton.styleFrom(side: const BorderSide(color: Colors.white)),
+                                child: const Text(
+                                  "WhatsApp",
+                                  style: TextStyle(color: Colors.white),
+                                )),
+                          )
+                        : const SizedBox.shrink(),
+                    (GlobalsWidgets.uid != user.uid && user.whatsapp != null)
+                        ? SizedBox(
+                            height: 1.h,
+                          )
+                        : const SizedBox.shrink(),
                     GlobalsWidgets.uid != user.uid
                         ? SizedBox(
                             width: double.maxFinite,
