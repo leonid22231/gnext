@@ -124,7 +124,14 @@ public class MainController {
         user.setPassword(passwordEncoder.encode(password));
         return new ResponseEntity<>(saveUser(user, uid), HttpStatus.OK);
     }
-
+    @PostMapping("/save")
+    public ResponseEntity<?> save(@RequestParam String uid, @RequestParam(required = false) String telegram,@RequestParam(required = false) String whatsapp){
+        UserEntity user = userService.findUserByUid(uid);
+        if(telegram!=null)user.setTelegram(telegram);
+        if(whatsapp!=null)user.setWhatsapp(whatsapp);
+        userService.save(user);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
     @PostMapping("/changePhoto")
     public ResponseEntity<?> changePhoto(@RequestParam String uid, @RequestBody MultipartFile photo){
         UserEntity user = userService.findUserByUid(uid);

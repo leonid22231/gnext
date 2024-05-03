@@ -16,14 +16,21 @@ class PreloadPage extends StatefulWidget {
 }
 
 class _PreloadPageState extends State<PreloadPage> {
-  int activeTab = 1;
+  int activeTab = 0;
   final GlobalKey<SliderDrawerState> _sliderDrawerKey = GlobalKey<SliderDrawerState>();
   final GlobalKey<TransportationPageState> _transportationKey = GlobalKey<TransportationPageState>();
   String selectTab = "";
   List<String> pages = [];
   @override
   Widget build(BuildContext context) {
-    pages = [S.of(context).page1, S.of(context).page4, S.of(context).page5, S.of(context).page6, S.of(context).page7, S.of(context).page8, S.of(context).page11, S.of(context).page9, S.of(context).page10, S.of(context).preload_page1, S.of(context).page3, S.of(context).preload_page2];
+    pages = [
+      S.of(context).page1,
+      S.of(context).page4,
+      S.of(context).page5,
+      S.of(context).page6,
+      S.of(context).page8,
+      S.of(context).page11,
+    ];
     selectTab = pages[activeTab];
     return Scaffold(
       body: SliderDrawer(

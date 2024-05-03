@@ -39,4 +39,6 @@ public class UserEntity {
     double wallet = 0;
     Date createDate;
     Date subStart;
+    String telegram;
+    String whatsapp;
 }

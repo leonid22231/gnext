@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.thedeveloper</groupId>
     <artifactId>gnext</artifactId>
-    <version>3.1.0</version>
+    <version>3.1.5</version>
     <name>GNext</name>
     <description>GNext</description>
     <properties>

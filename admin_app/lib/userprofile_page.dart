@@ -8,9 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:admin_app/utils/globals.dart';
-class UserProfile extends StatelessWidget{
+
+class UserProfile extends StatelessWidget {
   final UserEntity user;
-  const UserProfile({required this.user,super.key});
+  const UserProfile({required this.user, super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,71 +41,95 @@ class UserProfile extends StatelessWidget{
                         child: Image.network(getPhoto(user.photo), fit: BoxFit.cover),
                       ),
                     ),
-                    SizedBox(height: 2.h,),
-                    Text("${user.name} ${user.surname}", style: TextStyle(color: Colors.white, fontSize: 18.sp, fontWeight: FontWeight.bold),),
-                    SizedBox(height: 1.h,),
-                    Text("+${user.phone}", textAlign: TextAlign.start,style: TextStyle(fontSize: 18.sp,color: Colors.white),),
-                    SizedBox(height: 1.h,),
+                    SizedBox(
+                      height: 2.h,
+                    ),
+                    Text(
+                      "${user.name} ${user.surname}",
+                      style: TextStyle(color: Colors.white, fontSize: 18.sp, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      height: 1.h,
+                    ),
+                    Text(
+                      "+${user.phone}",
+                      textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 18.sp, color: Colors.white),
+                    ),
+                    SizedBox(
+                      height: 1.h,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.location_history, color: Colors.white,size: 10.w,),
-                        SizedBox(width: 3.w,),
-                        Text("${user.location.city}",style: TextStyle(fontSize: 18.sp,color: Colors.white))
+                        Icon(
+                          Icons.location_history,
+                          color: Colors.white,
+                          size: 10.w,
+                        ),
+                        SizedBox(
+                          width: 3.w,
+                        ),
+                        Text("${user.city.name}", style: TextStyle(fontSize: 18.sp, color: Colors.white))
                       ],
                     ),
-                    SizedBox(height: 2.h,),
+                    SizedBox(
+                      height: 2.h,
+                    ),
                     InkWell(
-                      onTap: (){
-                          showDialog(context: context, builder: (context)=>AlertDialog(
-                            title: const Text("Изменить роль"),
-                            content: CustomDropdown<UserRole>(
-                              items: UserRole.values,
-                              hintText: "Выберите роль",
-                              initialItem: user.role,
-                              decoration: CustomDropdownDecoration(
-                                closedBorder: Border.all(color: const Color(0xffD9D9D9)),
-                                closedFillColor: Colors.transparent,
-                                expandedBorder: Border.all(color: const Color(0xffD9D9D9)),
-                                expandedFillColor: Colors.white,
-                              ),
-                              onChanged: (role) {
-                                Dio dio = Dio();
-                                RestClient client = RestClient(dio);
-                                client.changeRole(user.uid, role);
-                              },
-                            ),
-                          )).then((value) => Navigator.of(context).pop());
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                  title: const Text("Изменить роль"),
+                                  content: CustomDropdown<UserRole>(
+                                    items: UserRole.values,
+                                    hintText: "Выберите роль",
+                                    initialItem: user.role,
+                                    decoration: CustomDropdownDecoration(
+                                      closedBorder: Border.all(color: const Color(0xffD9D9D9)),
+                                      closedFillColor: Colors.transparent,
+                                      expandedBorder: Border.all(color: const Color(0xffD9D9D9)),
+                                      expandedFillColor: Colors.white,
+                                    ),
+                                    onChanged: (role) {
+                                      Dio dio = Dio();
+                                      RestClient client = RestClient(dio);
+                                      client.changeRole(user.uid, role);
+                                    },
+                                  ),
+                                )).then((value) => Navigator.of(context).pop());
                       },
                       splashColor: Colors.black,
                       child: Container(
                         height: 8.h,
                         width: 50.w,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            border:Border.all(color: Colors.white, width: 1.w)
-                        ),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all(color: Colors.white, width: 1.w)),
                         child: Center(
-                          child: Text(getRole(user.role), style: TextStyle(fontSize: 16.sp, color: Colors.white),),
+                          child: Text(
+                            getRole(user.role),
+                            style: TextStyle(fontSize: 16.sp, color: Colors.white),
+                          ),
                         ),
                       ),
                     ),
                     const Spacer(),
                     //SizedBox(height: 1.h,),
-                    uid!=user.uid?SizedBox(
-                      width: double.maxFinite,
-                      height: 5.h,
-                      child: OutlinedButton(
-                          onPressed: (){
-                            launchUrl(Uri.parse("tel://+${user.phone}"));
-                          },
-                          style: OutlinedButton.styleFrom(
-                              side: BorderSide.none,
-                              backgroundColor: Colors.white
-                          ),
-                          child: Text(S.of(context).call, style: TextStyle(fontSize: 16.sp,color: const Color(0xff317EFA)),)),
-
-                    ):const SizedBox.shrink()
+                    uid != user.uid
+                        ? SizedBox(
+                            width: double.maxFinite,
+                            height: 5.h,
+                            child: OutlinedButton(
+                                onPressed: () {
+                                  launchUrl(Uri.parse("tel://+${user.phone}"));
+                                },
+                                style: OutlinedButton.styleFrom(side: BorderSide.none, backgroundColor: Colors.white),
+                                child: Text(
+                                  S.of(context).call,
+                                  style: TextStyle(fontSize: 16.sp, color: const Color(0xff317EFA)),
+                                )),
+                          )
+                        : const SizedBox.shrink()
                   ],
                 ),
               ),
@@ -114,5 +139,4 @@ class UserProfile extends StatelessWidget{
       ),
     );
   }
-
 }

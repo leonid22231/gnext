@@ -3,7 +3,7 @@ description: "GNext logistic application"
 
 publish_to: 'none'
 
-version: 3.6.6+4.8
+version: 4.1.0+5.0
 
 environment:
   sdk: '>=3.2.6 <4.0.0'
@@ -46,6 +46,7 @@ dependencies:
   device_info_plus: ^10.0.1
   flutter_paypal_payment: ^1.0.6
   currency_converter: ^0.0.4
+  flutter_bloc: ^7.0.0
 
 icons_launcher:
   image_path: "assets/icon.png"

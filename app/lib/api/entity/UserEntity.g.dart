@@ -7,6 +7,8 @@ part of 'UserEntity.dart';
 // **************************************************************************
 
 UserEntity _$UserEntityFromJson(Map<String, dynamic> json) => UserEntity(
+      telegram: json['telegram'] as String?,
+      whatsapp: json['whatsapp'] as String?,
       id: json['id'] as int,
       uid: json['uid'] as String,
       name: json['name'] as String,
@@ -27,6 +29,8 @@ Map<String, dynamic> _$UserEntityToJson(UserEntity instance) =>
       'surname': instance.surname,
       'phone': instance.phone,
       'photo': instance.photo,
+      'telegram': instance.telegram,
+      'whatsapp': instance.whatsapp,
       'role': _$UserRoleEnumMap[instance.role]!,
       'city': instance.city,
       'wallet': instance.wallet,

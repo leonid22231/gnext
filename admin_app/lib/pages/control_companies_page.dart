@@ -1,6 +1,6 @@
 import 'package:admin_app/api/RestClient.dart';
+import 'package:admin_app/api/entity/CityEntity.dart';
 import 'package:admin_app/api/entity/CompanyEntity.dart';
-import 'package:admin_app/api/entity/LocationEntity.dart';
 import 'package:admin_app/api/entity/enums/Categories.dart';
 import 'package:admin_app/utils/category_widget.dart';
 import 'package:dio/dio.dart';
@@ -8,16 +8,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:admin_app/utils/globals.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-class ControlCompaniesPage extends StatefulWidget{
-  LocationEntity location;
-  ControlCompaniesPage({required this.location,super.key});
+
+class ControlCompaniesPage extends StatefulWidget {
+  CityEntity city;
+  ControlCompaniesPage({required this.city, super.key});
   @override
   State<StatefulWidget> createState() => _ControlCompaniesPage();
 }
-class _ControlCompaniesPage extends State<ControlCompaniesPage>{
-  List<bool> oppened = [
-    false
-  ];
+
+class _ControlCompaniesPage extends State<ControlCompaniesPage> {
+  List<bool> oppened = [false];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,11 +26,15 @@ class _ControlCompaniesPage extends State<ControlCompaniesPage>{
             icon: Icon(
               Icons.arrow_back_outlined,
               size: 5.w,
-            ), onPressed: () {
-          Navigator.pop(context);
-        }),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
         centerTitle: true,
-        title: Text("Управление компаниями", style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold, color: mainColor),),
+        title: Text(
+          "Управление компаниями",
+          style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold, color: mainColor),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -48,25 +52,32 @@ class _ControlCompaniesPage extends State<ControlCompaniesPage>{
       ),
     );
   }
-  Widget getCompany(String name,Categories category){
+
+  Widget getCompany(String name, Categories category) {
     return FutureBuilder(
         future: findCompany(category),
-        builder: (context,snapshot){
-          if(snapshot.hasData){
-            return CategoryWidget(name: name,category: category, companies: snapshot.data!, location: widget.location,update: (){
-              setState(() {
-
-              });
-            },);
-          }else{
-            return Center(child: Text("Загрузка..."),);
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return CategoryWidget(
+              name: name,
+              category: category,
+              companies: snapshot.data!,
+              city: widget.city,
+              update: () {
+                setState(() {});
+              },
+            );
+          } else {
+            return Center(
+              child: Text("Загрузка..."),
+            );
           }
-        }
-        );
+        });
   }
-  Future<List<CompanyEntity>> findCompany(Categories category){
+
+  Future<List<CompanyEntity>> findCompany(Categories category) {
     Dio dio = Dio();
     RestClient client = RestClient(dio);
-    return client.findCompanies(widget.location.country.id, widget.location.city.id, category);
+    return client.findCompanies(0, widget.city.id, category);
   }
 }

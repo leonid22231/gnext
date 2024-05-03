@@ -44,7 +44,7 @@ class _MainRouteState extends State<MainRoute> {
   File? file;
   @override
   Widget build(BuildContext context) {
-    pages = [S.of(context).page1, S.of(context).page2, S.of(context).page3, S.of(context).page4, S.of(context).page5, S.of(context).page6, S.of(context).page7, S.of(context).page8, S.of(context).page9, S.of(context).page10, S.of(context).page11, "Чат"];
+    pages = [S.of(context).page1, S.of(context).page2, S.of(context).page3, S.of(context).page4, S.of(context).page5, S.of(context).page6, S.of(context).page8, S.of(context).page11, "Чат"];
     if (widget.userEntity.role == UserRole.SPECIALIST && activeTab == 0) {
       activeTab = 1;
     }
@@ -230,7 +230,7 @@ class _MainRouteState extends State<MainRoute> {
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
-                                  child: Text("Отмена", style: TextStyle(color: GlobalsColor.blue, fontSize: 14.sp))),
+                                  child: Text(S.of(context).cancel, style: TextStyle(color: GlobalsColor.blue, fontSize: 14.sp))),
                               SizedBox(
                                 width: 5.w,
                               ),
@@ -245,7 +245,7 @@ class _MainRouteState extends State<MainRoute> {
                                     client.createCompany(GlobalsWidgets.uid, category, temp_name!, ph, temp_street!, temp_house!, file).then((value) => Navigator.pop(context));
                                   },
                                   child: Text(
-                                    "Добавить",
+                                    S.of(context).add,
                                     style: TextStyle(color: GlobalsColor.blue, fontSize: 14.sp),
                                   )),
                             ],
@@ -528,7 +528,7 @@ class _MainRouteState extends State<MainRoute> {
                         MaterialPageRoute(
                             builder: (context) => CustomChatPage(
                                   showTitle: true,
-                                  title: "По городу",
+                                  title: S.of(context).option2,
                                   history: true,
                                   chatName: "city",
                                   subscription: widget.userEntity.subscription,
@@ -537,7 +537,7 @@ class _MainRouteState extends State<MainRoute> {
                   }
                 case Mode.OUTCITY:
                   {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => CustomChatPage(showTitle: true, title: "Межгород", history: true, chatName: "outcity", subscription: widget.userEntity.subscription)));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CustomChatPage(showTitle: true, title: S.of(context).option1, history: true, chatName: "outcity", subscription: widget.userEntity.subscription)));
                     break;
                   }
               }
@@ -556,30 +556,10 @@ class _MainRouteState extends State<MainRoute> {
   }
 
   int getIndex(BuildContext context, String title) {
-    if (title.contains(S.of(context).page1)) {
-      return 0;
-    } else if (title.contains(S.of(context).page2)) {
-      return 1;
-    } else if (title.contains(S.of(context).page3)) {
-      return 2;
-    } else if (title.contains(S.of(context).page4)) {
-      return 3;
-    } else if (title.contains(S.of(context).page5)) {
-      return 4;
-    } else if (title.contains(S.of(context).page6)) {
-      return 5;
-    } else if (title.contains(S.of(context).page7)) {
-      return 6;
-    } else if (title.contains(S.of(context).page8)) {
-      return 7;
-    } else if (title.contains(S.of(context).page9)) {
-      return 8;
-    } else if (title.contains(S.of(context).page10)) {
-      return 9;
-    } else if (title.contains(S.of(context).page11)) {
-      return 10;
-    } else if (title.contains("Чат")) {
-      return 11;
+    for (int i = 0; i < pages.length; i++) {
+      if (pages[i] == title) {
+        return i;
+      }
     }
     return 0;
   }
@@ -611,7 +591,7 @@ class _MainRouteState extends State<MainRoute> {
             setState(() {});
             return true;
           },
-          child: SearchTransportationPage());
+          child: const SearchTransportationPage());
     } else if (title.contains(S.of(context).page4)) {
       return const CatalogPage(
         category: Categories.info,

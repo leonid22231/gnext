@@ -12,12 +12,14 @@ class UserEntity {
   String surname;
   String phone;
   String? photo;
+  String? telegram;
+  String? whatsapp;
   UserRole role;
   CityEntity city;
   double wallet;
   bool subscription;
 
-  UserEntity({required this.id, required this.uid, required this.name, required this.surname, required this.phone, required this.city, this.photo, required this.role, required this.wallet, required this.subscription});
+  UserEntity({this.telegram, this.whatsapp, required this.id, required this.uid, required this.name, required this.surname, required this.phone, required this.city, this.photo, required this.role, required this.wallet, required this.subscription});
 
   factory UserEntity.fromJson(Map<String, dynamic> json) => _$UserEntityFromJson(json);
   Map<String, dynamic> toJson() => _$UserEntityToJson(this);
