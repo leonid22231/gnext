@@ -74,7 +74,7 @@ class UserProfile extends StatelessWidget {
                       ],
                     ),
                     const Spacer(),
-                    (GlobalsWidgets.uid != user.uid && user.telegram != null)
+                    (GlobalsWidgets.uid != user.uid && user.telegram != null && user.telegram!.isNotEmpty)
                         ? SizedBox(
                             width: double.maxFinite,
                             height: 5.h,
@@ -94,7 +94,7 @@ class UserProfile extends StatelessWidget {
                             height: 1.h,
                           )
                         : const SizedBox.shrink(),
-                    (GlobalsWidgets.uid != user.uid && user.telegram != null)
+                    (GlobalsWidgets.uid != user.uid && user.whatsapp != null && user.whatsapp!.isNotEmpty)
                         ? SizedBox(
                             width: double.maxFinite,
                             height: 5.h,
