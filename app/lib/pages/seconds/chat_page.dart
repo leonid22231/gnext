@@ -31,7 +31,16 @@ class CustomChatPage extends StatefulWidget {
   final bool showTitle;
   final UserRole? readOnlyUser;
   final Function(int count)? onUpdate;
-  const CustomChatPage({this.companyChat, this.onUpdate, this.readOnlyUser, required this.showTitle, required this.title, required this.chatName, this.subscription, this.history, super.key});
+  const CustomChatPage(
+      {this.companyChat,
+      this.onUpdate,
+      this.readOnlyUser,
+      required this.showTitle,
+      required this.title,
+      required this.chatName,
+      this.subscription,
+      this.history,
+      super.key});
 
   @override
   State<StatefulWidget> createState() => _CustomChatPage();
@@ -65,13 +74,14 @@ class _CustomChatPage extends State<CustomChatPage> {
     recorderController = RecorderController()
       ..androidEncoder = AndroidEncoder.aac
       ..androidOutputFormat = AndroidOutputFormat.mpeg4
-      ..iosEncoder = IosEncoder.kAudioFormatMPEG4AAC
+      ..iosEncoder = IosEncoder.kAudioFormatMPEG4AAC_HE_V2
       ..sampleRate = 44100;
   }
 
   @override
   void dispose() {
     disconnectFromServer();
+    recorderController.dispose();
     super.dispose();
   }
 
@@ -92,7 +102,9 @@ class _CustomChatPage extends State<CustomChatPage> {
         appBar: showTitle
             ? AppBar(
                 centerTitle: true,
-                title: Text(widget.title, style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w700)),
+                title: Text(widget.title,
+                    style: TextStyle(
+                        fontSize: 22.sp, fontWeight: FontWeight.w700)),
               )
             : null,
         body: Padding(
@@ -115,165 +127,353 @@ class _CustomChatPage extends State<CustomChatPage> {
                                         children: [
                                           message.type == MessageType.USER
                                               ? InkWell(
-                                                  onTap: subscription && (message.user.role != UserRole.ADMIN && message.user.role != UserRole.MANAGER)
+                                                  onTap: subscription &&
+                                                          (message.user.role !=
+                                                                  UserRole
+                                                                      .ADMIN &&
+                                                              message.user
+                                                                      .role !=
+                                                                  UserRole
+                                                                      .MANAGER)
                                                       ? () {
                                                           Navigator.push(
                                                               context,
                                                               MaterialPageRoute(
-                                                                  builder: (context) => UserProfile(
-                                                                        user: message.user,
-                                                                      )));
+                                                                  builder:
+                                                                      (context) =>
+                                                                          UserProfile(
+                                                                            user:
+                                                                                message.user,
+                                                                          )));
                                                         }
                                                       : null,
                                                   child: ChatBubble(
-                                                      margin: const EdgeInsets.only(bottom: 20),
-                                                      clipper: ChatBubbleClipper1(type: _getType(message)),
-                                                      alignment: _getAlignment(message),
-                                                      backGroundColor: _getBackGround(message),
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              bottom: 20),
+                                                      clipper:
+                                                          ChatBubbleClipper1(
+                                                              type: _getType(
+                                                                  message)),
+                                                      alignment: _getAlignment(
+                                                          message),
+                                                      backGroundColor:
+                                                          _getBackGround(
+                                                              message),
                                                       child: Container(
-                                                        constraints: BoxConstraints(
+                                                        constraints:
+                                                            BoxConstraints(
                                                           maxWidth: 70.w,
                                                         ),
                                                         child: Column(
-                                                          crossAxisAlignment: _getAlignment(message) == Alignment.topRight ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                                                          crossAxisAlignment: _getAlignment(
+                                                                      message) ==
+                                                                  Alignment
+                                                                      .topRight
+                                                              ? CrossAxisAlignment
+                                                                  .end
+                                                              : CrossAxisAlignment
+                                                                  .start,
                                                           children: [
                                                             Row(
-                                                              mainAxisSize: MainAxisSize.min,
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .min,
                                                               children: [
-                                                                _getAlignment(message) == Alignment.topRight
+                                                                _getAlignment(
+                                                                            message) ==
+                                                                        Alignment
+                                                                            .topRight
                                                                     ? Text(
-                                                                        DateTime.now().difference(message.time).inHours < 12 ? DateFormat("(HH:mm)").format(message.time.toLocal()) : DateFormat("(dd.MM HH:mm)").format(message.time.toLocal()),
-                                                                        textAlign: TextAlign.end,
-                                                                        style: TextStyle(fontSize: 12.sp, color: _getType(message) == BubbleType.sendBubble ? Colors.white.withOpacity(0.6) : Colors.black.withOpacity(0.6)),
+                                                                        DateTime.now().difference(message.time).inHours <
+                                                                                12
+                                                                            ? DateFormat("(HH:mm)").format(message.time.toLocal())
+                                                                            : DateFormat("(dd.MM HH:mm)").format(message.time.toLocal()),
+                                                                        textAlign:
+                                                                            TextAlign.end,
+                                                                        style: TextStyle(
+                                                                            fontSize: 12
+                                                                                .sp,
+                                                                            color: _getType(message) == BubbleType.sendBubble
+                                                                                ? Colors.white.withOpacity(0.6)
+                                                                                : Colors.black.withOpacity(0.6)),
                                                                       )
-                                                                    : const SizedBox.shrink(),
-                                                                _getAlignment(message) == Alignment.topRight
+                                                                    : const SizedBox
+                                                                        .shrink(),
+                                                                _getAlignment(
+                                                                            message) ==
+                                                                        Alignment
+                                                                            .topRight
                                                                     ? SizedBox(
-                                                                        width: 2.w,
+                                                                        width:
+                                                                            2.w,
                                                                       )
-                                                                    : const SizedBox.shrink(),
+                                                                    : const SizedBox
+                                                                        .shrink(),
                                                                 Text(
-                                                                  (message.user.role == UserRole.USER || message.user.role == UserRole.SPECIALIST || (message.user.uid == GlobalsWidgets.uid && message.user.role == UserRole.MANAGER))
+                                                                  (message.user.role == UserRole.USER ||
+                                                                          message.user.role ==
+                                                                              UserRole
+                                                                                  .SPECIALIST ||
+                                                                          (message.user.uid == GlobalsWidgets.uid &&
+                                                                              message.user.role == UserRole.MANAGER))
                                                                       ? "${message.user.name}:"
                                                                       : message.user.role == UserRole.MANAGER
                                                                           ? message.user.name
                                                                           : widget.title,
-                                                                  style: TextStyle(color: _getType(message) == BubbleType.sendBubble ? Colors.white : Colors.black),
+                                                                  style: TextStyle(
+                                                                      color: _getType(message) ==
+                                                                              BubbleType
+                                                                                  .sendBubble
+                                                                          ? Colors
+                                                                              .white
+                                                                          : Colors
+                                                                              .black),
                                                                 ),
-                                                                subscription && message.user.uid != GlobalsWidgets.uid && (message.user.role != UserRole.ADMIN && message.user.role != UserRole.MANAGER)
+                                                                subscription &&
+                                                                        message.user.uid !=
+                                                                            GlobalsWidgets
+                                                                                .uid &&
+                                                                        (message.user.role != UserRole.ADMIN &&
+                                                                            message.user.role !=
+                                                                                UserRole
+                                                                                    .MANAGER)
                                                                     ? SizedBox(
-                                                                        width: 2.w,
+                                                                        width:
+                                                                            2.w,
                                                                       )
-                                                                    : const SizedBox.shrink(),
-                                                                subscription && message.user.uid != GlobalsWidgets.uid && (message.user.role != UserRole.ADMIN && message.user.role != UserRole.MANAGER)
+                                                                    : const SizedBox
+                                                                        .shrink(),
+                                                                subscription &&
+                                                                        message.user.uid !=
+                                                                            GlobalsWidgets
+                                                                                .uid &&
+                                                                        (message.user.role != UserRole.ADMIN &&
+                                                                            message.user.role !=
+                                                                                UserRole
+                                                                                    .MANAGER)
                                                                     ? Icon(
-                                                                        Icons.person,
-                                                                        color: GlobalsColor.blue,
+                                                                        Icons
+                                                                            .person,
+                                                                        color: GlobalsColor
+                                                                            .blue,
                                                                       )
-                                                                    : const SizedBox.shrink(),
-                                                                _getAlignment(message) == Alignment.topLeft
+                                                                    : const SizedBox
+                                                                        .shrink(),
+                                                                _getAlignment(
+                                                                            message) ==
+                                                                        Alignment
+                                                                            .topLeft
                                                                     ? SizedBox(
-                                                                        width: 2.w,
+                                                                        width:
+                                                                            2.w,
                                                                       )
-                                                                    : const SizedBox.shrink(),
-                                                                _getAlignment(message) == Alignment.topLeft
+                                                                    : const SizedBox
+                                                                        .shrink(),
+                                                                _getAlignment(
+                                                                            message) ==
+                                                                        Alignment
+                                                                            .topLeft
                                                                     ? Text(
-                                                                        DateTime.now().difference(message.time).inHours < 12 ? DateFormat("(HH:mm)").format(message.time.toLocal()) : DateFormat("(dd.MM HH:mm)").format(message.time.toLocal()),
-                                                                        textAlign: TextAlign.end,
-                                                                        style: TextStyle(fontSize: 12.sp, color: _getType(message) == BubbleType.sendBubble ? Colors.white.withOpacity(0.6) : Colors.black.withOpacity(0.6)),
+                                                                        DateTime.now().difference(message.time).inHours <
+                                                                                12
+                                                                            ? DateFormat("(HH:mm)").format(message.time.toLocal())
+                                                                            : DateFormat("(dd.MM HH:mm)").format(message.time.toLocal()),
+                                                                        textAlign:
+                                                                            TextAlign.end,
+                                                                        style: TextStyle(
+                                                                            fontSize: 12
+                                                                                .sp,
+                                                                            color: _getType(message) == BubbleType.sendBubble
+                                                                                ? Colors.white.withOpacity(0.6)
+                                                                                : Colors.black.withOpacity(0.6)),
                                                                       )
-                                                                    : const SizedBox.shrink()
+                                                                    : const SizedBox
+                                                                        .shrink()
                                                               ],
                                                             ),
                                                             Text(
                                                               message.content,
-                                                              style: TextStyle(color: _getType(message) == BubbleType.sendBubble ? Colors.white : Colors.black),
+                                                              style: TextStyle(
+                                                                  color: _getType(
+                                                                              message) ==
+                                                                          BubbleType
+                                                                              .sendBubble
+                                                                      ? Colors
+                                                                          .white
+                                                                      : Colors
+                                                                          .black),
                                                             ),
                                                           ],
                                                         ),
                                                       )),
                                                 )
-                                              : message.type == MessageType.AUDIO
+                                              : message.type ==
+                                                      MessageType.AUDIO
                                                   ? InkWell(
-                                                      onTap: subscription && (message.user.role != UserRole.ADMIN && message.user.role != UserRole.MANAGER)
+                                                      onTap: subscription &&
+                                                              (message.user
+                                                                          .role !=
+                                                                      UserRole
+                                                                          .ADMIN &&
+                                                                  message.user
+                                                                          .role !=
+                                                                      UserRole
+                                                                          .MANAGER)
                                                           ? () {
                                                               Navigator.push(
                                                                   context,
                                                                   MaterialPageRoute(
-                                                                      builder: (context) => UserProfile(
-                                                                            user: message.user,
+                                                                      builder: (context) =>
+                                                                          UserProfile(
+                                                                            user:
+                                                                                message.user,
                                                                           )));
                                                             }
                                                           : null,
                                                       child: ChatBubble(
-                                                          margin: const EdgeInsets.only(bottom: 20),
-                                                          clipper: ChatBubbleClipper1(type: _getType(message)),
-                                                          alignment: _getAlignment(message),
-                                                          backGroundColor: _getBackGround(message),
+                                                          margin:
+                                                              const EdgeInsets
+                                                                  .only(
+                                                                  bottom: 20),
+                                                          clipper:
+                                                              ChatBubbleClipper1(
+                                                                  type: _getType(
+                                                                      message)),
+                                                          alignment: _getAlignment(
+                                                              message),
+                                                          backGroundColor:
+                                                              _getBackGround(
+                                                                  message),
                                                           child: Container(
-                                                            constraints: const BoxConstraints(
-                                                              maxWidth: double.maxFinite,
+                                                            constraints:
+                                                                const BoxConstraints(
+                                                              maxWidth: double
+                                                                  .maxFinite,
                                                             ),
                                                             child: Column(
-                                                              crossAxisAlignment: _getAlignment(message) == Alignment.topRight ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                                                              crossAxisAlignment: _getAlignment(
+                                                                          message) ==
+                                                                      Alignment
+                                                                          .topRight
+                                                                  ? CrossAxisAlignment
+                                                                      .end
+                                                                  : CrossAxisAlignment
+                                                                      .start,
                                                               children: [
                                                                 Row(
-                                                                  mainAxisSize: MainAxisSize.min,
+                                                                  mainAxisSize:
+                                                                      MainAxisSize
+                                                                          .min,
                                                                   children: [
-                                                                    _getAlignment(message) == Alignment.topRight
+                                                                    _getAlignment(message) ==
+                                                                            Alignment
+                                                                                .topRight
                                                                         ? Text(
-                                                                            DateTime.now().difference(message.time).inHours < 12 ? DateFormat("(HH:mm)").format(message.time.toLocal()) : DateFormat("(dd.MM HH:mm)").format(message.time.toLocal()),
-                                                                            textAlign: TextAlign.end,
-                                                                            style: TextStyle(fontSize: 12.sp, color: _getType(message) == BubbleType.sendBubble ? Colors.white.withOpacity(0.6) : Colors.black.withOpacity(0.6)),
+                                                                            DateTime.now().difference(message.time).inHours < 12
+                                                                                ? DateFormat("(HH:mm)").format(message.time.toLocal())
+                                                                                : DateFormat("(dd.MM HH:mm)").format(message.time.toLocal()),
+                                                                            textAlign:
+                                                                                TextAlign.end,
+                                                                            style:
+                                                                                TextStyle(fontSize: 12.sp, color: _getType(message) == BubbleType.sendBubble ? Colors.white.withOpacity(0.6) : Colors.black.withOpacity(0.6)),
                                                                           )
-                                                                        : const SizedBox.shrink(),
-                                                                    _getAlignment(message) == Alignment.topRight
+                                                                        : const SizedBox
+                                                                            .shrink(),
+                                                                    _getAlignment(message) ==
+                                                                            Alignment
+                                                                                .topRight
                                                                         ? SizedBox(
-                                                                            width: 2.w,
+                                                                            width:
+                                                                                2.w,
                                                                           )
-                                                                        : const SizedBox.shrink(),
+                                                                        : const SizedBox
+                                                                            .shrink(),
                                                                     Text(
-                                                                      (message.user.role == UserRole.USER || message.user.role == UserRole.SPECIALIST || (message.user.uid == GlobalsWidgets.uid && message.user.role == UserRole.MANAGER)) ? "${message.user.name}:" : widget.title,
-                                                                      style: TextStyle(color: _getType(message) == BubbleType.sendBubble ? Colors.white : Colors.black),
+                                                                      (message.user.role == UserRole.USER ||
+                                                                              message.user.role == UserRole.SPECIALIST ||
+                                                                              (message.user.uid == GlobalsWidgets.uid && message.user.role == UserRole.MANAGER))
+                                                                          ? "${message.user.name}:"
+                                                                          : widget.title,
+                                                                      style: TextStyle(
+                                                                          color: _getType(message) == BubbleType.sendBubble
+                                                                              ? Colors.white
+                                                                              : Colors.black),
                                                                     ),
-                                                                    subscription && message.user.uid != GlobalsWidgets.uid && (message.user.role != UserRole.ADMIN && message.user.role != UserRole.MANAGER)
+                                                                    subscription &&
+                                                                            message.user.uid !=
+                                                                                GlobalsWidgets.uid &&
+                                                                            (message.user.role != UserRole.ADMIN && message.user.role != UserRole.MANAGER)
                                                                         ? SizedBox(
-                                                                            width: 2.w,
+                                                                            width:
+                                                                                2.w,
                                                                           )
                                                                         : const SizedBox.shrink(),
-                                                                    subscription && message.user.uid != GlobalsWidgets.uid && (message.user.role != UserRole.ADMIN && message.user.role != UserRole.MANAGER)
+                                                                    subscription &&
+                                                                            message.user.uid !=
+                                                                                GlobalsWidgets.uid &&
+                                                                            (message.user.role != UserRole.ADMIN && message.user.role != UserRole.MANAGER)
                                                                         ? Icon(
                                                                             Icons.person,
-                                                                            color: GlobalsColor.blue,
+                                                                            color:
+                                                                                GlobalsColor.blue,
                                                                           )
                                                                         : const SizedBox.shrink(),
-                                                                    _getAlignment(message) == Alignment.topLeft
+                                                                    _getAlignment(message) ==
+                                                                            Alignment
+                                                                                .topLeft
                                                                         ? SizedBox(
-                                                                            width: 2.w,
+                                                                            width:
+                                                                                2.w,
                                                                           )
-                                                                        : const SizedBox.shrink(),
-                                                                    _getAlignment(message) == Alignment.topLeft
+                                                                        : const SizedBox
+                                                                            .shrink(),
+                                                                    _getAlignment(message) ==
+                                                                            Alignment
+                                                                                .topLeft
                                                                         ? Text(
-                                                                            DateTime.now().difference(message.time).inHours < 12 ? DateFormat("(HH:mm)").format(message.time.toLocal()) : DateFormat("(dd.MM HH:mm)").format(message.time.toLocal()),
-                                                                            textAlign: TextAlign.end,
-                                                                            style: TextStyle(fontSize: 12.sp, color: _getType(message) == BubbleType.sendBubble ? Colors.white.withOpacity(0.6) : Colors.black.withOpacity(0.6)),
+                                                                            DateTime.now().difference(message.time).inHours < 12
+                                                                                ? DateFormat("(HH:mm)").format(message.time.toLocal())
+                                                                                : DateFormat("(dd.MM HH:mm)").format(message.time.toLocal()),
+                                                                            textAlign:
+                                                                                TextAlign.end,
+                                                                            style:
+                                                                                TextStyle(fontSize: 12.sp, color: _getType(message) == BubbleType.sendBubble ? Colors.white.withOpacity(0.6) : Colors.black.withOpacity(0.6)),
                                                                           )
-                                                                        : const SizedBox.shrink()
+                                                                        : const SizedBox
+                                                                            .shrink()
                                                                   ],
                                                                 ),
                                                                 VoiceMessageView(
-                                                                  backgroundColor: Colors.white,
-                                                                  activeSliderColor: GlobalsColor.blue,
-                                                                  innerPadding: 1.w,
-                                                                  circlesColor: GlobalsColor.blue,
-                                                                  controller: VoiceController(
-                                                                    audioSrc: "http://${GlobalsWidgets.ip}:8080/api/v1/chat/audio/${message.content}",
-                                                                    maxDuration: const Duration(days: 1),
-                                                                    isFile: false,
-                                                                    onComplete: () {},
-                                                                    onPause: () {},
-                                                                    onPlaying: () {},
-                                                                    onError: (err) {},
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .white,
+                                                                  activeSliderColor:
+                                                                      GlobalsColor
+                                                                          .blue,
+                                                                  innerPadding:
+                                                                      1.w,
+                                                                  circlesColor:
+                                                                      GlobalsColor
+                                                                          .blue,
+                                                                  controller:
+                                                                      VoiceController(
+                                                                    audioSrc:
+                                                                        "http://${GlobalsWidgets.ip}:8080/api/v1/chat/audio/${message.content}",
+                                                                    maxDuration:
+                                                                        const Duration(
+                                                                            days:
+                                                                                1),
+                                                                    isFile:
+                                                                        false,
+                                                                    onComplete:
+                                                                        () {},
+                                                                    onPause:
+                                                                        () {},
+                                                                    onPlaying:
+                                                                        () {},
+                                                                    onError:
+                                                                        (err) {},
                                                                   ),
                                                                 ),
                                                               ],
@@ -281,73 +481,142 @@ class _CustomChatPage extends State<CustomChatPage> {
                                                           )),
                                                     )
                                                   : InkWell(
-                                                      onTap: subscription && (message.user.role != UserRole.ADMIN && message.user.role != UserRole.MANAGER)
+                                                      onTap: subscription &&
+                                                              (message.user
+                                                                          .role !=
+                                                                      UserRole
+                                                                          .ADMIN &&
+                                                                  message.user
+                                                                          .role !=
+                                                                      UserRole
+                                                                          .MANAGER)
                                                           ? () {
                                                               Navigator.push(
                                                                   context,
                                                                   MaterialPageRoute(
-                                                                      builder: (context) => UserProfile(
-                                                                            user: message.user,
+                                                                      builder: (context) =>
+                                                                          UserProfile(
+                                                                            user:
+                                                                                message.user,
                                                                           )));
                                                             }
                                                           : null,
                                                       child: ChatBubble(
-                                                          margin: const EdgeInsets.only(bottom: 20),
-                                                          clipper: ChatBubbleClipper1(type: _getType(message)),
-                                                          alignment: _getAlignment(message),
-                                                          backGroundColor: _getBackGround(message),
+                                                          margin:
+                                                              const EdgeInsets
+                                                                  .only(
+                                                                  bottom: 20),
+                                                          clipper:
+                                                              ChatBubbleClipper1(
+                                                                  type: _getType(
+                                                                      message)),
+                                                          alignment: _getAlignment(
+                                                              message),
+                                                          backGroundColor:
+                                                              _getBackGround(
+                                                                  message),
                                                           child: Container(
-                                                            constraints: BoxConstraints(
+                                                            constraints:
+                                                                BoxConstraints(
                                                               maxWidth: 70.w,
                                                             ),
                                                             child: Column(
-                                                              crossAxisAlignment: _getAlignment(message) == Alignment.topRight ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                                                              crossAxisAlignment: _getAlignment(
+                                                                          message) ==
+                                                                      Alignment
+                                                                          .topRight
+                                                                  ? CrossAxisAlignment
+                                                                      .end
+                                                                  : CrossAxisAlignment
+                                                                      .start,
                                                               children: [
                                                                 Row(
-                                                                  mainAxisSize: MainAxisSize.min,
+                                                                  mainAxisSize:
+                                                                      MainAxisSize
+                                                                          .min,
                                                                   children: [
-                                                                    _getAlignment(message) == Alignment.topRight
+                                                                    _getAlignment(message) ==
+                                                                            Alignment
+                                                                                .topRight
                                                                         ? Text(
-                                                                            DateTime.now().difference(message.time).inHours < 12 ? DateFormat("(HH:mm)").format(message.time.toLocal()) : DateFormat("(dd.MM HH:mm)").format(message.time.toLocal()),
-                                                                            textAlign: TextAlign.end,
-                                                                            style: TextStyle(fontSize: 12.sp, color: _getType(message) == BubbleType.sendBubble ? Colors.white.withOpacity(0.6) : Colors.black.withOpacity(0.6)),
+                                                                            DateTime.now().difference(message.time).inHours < 12
+                                                                                ? DateFormat("(HH:mm)").format(message.time.toLocal())
+                                                                                : DateFormat("(dd.MM HH:mm)").format(message.time.toLocal()),
+                                                                            textAlign:
+                                                                                TextAlign.end,
+                                                                            style:
+                                                                                TextStyle(fontSize: 12.sp, color: _getType(message) == BubbleType.sendBubble ? Colors.white.withOpacity(0.6) : Colors.black.withOpacity(0.6)),
                                                                           )
-                                                                        : const SizedBox.shrink(),
-                                                                    _getAlignment(message) == Alignment.topRight
+                                                                        : const SizedBox
+                                                                            .shrink(),
+                                                                    _getAlignment(message) ==
+                                                                            Alignment
+                                                                                .topRight
                                                                         ? SizedBox(
-                                                                            width: 2.w,
+                                                                            width:
+                                                                                2.w,
                                                                           )
-                                                                        : const SizedBox.shrink(),
+                                                                        : const SizedBox
+                                                                            .shrink(),
                                                                     Text(
-                                                                      (message.user.role == UserRole.USER || message.user.role == UserRole.SPECIALIST || (message.user.uid == GlobalsWidgets.uid && message.user.role == UserRole.MANAGER)) ? "${message.user.name}:" : widget.title,
-                                                                      style: TextStyle(color: _getType(message) == BubbleType.sendBubble ? Colors.white : Colors.black),
+                                                                      (message.user.role == UserRole.USER ||
+                                                                              message.user.role == UserRole.SPECIALIST ||
+                                                                              (message.user.uid == GlobalsWidgets.uid && message.user.role == UserRole.MANAGER))
+                                                                          ? "${message.user.name}:"
+                                                                          : widget.title,
+                                                                      style: TextStyle(
+                                                                          color: _getType(message) == BubbleType.sendBubble
+                                                                              ? Colors.white
+                                                                              : Colors.black),
                                                                     ),
-                                                                    subscription && message.user.uid != GlobalsWidgets.uid && (message.user.role != UserRole.ADMIN && message.user.role != UserRole.MANAGER)
+                                                                    subscription &&
+                                                                            message.user.uid !=
+                                                                                GlobalsWidgets.uid &&
+                                                                            (message.user.role != UserRole.ADMIN && message.user.role != UserRole.MANAGER)
                                                                         ? SizedBox(
-                                                                            width: 2.w,
+                                                                            width:
+                                                                                2.w,
                                                                           )
                                                                         : const SizedBox.shrink(),
-                                                                    subscription && message.user.uid != GlobalsWidgets.uid && (message.user.role != UserRole.ADMIN && message.user.role != UserRole.MANAGER)
+                                                                    subscription &&
+                                                                            message.user.uid !=
+                                                                                GlobalsWidgets.uid &&
+                                                                            (message.user.role != UserRole.ADMIN && message.user.role != UserRole.MANAGER)
                                                                         ? Icon(
                                                                             Icons.person,
-                                                                            color: GlobalsColor.blue,
+                                                                            color:
+                                                                                GlobalsColor.blue,
                                                                           )
                                                                         : const SizedBox.shrink(),
-                                                                    _getAlignment(message) == Alignment.topLeft
+                                                                    _getAlignment(message) ==
+                                                                            Alignment
+                                                                                .topLeft
                                                                         ? SizedBox(
-                                                                            width: 2.w,
+                                                                            width:
+                                                                                2.w,
                                                                           )
-                                                                        : const SizedBox.shrink(),
-                                                                    _getAlignment(message) == Alignment.topLeft
+                                                                        : const SizedBox
+                                                                            .shrink(),
+                                                                    _getAlignment(message) ==
+                                                                            Alignment
+                                                                                .topLeft
                                                                         ? Text(
-                                                                            DateTime.now().difference(message.time).inHours < 12 ? DateFormat("(HH:mm)").format(message.time.toLocal()) : DateFormat("(dd.MM HH:mm)").format(message.time.toLocal()),
-                                                                            textAlign: TextAlign.end,
-                                                                            style: TextStyle(fontSize: 12.sp, color: _getType(message) == BubbleType.sendBubble ? Colors.white.withOpacity(0.6) : Colors.black.withOpacity(0.6)),
+                                                                            DateTime.now().difference(message.time).inHours < 12
+                                                                                ? DateFormat("(HH:mm)").format(message.time.toLocal())
+                                                                                : DateFormat("(dd.MM HH:mm)").format(message.time.toLocal()),
+                                                                            textAlign:
+                                                                                TextAlign.end,
+                                                                            style:
+                                                                                TextStyle(fontSize: 12.sp, color: _getType(message) == BubbleType.sendBubble ? Colors.white.withOpacity(0.6) : Colors.black.withOpacity(0.6)),
                                                                           )
-                                                                        : const SizedBox.shrink()
+                                                                        : const SizedBox
+                                                                            .shrink()
                                                                   ],
                                                                 ),
-                                                                Image.network(GlobalsWidgets.getPhoto(message.content)),
+                                                                Image.network(
+                                                                    GlobalsWidgets
+                                                                        .getPhoto(
+                                                                            message.content)),
                                                               ],
                                                             ),
                                                           )),
@@ -387,7 +656,8 @@ class _CustomChatPage extends State<CustomChatPage> {
                                     color: const Color(0xFF1E1B26),
                                   ),
                                   padding: const EdgeInsets.only(left: 18),
-                                  margin: const EdgeInsets.symmetric(horizontal: 15),
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 15),
                                 )
                               : Container(
                                   width: 100.w - 25.w,
@@ -404,7 +674,8 @@ class _CustomChatPage extends State<CustomChatPage> {
                                     controller: _controller,
                                     decoration: InputDecoration(
                                       hintText: S.of(context).text,
-                                      hintStyle: const TextStyle(color: Colors.white54),
+                                      hintStyle: const TextStyle(
+                                          color: Colors.white54),
                                       border: InputBorder.none,
                                       prefixIcon: IconButton(
                                         padding: EdgeInsets.zero,
@@ -413,32 +684,72 @@ class _CustomChatPage extends State<CustomChatPage> {
                                               context: context,
                                               builder: (context) {
                                                 return AlertDialog(
-                                                  title: Text(S.of(context).add_photo),
+                                                  title: Text(
+                                                      S.of(context).add_photo),
                                                   content: Column(
-                                                    mainAxisSize: MainAxisSize.min,
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
                                                     children: [
                                                       SizedBox(
                                                         width: double.maxFinite,
                                                         height: 5.h,
                                                         child: OutlinedButton(
-                                                            onPressed: () async {
-                                                              final ImagePicker picker = ImagePicker();
-                                                              final XFile? image = await picker.pickImage(source: ImageSource.gallery, preferredCameraDevice: CameraDevice.rear);
-                                                              debugPrint("Media ${image!.name}");
-                                                              File file = File.fromUri(Uri.parse(image.path));
+                                                            onPressed:
+                                                                () async {
+                                                              final ImagePicker
+                                                                  picker =
+                                                                  ImagePicker();
+                                                              final XFile? image = await picker.pickImage(
+                                                                  source:
+                                                                      ImageSource
+                                                                          .gallery,
+                                                                  preferredCameraDevice:
+                                                                      CameraDevice
+                                                                          .rear);
+                                                              debugPrint(
+                                                                  "Media ${image!.name}");
+                                                              File file = File
+                                                                  .fromUri(Uri
+                                                                      .parse(image
+                                                                          .path));
                                                               Dio dio = Dio();
-                                                              RestClient client = RestClient(dio);
-                                                              client.fileMessage(GlobalsWidgets.uid, widget.chatName, MessageType.PHOTO, file).then((value) {
+                                                              RestClient
+                                                                  client =
+                                                                  RestClient(
+                                                                      dio);
+                                                              client
+                                                                  .fileMessage(
+                                                                      GlobalsWidgets
+                                                                          .uid,
+                                                                      widget
+                                                                          .chatName,
+                                                                      MessageType
+                                                                          .PHOTO,
+                                                                      file)
+                                                                  .then(
+                                                                      (value) {
                                                                 getMessages();
-                                                                Navigator.pop(context);
-                                                              }).onError((error, stackTrace) {
-                                                                debugPrint("Error image $error");
+                                                                Navigator.pop(
+                                                                    context);
+                                                              }).onError((error,
+                                                                      stackTrace) {
+                                                                debugPrint(
+                                                                    "Error image $error");
                                                               });
                                                             },
-                                                            style: OutlinedButton.styleFrom(side: BorderSide.none, backgroundColor: Colors.white),
+                                                            style: OutlinedButton.styleFrom(
+                                                                side: BorderSide
+                                                                    .none,
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .white),
                                                             child: Text(
-                                                              S.of(context).photo,
-                                                              style: const TextStyle(color: Color(0xff317EFA)),
+                                                              S
+                                                                  .of(context)
+                                                                  .photo,
+                                                              style: const TextStyle(
+                                                                  color: Color(
+                                                                      0xff317EFA)),
                                                             )),
                                                       ),
                                                       SizedBox(
@@ -448,24 +759,61 @@ class _CustomChatPage extends State<CustomChatPage> {
                                                         width: double.maxFinite,
                                                         height: 5.h,
                                                         child: OutlinedButton(
-                                                            onPressed: () async {
-                                                              final ImagePicker picker = ImagePicker();
-                                                              final XFile? image = await picker.pickImage(source: ImageSource.camera);
-                                                              debugPrint("Media ${image!.name}");
-                                                              File file = File.fromUri(Uri.parse(image.path));
+                                                            onPressed:
+                                                                () async {
+                                                              final ImagePicker
+                                                                  picker =
+                                                                  ImagePicker();
+                                                              final XFile?
+                                                                  image =
+                                                                  await picker
+                                                                      .pickImage(
+                                                                          source:
+                                                                              ImageSource.camera);
+                                                              debugPrint(
+                                                                  "Media ${image!.name}");
+                                                              File file = File
+                                                                  .fromUri(Uri
+                                                                      .parse(image
+                                                                          .path));
                                                               Dio dio = Dio();
-                                                              RestClient client = RestClient(dio);
-                                                              client.fileMessage(GlobalsWidgets.uid, widget.chatName, MessageType.PHOTO, file).then((value) {
+                                                              RestClient
+                                                                  client =
+                                                                  RestClient(
+                                                                      dio);
+                                                              client
+                                                                  .fileMessage(
+                                                                      GlobalsWidgets
+                                                                          .uid,
+                                                                      widget
+                                                                          .chatName,
+                                                                      MessageType
+                                                                          .PHOTO,
+                                                                      file)
+                                                                  .then(
+                                                                      (value) {
                                                                 getMessages();
-                                                                Navigator.pop(context);
-                                                              }).onError((error, stackTrace) {
-                                                                debugPrint("Error image $error");
+                                                                Navigator.pop(
+                                                                    context);
+                                                              }).onError((error,
+                                                                      stackTrace) {
+                                                                debugPrint(
+                                                                    "Error image $error");
                                                               });
                                                             },
-                                                            style: OutlinedButton.styleFrom(side: BorderSide.none, backgroundColor: Colors.white),
+                                                            style: OutlinedButton.styleFrom(
+                                                                side: BorderSide
+                                                                    .none,
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .white),
                                                             child: Text(
-                                                              S.of(context).photo_,
-                                                              style: const TextStyle(color: Color(0xff317EFA)),
+                                                              S
+                                                                  .of(context)
+                                                                  .photo_,
+                                                              style: const TextStyle(
+                                                                  color: Color(
+                                                                      0xff317EFA)),
                                                             )),
                                                       ),
                                                     ],
@@ -474,7 +822,9 @@ class _CustomChatPage extends State<CustomChatPage> {
                                               });
                                         },
                                         icon: Icon(
-                                          isRecording ? Icons.refresh : Icons.photo_camera_outlined,
+                                          isRecording
+                                              ? Icons.refresh
+                                              : Icons.photo_camera_outlined,
                                           color: Colors.white,
                                         ),
                                       ),
@@ -482,7 +832,9 @@ class _CustomChatPage extends State<CustomChatPage> {
                                         padding: EdgeInsets.zero,
                                         onPressed: _refreshWave,
                                         icon: Icon(
-                                          isRecording ? Icons.refresh : Icons.send,
+                                          isRecording
+                                              ? Icons.refresh
+                                              : Icons.send,
                                           color: Colors.white,
                                         ),
                                       ),
@@ -516,11 +868,17 @@ class _CustomChatPage extends State<CustomChatPage> {
         debugPrint("Recorded file size: ${file.lengthSync()}");
         Dio dio = Dio();
         RestClient client = RestClient(dio);
-        client.fileMessage(GlobalsWidgets.uid, widget.chatName, MessageType.AUDIO, file).then((value) {
+        client
+            .fileMessage(
+                GlobalsWidgets.uid, widget.chatName, MessageType.AUDIO, file)
+            .then((value) {
           getMessages();
         });
       } else {
-        await recorderController.record(androidEncoder: AndroidEncoder.he_aac, bitRate: 128000, sampleRate: 16000); // Path is optional
+        await recorderController.record(
+            androidEncoder: AndroidEncoder.he_aac,
+            bitRate: 128000,
+            sampleRate: 16000); // Path is optional
       }
     } catch (e) {
       debugPrint("E ${e.toString()}");
@@ -596,12 +954,18 @@ class _CustomChatPage extends State<CustomChatPage> {
             List<Widget> widgets = [];
             debugPrint("Role ${GlobalsWidgets.role}");
             if (GlobalsWidgets.role != UserRole.USER && subscription) {
-              widgets.add(currentUser("${GlobalsWidgets.name} (Вы)", currentUserStories.isEmpty));
+              widgets.add(currentUser(
+                  "${GlobalsWidgets.name} (Вы)", currentUserStories.isEmpty));
             }
-            widgets.addAll(list.map((e) => user(e.user!.name, false, true, e.index!, e.user!.photo)).toList());
+            widgets.addAll(list
+                .map((e) =>
+                    user(e.user!.name, false, true, e.index!, e.user!.photo))
+                .toList());
             debugPrint("${GlobalsWidgets.role} && ${storis.length}");
 
-            if (storis.length < 2 && currentUserStories.isNotEmpty && GlobalsWidgets.role == UserRole.USER) {
+            if (storis.length < 2 &&
+                currentUserStories.isNotEmpty &&
+                GlobalsWidgets.role == UserRole.USER) {
               return const SizedBox.shrink();
             } else {
               return SizedBox(
@@ -641,7 +1005,11 @@ class _CustomChatPage extends State<CustomChatPage> {
     return InkWell(
       onLongPress: !active
           ? () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => StoryViewPage(usersStory: allStories)));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          StoryViewPage(usersStory: allStories)));
             }
           : null,
       onTap: () async {
@@ -659,21 +1027,29 @@ class _CustomChatPage extends State<CustomChatPage> {
                       child: OutlinedButton(
                           onPressed: () async {
                             final ImagePicker picker = ImagePicker();
-                            final XFile? image = await picker.pickImage(source: ImageSource.gallery, preferredCameraDevice: CameraDevice.rear);
+                            final XFile? image = await picker.pickImage(
+                                source: ImageSource.gallery,
+                                preferredCameraDevice: CameraDevice.rear);
                             debugPrint("Media ${image!.name}");
                             File file = File.fromUri(Uri.parse(image.path));
                             Dio dio = Dio();
                             RestClient client = RestClient(dio);
-                            String id = await client.getChatId(GlobalsWidgets.uid, widget.chatName);
+                            String id = await client.getChatId(
+                                GlobalsWidgets.uid, widget.chatName);
                             debugPrint("ID $id");
-                            client.addStory(id, GlobalsWidgets.uid, StoryType.PHOTO, file).then((value) {
+                            client
+                                .addStory(id, GlobalsWidgets.uid,
+                                    StoryType.PHOTO, file)
+                                .then((value) {
                               setState(() {});
                               Navigator.pop(context);
                             }).onError((error, stackTrace) {
                               debugPrint("Error image $error");
                             });
                           },
-                          style: OutlinedButton.styleFrom(side: BorderSide.none, backgroundColor: Colors.white),
+                          style: OutlinedButton.styleFrom(
+                              side: BorderSide.none,
+                              backgroundColor: Colors.white),
                           child: Text(
                             S.of(context).photo,
                             style: const TextStyle(color: Color(0xff317EFA)),
@@ -688,21 +1064,28 @@ class _CustomChatPage extends State<CustomChatPage> {
                       child: OutlinedButton(
                           onPressed: () async {
                             final ImagePicker picker = ImagePicker();
-                            final XFile? image = await picker.pickImage(source: ImageSource.camera);
+                            final XFile? image = await picker.pickImage(
+                                source: ImageSource.camera);
                             debugPrint("Media ${image!.name}");
                             File file = File.fromUri(Uri.parse(image.path));
                             Dio dio = Dio();
                             RestClient client = RestClient(dio);
-                            String id = await client.getChatId(GlobalsWidgets.uid, widget.chatName);
+                            String id = await client.getChatId(
+                                GlobalsWidgets.uid, widget.chatName);
                             debugPrint("ID $id");
-                            client.addStory(id, GlobalsWidgets.uid, StoryType.PHOTO, file).then((value) {
+                            client
+                                .addStory(id, GlobalsWidgets.uid,
+                                    StoryType.PHOTO, file)
+                                .then((value) {
                               setState(() {});
                               Navigator.pop(context);
                             }).onError((error, stackTrace) {
                               debugPrint("Error image $error");
                             });
                           },
-                          style: OutlinedButton.styleFrom(side: BorderSide.none, backgroundColor: Colors.white),
+                          style: OutlinedButton.styleFrom(
+                              side: BorderSide.none,
+                              backgroundColor: Colors.white),
                           child: Text(
                             S.of(context).photo_,
                             style: const TextStyle(color: Color(0xff317EFA)),
@@ -717,18 +1100,25 @@ class _CustomChatPage extends State<CustomChatPage> {
                       child: OutlinedButton(
                           onPressed: () async {
                             final ImagePicker picker = ImagePicker();
-                            final XFile? video = await picker.pickVideo(source: ImageSource.gallery);
+                            final XFile? video = await picker.pickVideo(
+                                source: ImageSource.gallery);
                             debugPrint("Media ${video!.name}");
                             File file = File.fromUri(Uri.parse(video.path));
                             Dio dio = Dio();
                             RestClient client = RestClient(dio);
-                            String id = await client.getChatId(GlobalsWidgets.uid, widget.chatName);
-                            client.addStory(id, GlobalsWidgets.uid, StoryType.VIDEO, file).then((value) {
+                            String id = await client.getChatId(
+                                GlobalsWidgets.uid, widget.chatName);
+                            client
+                                .addStory(id, GlobalsWidgets.uid,
+                                    StoryType.VIDEO, file)
+                                .then((value) {
                               setState(() {});
                               Navigator.pop(context);
                             });
                           },
-                          style: OutlinedButton.styleFrom(side: BorderSide.none, backgroundColor: Colors.white),
+                          style: OutlinedButton.styleFrom(
+                              side: BorderSide.none,
+                              backgroundColor: Colors.white),
                           child: Text(
                             S.of(context).video,
                             style: const TextStyle(color: Color(0xff317EFA)),
@@ -743,18 +1133,26 @@ class _CustomChatPage extends State<CustomChatPage> {
                       child: OutlinedButton(
                           onPressed: () async {
                             final ImagePicker picker = ImagePicker();
-                            final XFile? video = await picker.pickVideo(source: ImageSource.camera, preferredCameraDevice: CameraDevice.rear);
+                            final XFile? video = await picker.pickVideo(
+                                source: ImageSource.camera,
+                                preferredCameraDevice: CameraDevice.rear);
                             debugPrint("Media ${video!.name}");
                             File file = File.fromUri(Uri.parse(video.path));
                             Dio dio = Dio();
                             RestClient client = RestClient(dio);
-                            String id = await client.getChatId(GlobalsWidgets.uid, widget.chatName);
-                            client.addStory(id, GlobalsWidgets.uid, StoryType.VIDEO, file).then((value) {
+                            String id = await client.getChatId(
+                                GlobalsWidgets.uid, widget.chatName);
+                            client
+                                .addStory(id, GlobalsWidgets.uid,
+                                    StoryType.VIDEO, file)
+                                .then((value) {
                               setState(() {});
                               Navigator.pop(context);
                             });
                           },
-                          style: OutlinedButton.styleFrom(side: BorderSide.none, backgroundColor: Colors.white),
+                          style: OutlinedButton.styleFrom(
+                              side: BorderSide.none,
+                              backgroundColor: Colors.white),
                           child: Text(
                             S.of(context).video_,
                             style: const TextStyle(color: Color(0xff317EFA)),
@@ -779,7 +1177,15 @@ class _CustomChatPage extends State<CustomChatPage> {
                         child: SizedBox.fromSize(
                           size: const Size.fromRadius(29), // Image radius
                           child: Container(
-                            decoration: BoxDecoration(color: !storyLoad ? Colors.transparent : null, gradient: storyLoad ? const LinearGradient(colors: [Colors.blueAccent, Color(0xffee2a7b), Colors.blueAccent]) : null),
+                            decoration: BoxDecoration(
+                                color: !storyLoad ? Colors.transparent : null,
+                                gradient: storyLoad
+                                    ? const LinearGradient(colors: [
+                                        Colors.blueAccent,
+                                        Color(0xffee2a7b),
+                                        Colors.blueAccent
+                                      ])
+                                    : null),
                           ),
                         ),
                       ),
@@ -787,14 +1193,16 @@ class _CustomChatPage extends State<CustomChatPage> {
                         child: SizedBox.fromSize(
                           size: const Size.fromRadius(27), // Image radius
                           child: Container(
-                            color: storyLoad ? Colors.white : Colors.transparent,
+                            color:
+                                storyLoad ? Colors.white : Colors.transparent,
                           ),
                         ),
                       ),
                       ClipOval(
                         child: SizedBox.fromSize(
                           size: const Size.fromRadius(25), // Image radius
-                          child: Image.network(GlobalsWidgets.getUserPhoto(), fit: BoxFit.cover),
+                          child: Image.network(GlobalsWidgets.getUserPhoto(),
+                              fit: BoxFit.cover),
                         ),
                       ),
                     ],
@@ -803,7 +1211,9 @@ class _CustomChatPage extends State<CustomChatPage> {
                       ? Container(
                           height: 2.h,
                           width: 2.h,
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: GlobalsColor.blue),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(14),
+                              color: GlobalsColor.blue),
                           child: Align(
                             alignment: Alignment.center,
                             child: Icon(
@@ -827,7 +1237,8 @@ class _CustomChatPage extends State<CustomChatPage> {
     );
   }
 
-  Widget user(String name, bool active, bool current, int index, String? photo) {
+  Widget user(
+      String name, bool active, bool current, int index, String? photo) {
     return InkWell(
       onTap: !current
           ? () async {
@@ -845,21 +1256,31 @@ class _CustomChatPage extends State<CustomChatPage> {
                             child: OutlinedButton(
                                 onPressed: () async {
                                   final ImagePicker picker = ImagePicker();
-                                  final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+                                  final XFile? image = await picker.pickImage(
+                                      source: ImageSource.gallery);
                                   debugPrint("Media ${image!.name}");
-                                  File file = File.fromUri(Uri.parse(image.path));
+                                  File file =
+                                      File.fromUri(Uri.parse(image.path));
                                   Dio dio = Dio();
                                   RestClient client = RestClient(dio);
-                                  String id = await client.getChatId(GlobalsWidgets.uid, widget.chatName);
+                                  String id = await client.getChatId(
+                                      GlobalsWidgets.uid, widget.chatName);
                                   debugPrint("ID $id");
-                                  client.addStory(id, GlobalsWidgets.uid, StoryType.PHOTO, file).then((value) {}).onError((error, stackTrace) {
+                                  client
+                                      .addStory(id, GlobalsWidgets.uid,
+                                          StoryType.PHOTO, file)
+                                      .then((value) {})
+                                      .onError((error, stackTrace) {
                                     debugPrint("Error image $error");
                                   });
                                 },
-                                style: OutlinedButton.styleFrom(side: BorderSide.none, backgroundColor: Colors.white),
+                                style: OutlinedButton.styleFrom(
+                                    side: BorderSide.none,
+                                    backgroundColor: Colors.white),
                                 child: Text(
                                   S.of(context).photo,
-                                  style: const TextStyle(color: Color(0xff317EFA)),
+                                  style:
+                                      const TextStyle(color: Color(0xff317EFA)),
                                 )),
                           ),
                           SizedBox(
@@ -871,18 +1292,27 @@ class _CustomChatPage extends State<CustomChatPage> {
                             child: OutlinedButton(
                                 onPressed: () async {
                                   final ImagePicker picker = ImagePicker();
-                                  final XFile? video = await picker.pickVideo(source: ImageSource.gallery);
+                                  final XFile? video = await picker.pickVideo(
+                                      source: ImageSource.gallery);
                                   debugPrint("Media ${video!.name}");
-                                  File file = File.fromUri(Uri.parse(video.path));
+                                  File file =
+                                      File.fromUri(Uri.parse(video.path));
                                   Dio dio = Dio();
                                   RestClient client = RestClient(dio);
-                                  String id = await client.getChatId(GlobalsWidgets.uid, widget.chatName);
-                                  client.addStory(id, GlobalsWidgets.uid, StoryType.VIDEO, file).then((value) {});
+                                  String id = await client.getChatId(
+                                      GlobalsWidgets.uid, widget.chatName);
+                                  client
+                                      .addStory(id, GlobalsWidgets.uid,
+                                          StoryType.VIDEO, file)
+                                      .then((value) {});
                                 },
-                                style: OutlinedButton.styleFrom(side: BorderSide.none, backgroundColor: Colors.white),
+                                style: OutlinedButton.styleFrom(
+                                    side: BorderSide.none,
+                                    backgroundColor: Colors.white),
                                 child: Text(
                                   S.of(context).video,
-                                  style: const TextStyle(color: Color(0xff317EFA)),
+                                  style:
+                                      const TextStyle(color: Color(0xff317EFA)),
                                 )),
                           )
                         ],
@@ -914,7 +1344,12 @@ class _CustomChatPage extends State<CustomChatPage> {
                               child: SizedBox.fromSize(
                                 size: const Size.fromRadius(29), // Image radius
                                 child: Container(
-                                  decoration: const BoxDecoration(gradient: LinearGradient(colors: [Colors.blueAccent, Color(0xffee2a7b), Colors.blueAccent])),
+                                  decoration: const BoxDecoration(
+                                      gradient: LinearGradient(colors: [
+                                    Colors.blueAccent,
+                                    Color(0xffee2a7b),
+                                    Colors.blueAccent
+                                  ])),
                                 ),
                               ),
                             )
@@ -932,7 +1367,8 @@ class _CustomChatPage extends State<CustomChatPage> {
                       ClipOval(
                         child: SizedBox.fromSize(
                           size: const Size.fromRadius(25), // Image radius
-                          child: Image.network(GlobalsWidgets.getPhoto(photo), fit: BoxFit.cover),
+                          child: Image.network(GlobalsWidgets.getPhoto(photo),
+                              fit: BoxFit.cover),
                         ),
                       ),
                     ],
@@ -941,7 +1377,9 @@ class _CustomChatPage extends State<CustomChatPage> {
                       ? Container(
                           height: 2.h,
                           width: 2.h,
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: GlobalsColor.blue),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(14),
+                              color: GlobalsColor.blue),
                           child: Align(
                             alignment: Alignment.center,
                             child: Icon(
@@ -1012,7 +1450,10 @@ class _CustomChatPage extends State<CustomChatPage> {
     try {
       debugPrint("Connect to room $name");
       OptionBuilder optionBuilder = OptionBuilder();
-      Map<String, dynamic> opt = optionBuilder.disableAutoConnect().setTransports(["websocket"]).setQuery({"room": name, "uid": GlobalsWidgets.uid}).build();
+      Map<String, dynamic> opt = optionBuilder
+          .disableAutoConnect()
+          .setTransports(["websocket"]).setQuery(
+              {"room": name, "uid": GlobalsWidgets.uid}).build();
       opt.addAll({"forceNew": true});
       socket = io('http://${GlobalsWidgets.ip}:8081', opt);
       socket.connect();
@@ -1044,7 +1485,8 @@ class _CustomChatPage extends State<CustomChatPage> {
 
   Future<void> sendMessage() async {
     debugPrint("Send");
-    if (_controller.text.isNotEmpty && _controller.text.replaceAll(" ", "").isNotEmpty) {
+    if (_controller.text.isNotEmpty &&
+        _controller.text.replaceAll(" ", "").isNotEmpty) {
       socket.emit("send_message", {"content": _controller.value.text});
       getMessages();
       setState(() {});

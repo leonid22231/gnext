@@ -9,64 +9,38 @@ import 'package:app/main_route.dart';
 import 'package:app/preload/preload_page.dart';
 import 'package:app/utils/GlobalsWidgets.dart';
 import 'package:app/utils/localization/localization_block.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   FirebaseAuth auth = FirebaseAuth.instance;
   if (auth.currentUser != null) {
-    print("Current user not null");
+    debugPrint("Current user not null");
     GlobalsWidgets.uid = auth.currentUser!.uid;
     Dio dio = Dio();
     RestClient client = RestClient(dio);
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    client.setUserUid(sharedPreferences.getString("phone") ?? "null", GlobalsWidgets.uid);
+    client.setUserUid(
+        sharedPreferences.getString("phone") ?? "null", GlobalsWidgets.uid);
   } else {
     (await SharedPreferences.getInstance()).remove("phone");
-    print("Current user null");
+    debugPrint("Current user null");
   }
-  runApp(MultiBlocProvider(providers: [BlocProvider(create: (_) => LanguageBloc())], child: const MyApp()));
-}
-
-_checkStoragePermission() async {
-  PermissionStatus status;
-  if (Platform.isAndroid) {
-    final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-    final AndroidDeviceInfo info = await deviceInfoPlugin.androidInfo;
-    if ((info.version.sdkInt) >= 33) {
-      status = await Permission.manageExternalStorage.request();
-    } else {
-      status = await Permission.storage.request();
-    }
-  } else {
-    status = await Permission.storage.request();
-  }
-
-  switch (status) {
-    case PermissionStatus.denied:
-      return false;
-    case PermissionStatus.granted:
-      return true;
-    case PermissionStatus.restricted:
-      return false;
-    case PermissionStatus.limited:
-      return true;
-    case PermissionStatus.permanentlyDenied:
-      return false;
-    case PermissionStatus.provisional:
-  }
+  runApp(MultiBlocProvider(
+      providers: [BlocProvider(create: (_) => LanguageBloc())],
+      child: const MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -93,7 +67,8 @@ class _MyApp extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    Locale currentLocale = Locale(Platform.localeName.split("_")[0], Platform.localeName.split("_")[1]);
+    Locale currentLocale = Locale(
+        Platform.localeName.split("_")[0], Platform.localeName.split("_")[1]);
     debugPrint("Locale is $currentLocale");
     return ResponsiveSizer(builder: (_, __, ___) {
       return BlocBuilder<LanguageBloc, LanguageState>(
@@ -131,18 +106,18 @@ class _MyApp extends State<MyApp> {
                           );
                         } else {
                           if (snapshot.error is DioException) {
-                            print("Sign out 1 ${snapshot.error}");
+                            debugPrint("Sign out 1 ${snapshot.error}");
                             FirebaseAuth.instance.signOut();
                             return const LoginPage();
                           }
-                          print("Sign out 2 ${snapshot.error}");
+                          debugPrint("Sign out 2 ${snapshot.error}");
                           return const SizedBox.shrink();
                         }
                       })
                   : PreloadPage(),
             );
           } else {
-            return SizedBox.shrink();
+            return const SizedBox.shrink();
           }
         },
       );

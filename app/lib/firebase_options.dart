@@ -59,10 +59,10 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCD3LJ-trFh3zOdB_llbYoKNYdvG4NWcQE',
-    appId: '1:777574916207:ios:1216bed1cb9f118f41ad9a',
+    appId: '1:777574916207:ios:e4cd51d5c73f66a841ad9a',
     messagingSenderId: '777574916207',
     projectId: 'gnext-a9f45',
     storageBucket: 'gnext-a9f45.appspot.com',
-    iosBundleId: 'com.thedeveloper.app',
+    iosBundleId: 'com.thedeveloper.gnextlogistics',
   );
 }

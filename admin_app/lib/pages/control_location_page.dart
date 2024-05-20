@@ -32,7 +32,8 @@ class _ControlLocationPage extends State<ControlLocationPage> {
                 addCity();
               },
               backgroundColor: mainColor,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50)),
               child: SizedBox(
                 height: 10.h,
                 width: 10.h,
@@ -55,7 +56,8 @@ class _ControlLocationPage extends State<ControlLocationPage> {
         centerTitle: true,
         title: Text(
           !selectMode ? "Управление локациями" : "Выберите город",
-          style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold, color: mainColor),
+          style: TextStyle(
+              fontSize: 18.sp, fontWeight: FontWeight.bold, color: mainColor),
         ),
       ),
       body: SingleChildScrollView(
@@ -84,9 +86,11 @@ class _ControlLocationPage extends State<ControlLocationPage> {
                                 items: snapshot.data!,
                                 hintText: "Выберите страну",
                                 decoration: CustomDropdownDecoration(
-                                  closedBorder: Border.all(color: const Color(0xffD9D9D9)),
+                                  closedBorder: Border.all(
+                                      color: const Color(0xffD9D9D9)),
                                   closedFillColor: Colors.transparent,
-                                  expandedBorder: Border.all(color: const Color(0xffD9D9D9)),
+                                  expandedBorder: Border.all(
+                                      color: const Color(0xffD9D9D9)),
                                   expandedFillColor: Colors.white,
                                 ),
                                 onChanged: (country) {
@@ -107,7 +111,10 @@ class _ControlLocationPage extends State<ControlLocationPage> {
                                     },
                                     borderRadius: BorderRadius.circular(10),
                                     child: Ink(
-                                      decoration: BoxDecoration(color: mainColor, borderRadius: BorderRadius.circular(10)),
+                                      decoration: BoxDecoration(
+                                          color: mainColor,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
                                       child: const Center(
                                         child: Icon(
                                           Icons.add,
@@ -169,7 +176,8 @@ class _ControlLocationPage extends State<ControlLocationPage> {
                     children: [
                       Text(
                         "Название",
-                        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 14.sp, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
                         height: 1.h,
@@ -185,8 +193,14 @@ class _ControlLocationPage extends State<ControlLocationPage> {
                           decoration: InputDecoration(
                             hintText: "Введите название страны",
                             hintStyle: TextStyle(fontSize: 16.sp),
-                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(9), borderSide: const BorderSide(color: Color(0xffD9D9D9))),
-                            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(9), borderSide: const BorderSide(color: Color(0xffD9D9D9))),
+                            enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(9),
+                                borderSide:
+                                    const BorderSide(color: Color(0xffD9D9D9))),
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(9),
+                                borderSide:
+                                    const BorderSide(color: Color(0xffD9D9D9))),
                           ),
                         ),
                       ),
@@ -199,7 +213,9 @@ class _ControlLocationPage extends State<ControlLocationPage> {
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
-                                child: Text("Отмена", style: TextStyle(color: mainColor, fontSize: 14.sp))),
+                                child: Text("Отмена",
+                                    style: TextStyle(
+                                        color: mainColor, fontSize: 14.sp))),
                             SizedBox(
                               width: 5.w,
                             ),
@@ -207,17 +223,21 @@ class _ControlLocationPage extends State<ControlLocationPage> {
                                 onPressed: () {
                                   Dio dio = Dio();
                                   RestClient client = RestClient(dio);
-                                  client.createCountry(temp_name!).then((value) {
+                                  client
+                                      .createCountry(temp_name!)
+                                      .then((value) {
                                     Navigator.pop(context);
                                   }).onError((error, stackTrace) {
                                     if (error is DioException) {
-                                      displayError(error.response!.data, context);
+                                      displayError(
+                                          error.response!.data, context);
                                     }
                                   });
                                 },
                                 child: Text(
                                   "Добавить",
-                                  style: TextStyle(color: mainColor, fontSize: 14.sp),
+                                  style: TextStyle(
+                                      color: mainColor, fontSize: 14.sp),
                                 )),
                           ],
                         ),
@@ -248,7 +268,8 @@ class _ControlLocationPage extends State<ControlLocationPage> {
                     children: [
                       Text(
                         "Название",
-                        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 14.sp, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
                         height: 1.h,
@@ -264,8 +285,14 @@ class _ControlLocationPage extends State<ControlLocationPage> {
                           decoration: InputDecoration(
                             hintText: "Введите название города",
                             hintStyle: TextStyle(fontSize: 16.sp),
-                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(9), borderSide: const BorderSide(color: Color(0xffD9D9D9))),
-                            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(9), borderSide: const BorderSide(color: Color(0xffD9D9D9))),
+                            enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(9),
+                                borderSide:
+                                    const BorderSide(color: Color(0xffD9D9D9))),
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(9),
+                                borderSide:
+                                    const BorderSide(color: Color(0xffD9D9D9))),
                           ),
                         ),
                       ),
@@ -278,7 +305,9 @@ class _ControlLocationPage extends State<ControlLocationPage> {
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
-                                child: Text("Отмена", style: TextStyle(color: mainColor, fontSize: 14.sp))),
+                                child: Text("Отмена",
+                                    style: TextStyle(
+                                        color: mainColor, fontSize: 14.sp))),
                             SizedBox(
                               width: 5.w,
                             ),
@@ -286,17 +315,22 @@ class _ControlLocationPage extends State<ControlLocationPage> {
                                 onPressed: () {
                                   Dio dio = Dio();
                                   RestClient client = RestClient(dio);
-                                  client.createCity(selectedCountry!.id, temp_name!).then((value) {
+                                  client
+                                      .createCity(
+                                          selectedCountry!.id, temp_name!)
+                                      .then((value) {
                                     Navigator.pop(context);
                                   }).onError((error, stackTrace) {
                                     if (error is DioException) {
-                                      displayError(error.response!.data, context);
+                                      displayError(
+                                          error.response!.data, context);
                                     }
                                   });
                                 },
                                 child: Text(
                                   "Добавить",
-                                  style: TextStyle(color: mainColor, fontSize: 14.sp),
+                                  style: TextStyle(
+                                      color: mainColor, fontSize: 14.sp),
                                 )),
                           ],
                         ),
@@ -319,12 +353,28 @@ class _ControlLocationPage extends State<ControlLocationPage> {
           : null,
       borderRadius: BorderRadius.circular(20),
       child: Ink(
-        decoration: BoxDecoration(color: mainColor, borderRadius: BorderRadius.circular(20)),
+        decoration: BoxDecoration(
+            color: mainColor, borderRadius: BorderRadius.circular(20)),
         child: Padding(
           padding: EdgeInsets.all(2.h),
-          child: Text(
-            city.name,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16.sp),
+          child: Row(
+            children: [
+              Text(
+                city.name,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.sp),
+              ),
+              SizedBox(
+                width: 5.w,
+              ),
+              Text("Сумма пополнений: ${city.value ?? 0}",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.sp))
+            ],
           ),
         ),
       ),
