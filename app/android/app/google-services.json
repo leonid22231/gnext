@@ -26,25 +26,6 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:777574916207:android:6e94128922232d2141ad9a",
-        "android_client_info": {
-          "package_name": "com.thedeveloper.app"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAKnDsUJ_l6tqzcQtk07Pw32_4FvK8YAiA"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:777574916207:android:0f65f4fce254114541ad9a",
         "android_client_info": {
           "package_name": "com.thedeveloper.gnextlogistics"

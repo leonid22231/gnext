@@ -1,5 +1,6 @@
 package com.thedeveloper.gnext.repository;
 
+import com.thedeveloper.gnext.entity.CityEntity;
 import com.thedeveloper.gnext.entity.MessageEntity;
 import com.thedeveloper.gnext.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,4 +20,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
             value = "SELECT * FROM users WHERE DATE_ADD(users.create_date,interval 1 week) < NOW();",
             nativeQuery = true)
     List<UserEntity> findAfterSevenDays();
+    List<UserEntity> findUserEntitiesByCity(CityEntity city);
 }

@@ -2,16 +2,21 @@ package com.thedeveloper.gnext.controller;
 
 import com.thedeveloper.gnext.entity.CityEntity;
 import com.thedeveloper.gnext.entity.CountryEntity;
-import com.thedeveloper.gnext.service.ChatService;
-import com.thedeveloper.gnext.service.CityService;
-import com.thedeveloper.gnext.service.CountryService;
+import com.thedeveloper.gnext.entity.UserEntity;
+import com.thedeveloper.gnext.entity.WalletEventEntity;
+import com.thedeveloper.gnext.enums.WalletEventType;
+import com.thedeveloper.gnext.models.CityModel;
+import com.thedeveloper.gnext.models.CountryModel;
+import com.thedeveloper.gnext.service.*;
 import com.thedeveloper.gnext.utils.Globals;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -19,12 +24,40 @@ import java.util.List;
 @AllArgsConstructor
 @Slf4j
 public class LocationController {
+    WalletEventService walletEventService;
+    UserService userService;
     CountryService countryService;
     ChatService chatService;
     CityService cityService;
     @GetMapping("/countries")
     public ResponseEntity<List<CountryEntity>> findAllCity(){
         return new ResponseEntity<>(countryService.findAll(), HttpStatus.OK);
+    }
+    @GetMapping("/AdminCountries")
+    public ResponseEntity<?> findAllCityAdmin(){
+        List<CountryModel> countryModels = new ArrayList<>();
+        for(CountryEntity country : countryService.findAll()){
+            CountryModel countryModel = new CountryModel();
+            countryModel.setId(country.getId());
+            countryModel.setName(country.getName());
+            for(CityEntity city : country.getCities()){
+                CityModel cityModel = new CityModel();
+                cityModel.setName(city.getName());
+                cityModel.setId(city.getId());
+                cityModel.setValue(0);
+                List<UserEntity> users = userService.findByCity(city);
+                for(UserEntity user : users){
+                    for(WalletEventEntity event : walletEventService.findByUser(user)){
+                        if(event.getType()== WalletEventType.ADD){
+                            cityModel.setValue(cityModel.getValue() + event.getSum());
+                        }
+                    }
+                }
+                countryModel.getCities().add(cityModel);
+            }
+            countryModels.add(countryModel);
+        }
+        return new ResponseEntity<>(countryModels, HttpStatus.OK);
     }
     @PostMapping("/country/create")
     public ResponseEntity<?> createCountry(@RequestParam String name){

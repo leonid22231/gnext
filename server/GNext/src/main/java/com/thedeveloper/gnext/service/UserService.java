@@ -1,5 +1,6 @@
 package com.thedeveloper.gnext.service;
 
+import com.thedeveloper.gnext.entity.CityEntity;
 import com.thedeveloper.gnext.entity.UserEntity;
 import com.thedeveloper.gnext.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -42,6 +43,10 @@ public class UserService {
         }
         return  list;
     }
+    public List<UserEntity> findByCity(CityEntity city){
+        return userRepository.findUserEntitiesByCity(city);
+    }
+
     public List<UserEntity> findAfterSevenDays(){
         return userRepository.findAfterSevenDays();
     }

@@ -348,8 +348,14 @@ class _RegisterPage extends State<RegisterPage> with TickerProviderStateMixin {
                         await FirebaseAuth.instance.signInAnonymously();
                         GlobalsWidgets.uid =
                             FirebaseAuth.instance.currentUser!.uid;
-                        String? messageToken =
-                            await FirebaseMessaging.instance.getToken();
+                        String? messageToken;
+                        if (Platform.isAndroid) {
+                          messageToken =
+                              await FirebaseMessaging.instance.getToken();
+                        } else if (Platform.isIOS) {
+                          messageToken =
+                              await FirebaseMessaging.instance.getAPNSToken();
+                        }
                         Dio dio = Dio();
                         RestClient client = RestClient(dio);
                         client
