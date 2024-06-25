@@ -4,12 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thedeveloper.gnext.controller.models.PropertiesModel;
 import com.thedeveloper.gnext.entity.AddressEntity;
+import com.thedeveloper.gnext.entity.CityEntity;
 import com.thedeveloper.gnext.entity.OrderEntity;
 import com.thedeveloper.gnext.entity.UserEntity;
-import com.thedeveloper.gnext.service.AddressService;
-import com.thedeveloper.gnext.service.FileService;
-import com.thedeveloper.gnext.service.OrderService;
-import com.thedeveloper.gnext.service.UserService;
+import com.thedeveloper.gnext.enums.OrderMode;
+import com.thedeveloper.gnext.service.*;
 import com.thedeveloper.gnext.utils.Globals;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -29,8 +28,9 @@ public class OrdersController {
     UserService userService;
     AddressService addressService;
     FileService fileService;
+    CityService cityService;
     @PostMapping(value = "/create", consumes = {MediaType.ALL_VALUE})
-    public ResponseEntity<?> createOrder(@RequestParam boolean customPrice, @RequestParam String uid, @RequestParam double price, @RequestParam String description, @RequestParam boolean outcity, @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate, @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate, @ModelAttribute(name = "properties") String propertiesModel, @RequestPart(value = "file",required = false) MultipartFile file) throws JsonProcessingException {
+    public ResponseEntity<?> createOrder(@RequestParam OrderMode mode, @RequestParam boolean customPrice, @RequestParam String uid, @RequestParam double price, @RequestParam String description, @RequestParam boolean outcity, @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate, @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate, @ModelAttribute(name = "properties") String propertiesModel, @RequestPart(value = "file",required = false) MultipartFile file) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         PropertiesModel properties = objectMapper.readValue(propertiesModel, PropertiesModel.class);
         UserEntity user = userService.findUserByUid(uid);
@@ -38,6 +38,7 @@ public class OrdersController {
         orderEntity.setCreator(user);
         orderEntity.setCity(user.getCity());
         orderEntity.setCreateDate(new Date());
+        orderEntity.setMode(mode);
         orderEntity.setPrice(price);
         orderEntity.setDescription(description);
         orderEntity.setOutCity(outcity);
@@ -71,9 +72,15 @@ public class OrdersController {
         UserEntity user = userService.findUserByUid(uid);
         return new ResponseEntity<>(orderService.findActive(outcity, user.getCity()), HttpStatus.OK);
     }
+    @GetMapping("/search")
+    public ResponseEntity<?> searchOrders(@RequestParam OrderMode mode,@RequestParam Long toId, @RequestParam Long fromId){
+        CityEntity cityTo = cityService.findById(toId);
+        CityEntity cityFrom = cityService.findById(fromId);
+        return new ResponseEntity<>(orderService.searchOrders(true, mode, cityFrom.getName(), cityTo.getName()), HttpStatus.OK);
+    }
     @GetMapping("/my")
-    public ResponseEntity<?> userOrders(@RequestParam String uid, @RequestParam boolean outcity){
+    public ResponseEntity<?> userOrders(@RequestParam String uid, @RequestParam boolean outcity,@RequestParam OrderMode mode){
         UserEntity user = userService.findUserByUid(uid);
-        return new ResponseEntity<>(orderService.findByCreator(user, outcity, user.getCity()), HttpStatus.OK);
+        return new ResponseEntity<>(orderService.findByCreator(user, outcity, user.getCity(), mode), HttpStatus.OK);
     }
 }

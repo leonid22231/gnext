@@ -37,18 +37,23 @@ public class AdminController {
     CodeService codeService;
     AudioService audioService;
     ImageService imageService;
+
     @GetMapping("/login")
-    public ResponseEntity<?> login(@RequestParam String phone, @RequestParam String password){
+    public ResponseEntity<?> login(@RequestParam String phone, @RequestParam String password) {
         log.info("Phone admin {}", phone);
         UserEntity user = userService.findUserByPhone(phone);
-        if(user==null) return new ResponseEntity<>("Пользователя не существует", HttpStatus.BAD_REQUEST);
-        if(!passwordEncoder.matches(password, user.getPassword())) return new ResponseEntity<>("Неверный пароль", HttpStatus.BAD_REQUEST);
-        if(user.getRole()==UserRole.USER || user.getRole() == UserRole.SPECIALIST) return new ResponseEntity<>("Вход разрешен только для администратора", HttpStatus.BAD_REQUEST);
+        if (user == null)
+            return new ResponseEntity<>("Пользователя не существует", HttpStatus.BAD_REQUEST);
+        if (!passwordEncoder.matches(password, user.getPassword()))
+            return new ResponseEntity<>("Неверный пароль", HttpStatus.BAD_REQUEST);
+        if (user.getRole() == UserRole.USER || user.getRole() == UserRole.SPECIALIST)
+            return new ResponseEntity<>("Вход разрешен только для администратора", HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(codeService.sendCode(user), HttpStatus.OK);
     }
+
     @PostMapping("/login")
-    public ResponseEntity<?> loginConfirm(@RequestParam String phone, @RequestParam String uid){
+    public ResponseEntity<?> loginConfirm(@RequestParam String phone, @RequestParam String uid) {
         UserEntity user = userService.findUserByPhone(phone);
         CodeEntity currentCode = codeService.currentCodeUser(user);
         currentCode.setStatus(CodeStatus.CLOSE);
@@ -59,8 +64,9 @@ public class AdminController {
 
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
+
     @GetMapping("/stat")
-    public ResponseEntity<?> stat(){
+    public ResponseEntity<?> stat() {
         StatisticModel stat = new StatisticModel();
         stat.setUserCount(userService.findAll().size());
         stat.setChatCount(chatService.findAll().size());
@@ -71,78 +77,120 @@ public class AdminController {
         stat.setActiveOrders(orderService.findActive().size());
         return new ResponseEntity<>(stat, HttpStatus.OK);
     }
+
     @GetMapping("/users")
-    public ResponseEntity<?> users(@RequestParam(required = false) String query){
-        if(query==null || query.isEmpty()){
+    public ResponseEntity<?> users(@RequestParam(required = false) String query) {
+        if (query == null || query.isEmpty()) {
             return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
-        }else{
+        } else {
             return new ResponseEntity<>(userService.searchByQuery(query), HttpStatus.OK);
         }
     }
+    @PostMapping("/users/{phone}/block")
+    public ResponseEntity<?> userBlock(@PathVariable String phone) {
+        UserEntity user = userService.findUserByPhone(phone);
+        user.setBlocked(true);
+        userService.save(user);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+    @PostMapping("/users/{phone}/unblock")
+    public ResponseEntity<?> userUnBlock(@PathVariable String phone) {
+        UserEntity user = userService.findUserByPhone(phone);
+        user.setBlocked(false);
+        userService.save(user);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
     @GetMapping("/chats")
-    public ResponseEntity<?> chats(@RequestParam Long countryId,@RequestParam Long cityId){
+    public ResponseEntity<?> chats(@RequestParam Long countryId, @RequestParam Long cityId) {
         CountryEntity country = countryService.findById(countryId);
         CityEntity city = cityService.findById(cityId);
         return new ResponseEntity<>(chatService.findGlobals(city), HttpStatus.OK);
     }
+
     @GetMapping("/chats/messages")
-        public ResponseEntity<?> messages(@RequestParam Long countryId, @RequestParam Long cityId, @RequestParam String name){
-        CountryEntity country = countryService.findById(countryId);
+    public ResponseEntity<?> messages(@RequestParam Long countryId, @RequestParam Long cityId,
+            @RequestParam String name) {
         CityEntity city = cityService.findById(cityId);
         ChatEntity chat = chatService.findByCityAndName(city, name);
         return new ResponseEntity<>(messageService.findMessagesByChat(chat), HttpStatus.OK);
     }
+
+    @PostMapping("/chats/messages/{id}/delete")
+    public ResponseEntity<?> deleteMessage(@RequestParam Long countryId, @RequestParam Long cityId,
+            @RequestParam String name,  @PathVariable Long id) {
+        CityEntity city = cityService.findById(cityId);
+        ChatEntity chat = chatService.findByCityAndName(city, name);
+        for(MessageEntity message : messageService.findMessagesByChat(chat)){
+            if(message.getId().equals(id)){
+                messageService.delete(message);
+                break;
+            }
+        }
+        return new ResponseEntity<>(messageService.findMessagesByChat(chat), HttpStatus.OK);
+    }
+
     @PostMapping("/file")
-    public ResponseEntity<?> file(@RequestParam String uid, @RequestParam MessageType type, @RequestParam MultipartFile file,@RequestParam Long countryId, @RequestParam Long cityId,  @RequestParam String name){
+    public ResponseEntity<?> file(@RequestParam String uid, @RequestParam MessageType type,
+            @RequestParam MultipartFile file, @RequestParam Long countryId, @RequestParam Long cityId,
+            @RequestParam String name) {
         UserEntity user = userService.findUserByUid(uid);
         MessageEntity message = new MessageEntity();
-        message.setChat(chatService.findByCityAndName(cityService.findById(cityId),name));
+        message.setChat(chatService.findByCityAndName(cityService.findById(cityId), name));
         message.setUser(user);
         message.setTime(new Date());
         message.setType(type);
-        if(type==MessageType.AUDIO){
+        if (type == MessageType.AUDIO) {
             audioService.store(file);
             message.setContent(Globals.renameAudio(file.getOriginalFilename(), audioService));
-        }else{
+        } else {
             imageService.store(file);
             message.setContent(Globals.renameFile(file.getOriginalFilename(), imageService));
         }
         messageService.save(message);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
     @GetMapping("/filters")
-    public ResponseEntity<?> filters(){
+    public ResponseEntity<?> filters() {
         return new ResponseEntity<>(filterService.findAll(), HttpStatus.OK);
     }
+
     @PostMapping("/filters/add")
-    public ResponseEntity<?> filtersAdd(@RequestParam String word){
+    public ResponseEntity<?> filtersAdd(@RequestParam String word) {
         FilterEntity filterEntity = new FilterEntity();
-        filterEntity.setWord(word.toLowerCase().replaceAll(" ",""));
+        filterEntity.setWord(word.toLowerCase().replaceAll(" ", ""));
         filterService.save(filterEntity);
         Globals.filterMessages(messageService, filterService);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
     @DeleteMapping("/filters/delete")
-    public ResponseEntity<?> filtersDelete(@RequestParam Long id){
+    public ResponseEntity<?> filtersDelete(@RequestParam Long id) {
         FilterEntity filterEntity = filterService.findById(id);
         filterService.delete(filterEntity);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
     @GetMapping("/companies")
-    public ResponseEntity<?> findCompanies(@RequestParam Long countryId, @RequestParam Long cityId,@RequestParam Categories category){
+    public ResponseEntity<?> findCompanies(@RequestParam Long countryId, @RequestParam Long cityId,
+            @RequestParam Categories category) {
         CountryEntity country = countryService.findById(countryId);
         CityEntity city = cityService.findById(cityId);
-        return new ResponseEntity<>(companyService.findByCategory(category,city),HttpStatus.OK);
+        return new ResponseEntity<>(companyService.findByCategory(category, city), HttpStatus.OK);
     }
+
     @PostMapping("/companies/add")
-    public ResponseEntity<?> addCompany(@RequestParam Long countryId, @RequestParam Long cityId, @RequestParam Categories category, @RequestParam String name, @RequestParam String phone, @RequestParam String street, @RequestParam String house, @RequestBody(required = false)MultipartFile photo){
+    public ResponseEntity<?> addCompany(@RequestParam Long countryId, @RequestParam Long cityId,
+            @RequestParam Categories category, @RequestParam String name, @RequestParam String phone,
+            @RequestParam String street, @RequestParam String house,
+            @RequestBody(required = false) MultipartFile photo) {
         CountryEntity country = countryService.findById(countryId);
         CityEntity city = cityService.findById(cityId);
         CompanyEntity company = new CompanyEntity();
         company.setCity(city);
         company.setName(name);
         company.setPhone(phone);
-        if(photo!=null){
+        if (photo != null) {
             fileService.store(photo);
             String _name = Globals.renameFile(photo.getOriginalFilename(), fileService);
             company.setImage(_name);
@@ -157,15 +205,16 @@ public class AdminController {
         companyService.save(company);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
     @PostMapping("/setManager")
-    public ResponseEntity<?> setManager(@RequestParam String uid, @RequestParam Long id){
+    public ResponseEntity<?> setManager(@RequestParam String uid, @RequestParam Long id) {
         CompanyEntity company = companyService.findById(id);
-        if(company.getManager()!=null){
+        if (company.getManager() != null) {
             UserEntity old_manager = company.getManager();
             old_manager.setRole(UserRole.USER);
             userService.save(old_manager);
         }
-        UserEntity user  = userService.findUserByUid(uid);
+        UserEntity user = userService.findUserByUid(uid);
         user.setRole(UserRole.MANAGER);
         user.setName(company.getName());
         userService.save(user);
@@ -173,15 +222,17 @@ public class AdminController {
         companyService.save(company);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
     @PostMapping("/changeRole")
-    public ResponseEntity<?> changeRole(@RequestParam String uid, @RequestParam UserRole role){
+    public ResponseEntity<?> changeRole(@RequestParam String uid, @RequestParam UserRole role) {
         UserEntity user = userService.findUserByUid(uid);
         user.setRole(role);
         userService.save(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
     @DeleteMapping("/companies/delete")
-    public ResponseEntity<?> deleteCompany(@RequestParam Long id){
+    public ResponseEntity<?> deleteCompany(@RequestParam Long id) {
         CompanyEntity company = companyService.findById(id);
         companyService.delete(company);
         return new ResponseEntity<>(HttpStatus.OK);

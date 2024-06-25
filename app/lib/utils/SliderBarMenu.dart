@@ -1,11 +1,15 @@
 import 'package:app/api/entity/UserEntity.dart';
 import 'package:app/api/entity/enums/UserRole.dart';
+import 'package:app/auth/login_page.dart';
+import 'package:app/auth/register_page.dart';
 import 'package:app/generated/l10n.dart';
 import 'package:app/pages/profile_page.dart';
 import 'package:app/utils/GlobalsColors.dart';
 import 'package:app/utils/GlobalsWidgets.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SliderBarMenu extends StatelessWidget {
   final ValueNotifier imageValue = ValueNotifier(GlobalsWidgets.image);
@@ -13,7 +17,11 @@ class SliderBarMenu extends StatelessWidget {
   final Function(String title) onClickItem;
   final String activeTab;
   final UserEntity? userEntity;
-  SliderBarMenu({required this.onClickItem, required this.activeTab, this.userEntity, super.key});
+  SliderBarMenu(
+      {required this.onClickItem,
+      required this.activeTab,
+      this.userEntity,
+      super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +32,14 @@ class SliderBarMenu extends StatelessWidget {
           userEntity == null
               ? const SizedBox.shrink()
               : Container(
-                  decoration: BoxDecoration(color: GlobalsColor.blue, borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20))),
+                  decoration: BoxDecoration(
+                      color: GlobalsColor.blue,
+                      borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(20),
+                          bottomRight: Radius.circular(20))),
                   child: Padding(
-                    padding: EdgeInsets.only(top: 2.h, left: 5.w, right: 5.w, bottom: 5.h),
+                    padding: EdgeInsets.only(
+                        top: 2.h, left: 5.w, right: 5.w, bottom: 5.h),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -49,8 +62,11 @@ class SliderBarMenu extends StatelessWidget {
                                   builder: (contex, s, values) {
                                     return ClipOval(
                                       child: SizedBox.fromSize(
-                                        size: const Size.fromRadius(25), // Image radius
-                                        child: Image.network(GlobalsWidgets.getUserPhoto(), fit: BoxFit.cover),
+                                        size: const Size.fromRadius(
+                                            25), // Image radius
+                                        child: Image.network(
+                                            GlobalsWidgets.getUserPhoto(),
+                                            fit: BoxFit.cover),
                                       ),
                                     );
                                   }),
@@ -62,17 +78,30 @@ class SliderBarMenu extends StatelessWidget {
                                   fit: FlexFit.tight,
                                   child: SizedBox(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Row(
                                           children: [
                                             Text(
                                               "${userEntity!.name} ${userEntity!.surname}",
                                               textAlign: TextAlign.start,
-                                              style: TextStyle(fontSize: 14.sp, color: Colors.white),
+                                              style: TextStyle(
+                                                  fontSize: 14.sp,
+                                                  color: Colors.white),
                                             ),
-                                            userEntity!.subscription ? Text(" [PLUS]", textAlign: TextAlign.start, style: TextStyle(fontSize: 14.sp, color: const Color(0xffFFD700), fontWeight: FontWeight.bold)) : const SizedBox.shrink()
+                                            userEntity!.subscription
+                                                ? Text(" [PLUS]",
+                                                    textAlign: TextAlign.start,
+                                                    style: TextStyle(
+                                                        fontSize: 14.sp,
+                                                        color: const Color(
+                                                            0xffFFD700),
+                                                        fontWeight:
+                                                            FontWeight.bold))
+                                                : const SizedBox.shrink()
                                           ],
                                         ),
                                         userEntity!.role == UserRole.SPECIALIST
@@ -89,7 +118,12 @@ class SliderBarMenu extends StatelessWidget {
                                                       SizedBox(
                                                         width: 1.w,
                                                       ),
-                                                      Text("${GlobalsWidgets.wallet.round()} ₸", style: TextStyle(fontSize: 14.sp, color: Colors.white))
+                                                      Text(
+                                                          "${GlobalsWidgets.wallet.round()} ₸",
+                                                          style: TextStyle(
+                                                              fontSize: 14.sp,
+                                                              color:
+                                                                  Colors.white))
                                                     ],
                                                   );
                                                 })
@@ -103,7 +137,9 @@ class SliderBarMenu extends StatelessWidget {
                               Container(
                                 height: 10.w,
                                 width: 10.w,
-                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), color: Colors.white),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(50),
+                                    color: Colors.white),
                                 child: const Center(
                                   child: Icon(
                                     Icons.notifications_none,
@@ -125,7 +161,9 @@ class SliderBarMenu extends StatelessWidget {
                             SizedBox(
                               width: 2.w,
                             ),
-                            Text(userEntity!.city.name, style: TextStyle(fontSize: 14.sp, color: Colors.white))
+                            Text(userEntity!.city.name,
+                                style: TextStyle(
+                                    fontSize: 14.sp, color: Colors.white))
                           ],
                         )
                       ],
@@ -143,7 +181,9 @@ class SliderBarMenu extends StatelessWidget {
                   },
                   child: Container(
                     height: 8.h,
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: GlobalsColor.blue),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: GlobalsColor.blue),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -154,7 +194,11 @@ class SliderBarMenu extends StatelessWidget {
                         SizedBox(
                           width: 2.w,
                         ),
-                        Text(S.of(context).chat, style: TextStyle(fontSize: 16.sp, color: Colors.white, fontWeight: FontWeight.bold))
+                        Text(S.of(context).chat,
+                            style: TextStyle(
+                                fontSize: 16.sp,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold))
                       ],
                     ),
                   ),
@@ -163,18 +207,205 @@ class SliderBarMenu extends StatelessWidget {
             height: 2.h,
           ),
           ...[
-            (userEntity != null && userEntity!.role == UserRole.USER) ? Menu(Image.asset("assets/icon 0.png"), S.of(context).page1) : null,
-            (userEntity != null && userEntity!.role == UserRole.SPECIALIST) ? Menu(Image.asset("assets/icon 1.png"), S.of(context).page2) : null,
-            Menu(Image.asset("assets/icon 2.png"), S.of(context).page3),
-            Menu(Image.asset("assets/icon 3.png"), S.of(context).page4),
-            Menu(Image.asset("assets/icon 4.png"), S.of(context).page5),
-            Menu(Image.asset("assets/icon 5.png"), S.of(context).page6),
+            (userEntity != null && userEntity!.role == UserRole.USER)
+                ? Menu(
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(0),
+                      child: Image.asset(
+                          //fit: BoxFit.cover,
+                          "assets/govno_icon_1.jpg"),
+                    ),
+                    S.of(context).page1)
+                : null,
+            (userEntity != null && userEntity!.role == UserRole.SPECIALIST)
+                ? Menu(
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(0),
+                      child: Image.asset(
+                          //fit: BoxFit.cover,
+                          "assets/govno_icon_1.jpg"),
+                    ),
+                    S.of(context).page2)
+                : null,
+            Menu(
+                ClipRRect(
+                    borderRadius: BorderRadius.circular(0),
+                    child: Image.asset(
+                      "assets/govno_icon_7.jpg",
+                      //fit: BoxFit.cover,
+                    )),
+                S.of(context).page3),
+            Menu(
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(0),
+                  child: Image.asset(
+                    "assets/govno_icon_6.jpg",
+                    //fit: BoxFit.cover,
+                  ),
+                ),
+                S.of(context).page4),
+            Menu(
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(0),
+                  child: Image.asset(
+                    "assets/govno_icon_2.jpg",
+                    //fit: BoxFit.cover,
+                  ),
+                ),
+                S.of(context).page5),
+            Menu(
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(0),
+                  child: Image.asset(
+                    "assets/govno_icon_5.jpg",
+                    //fit: BoxFit.cover,
+                  ),
+                ),
+                S.of(context).page6),
             //Menu(Image.asset("assets/icon 6.png"), S.of(context).page7),
-            Menu(Image.asset("assets/icon 7.png"), S.of(context).page8),
-            Menu(Image.asset("assets/icon 8.png"), S.of(context).page11),
+            Menu(
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(0),
+                  child: Image.asset(
+                    "assets/govno_icon_3.jpg",
+                    //fit: BoxFit.cover,
+                  ),
+                ),
+                S.of(context).page8),
+            Menu(
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(0),
+                  child: Image.asset(
+                    "assets/govno_icon_4.jpg",
+                    //fit: BoxFit.cover,
+                  ),
+                ),
+                S.of(context).page11),
             //Menu(Image.asset("assets/icon 8.png"), S.of(context).page9),
             //Menu(Image.asset("assets/icon 9.png"), S.of(context).page10),
-          ].map((menu) => menu != null ? SliderMenuItem(title: menu.title, isSelected: activeTab.contains(menu.title), iconData: menu.iconData, onTap: onClickItem) : const SizedBox.shrink()).toList(),
+          ]
+              .map((menu) => menu != null
+                  ? SliderMenuItem(
+                      title: menu.title,
+                      isSelected: activeTab.contains(menu.title),
+                      iconData: menu.iconData,
+                      onTap: onClickItem)
+                  : const SizedBox.shrink())
+              .toList(),
+          SizedBox(
+            height: 2.h,
+          ),
+          InkWell(
+            onTap: () {
+              onClickItem.call(S.of(context).page3);
+            },
+            child: Ink(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 2.w),
+                child: Container(
+                  height: 8.h,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: GlobalsColor.blue),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(S.of(context).page3,
+                          style: TextStyle(
+                              fontSize: 16.sp,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold))
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 1.h,
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 2.w),
+            child: Container(
+              height: 8.h,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: GlobalsColor.blue),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Flexible(
+                      fit: FlexFit.tight,
+                      child: InkWell(
+                        onTap: () {
+                          debugPrint("Tap add");
+                          (userEntity != null &&
+                                  userEntity!.role == UserRole.USER)
+                              ? onClickItem.call(S.of(context).page1)
+                              : onClickItem.call(S.of(context).page2);
+                        },
+                        child: Ink(
+                          child: Text(
+                            (userEntity != null &&
+                                    userEntity!.role == UserRole.USER)
+                                ? S.of(context).preload_page1
+                                : S.of(context).preload_page3,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      )),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 1.h,
+          ),
+          InkWell(
+            onTap: () async {
+              GlobalsWidgets.uid = "";
+              FirebaseAuth.instance.signOut();
+              (await SharedPreferences.getInstance()).remove("phone");
+              if (context.mounted) {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                    (route) => false);
+              }
+            },
+            child: Ink(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 2.w),
+                child: Container(
+                  height: 8.h,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: GlobalsColor.blue),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(S.of(context).exit,
+                          style: TextStyle(
+                              fontSize: 16.sp,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold)),
+                      SizedBox(
+                        width: 2.w,
+                      ),
+                      const Icon(
+                        Icons.exit_to_app,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 2.h,
+          ),
         ],
       ),
     );
@@ -183,20 +414,39 @@ class SliderBarMenu extends StatelessWidget {
 
 class SliderMenuItem extends StatelessWidget {
   final String title;
-  final Image iconData;
+  final Widget iconData;
   final Function(String)? onTap;
   final bool isSelected;
-  const SliderMenuItem({Key? key, required this.title, required this.iconData, required this.isSelected, required this.onTap}) : super(key: key);
+  const SliderMenuItem(
+      {Key? key,
+      required this.title,
+      required this.iconData,
+      required this.isSelected,
+      required this.onTap})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     if (isSelected) debugPrint("$title $isSelected");
-    return ListTile(selected: isSelected, selectedTileColor: Colors.blue.withOpacity(0.3), title: Text(title, style: TextStyle(color: Colors.black, fontSize: 15.sp, fontWeight: FontWeight.bold)), leading: iconData, onTap: () => onTap?.call(title));
+    return ListTile(
+        selected: isSelected,
+        selectedTileColor: Colors.blue.withOpacity(0.3),
+        title: Text(title,
+            style: TextStyle(
+                color: Colors.black,
+                fontSize: 15.sp,
+                fontWeight: FontWeight.bold)),
+        leading: SizedBox(
+          height: 15.w,
+          width: 15.w,
+          child: iconData,
+        ),
+        onTap: () => onTap?.call(title));
   }
 }
 
 class Menu {
-  final Image iconData;
+  final Widget iconData;
   final String title;
   Menu(this.iconData, this.title);
 }

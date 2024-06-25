@@ -2,10 +2,8 @@ import 'package:app/api/entity/enums/UserRole.dart';
 import 'package:flutter/cupertino.dart';
 
 class GlobalsWidgets {
-  //192.168.0.11
-  //45.67.35.206
   //45.159.250.175
-  static String API_KEY = "AIzaSyDiqxR05PppZDGdbTUxTMYN92dmbrEumbc";
+  //192.168.0.102
   static String ip = "45.159.250.175";
   static String uid = "";
   static String name = "";
@@ -15,7 +13,13 @@ class GlobalsWidgets {
   static double wallet = 0;
   static UserRole role = UserRole.USER;
   static String? image;
-  static List<String> chats = ["evacuator", "razbor", "market", "global", "gruz"];
+  static List<String> chats = [
+    "evacuator",
+    "razbor",
+    "market",
+    "global",
+    "gruz"
+  ];
   static String getUserPhoto() {
     if (GlobalsWidgets.image != null && GlobalsWidgets.image!.isNotEmpty) {
       return 'http://${GlobalsWidgets.ip}:8080/api/v1/file/image/${GlobalsWidgets.image}';

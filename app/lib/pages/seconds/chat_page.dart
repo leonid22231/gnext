@@ -8,6 +8,7 @@ import 'package:app/api/entity/enums/StoryType.dart';
 import 'package:app/api/entity/enums/UserRole.dart';
 import 'package:app/generated/l10n.dart';
 import 'package:app/pages/models/UserStoryModel.dart';
+import 'package:app/pages/seconds/image_view.dart';
 import 'package:app/pages/seconds/user_profile.dart';
 import 'package:app/pages/story_view.dart';
 import 'package:app/utils/GlobalsColors.dart';
@@ -613,10 +614,28 @@ class _CustomChatPage extends State<CustomChatPage> {
                                                                             .shrink()
                                                                   ],
                                                                 ),
-                                                                Image.network(
-                                                                    GlobalsWidgets
-                                                                        .getPhoto(
-                                                                            message.content)),
+                                                                GestureDetector(
+                                                                  onTap: () {
+                                                                    debugPrint(
+                                                                        "Tap image");
+                                                                    Navigator.push(
+                                                                        context,
+                                                                        MaterialPageRoute(
+                                                                            builder: (context) => ImageViewPage(
+                                                                                  src: message.content,
+                                                                                )));
+                                                                  },
+                                                                  child: Image.network(
+                                                                      height:
+                                                                          20.h,
+                                                                      width: double
+                                                                          .maxFinite,
+                                                                      fit: BoxFit
+                                                                          .fill,
+                                                                      GlobalsWidgets.getPhoto(
+                                                                          message
+                                                                              .content)),
+                                                                ),
                                                               ],
                                                             ),
                                                           )),

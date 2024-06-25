@@ -11,7 +11,8 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 class SliderBarMenuPreload extends StatelessWidget {
   final Function(String title) onClickItem;
   final String activeTab;
-  SliderBarMenuPreload({required this.onClickItem, required this.activeTab, super.key});
+  SliderBarMenuPreload(
+      {required this.onClickItem, required this.activeTab, super.key});
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -20,32 +21,94 @@ class SliderBarMenuPreload extends StatelessWidget {
         height: 2.h,
       ),
       ...[
-        Menu(Image.asset("assets/icon 0.png"), S.of(context).page1),
-        Menu(Image.asset("assets/icon 3.png"), S.of(context).page4),
-        Menu(Image.asset("assets/icon 4.png"), S.of(context).page5),
-        Menu(Image.asset("assets/icon 5.png"), S.of(context).page6),
+        Menu(
+            ClipRRect(
+              borderRadius: BorderRadius.circular(0),
+              child: Image.asset(
+                  //fit: BoxFit.cover,
+                  "assets/govno_icon_1.jpg"),
+            ),
+            S.of(context).page1),
+        Menu(
+            ClipRRect(
+              borderRadius: BorderRadius.circular(0),
+              child: Image.asset(
+                "assets/govno_icon_6.jpg",
+                //fit: BoxFit.cover,
+              ),
+            ),
+            S.of(context).page4),
+        Menu(
+            ClipRRect(
+              borderRadius: BorderRadius.circular(0),
+              child: Image.asset(
+                "assets/govno_icon_2.jpg",
+                //fit: BoxFit.cover,
+              ),
+            ),
+            S.of(context).page5),
+        Menu(
+            ClipRRect(
+              borderRadius: BorderRadius.circular(0),
+              child: Image.asset(
+                "assets/govno_icon_5.jpg",
+                //fit: BoxFit.cover,
+              ),
+            ),
+            S.of(context).page6),
         //Menu(Image.asset("assets/icon 6.png"), S.of(context).page7),
-        Menu(Image.asset("assets/icon 7.png"), S.of(context).page8),
-        Menu(Image.asset("assets/icon 8.png"), S.of(context).page11),
+        Menu(
+            ClipRRect(
+              borderRadius: BorderRadius.circular(0),
+              child: Image.asset(
+                "assets/govno_icon_3.jpg",
+                //fit: BoxFit.cover,
+              ),
+            ),
+            S.of(context).page8),
+        Menu(
+            ClipRRect(
+              borderRadius: BorderRadius.circular(0),
+              child: Image.asset(
+                "assets/govno_icon_4.jpg",
+                //fit: BoxFit.cover,
+              ),
+            ),
+            S.of(context).page11),
         //Menu(Image.asset("assets/icon 8.png"), S.of(context).page9),
         //Menu(Image.asset("assets/icon 9.png"), S.of(context).page10),
-      ].map((menu) => SliderMenuItem(title: menu.title, isSelected: activeTab.contains(menu.title), iconData: menu.iconData, onTap: onClickItem)).toList(),
+      ]
+          .map((menu) => SliderMenuItem(
+              title: menu.title,
+              isSelected: activeTab.contains(menu.title),
+              iconData: menu.iconData,
+              onTap: onClickItem))
+          .toList(),
       SizedBox(
         height: 2.h,
       ),
       InkWell(
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const LoginPage()));
         },
         child: Ink(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 2.w),
             child: Container(
               height: 8.h,
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: GlobalsColor.blue),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: GlobalsColor.blue),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [Text(S.of(context).page3, style: TextStyle(fontSize: 16.sp, color: Colors.white, fontWeight: FontWeight.bold))],
+                children: [
+                  Text(S.of(context).page3,
+                      style: TextStyle(
+                          fontSize: 16.sp,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold))
+                ],
               ),
             ),
           ),
@@ -58,7 +121,9 @@ class SliderBarMenuPreload extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 2.w),
         child: Container(
           height: 8.h,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: GlobalsColor.blue),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: GlobalsColor.blue),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -67,7 +132,10 @@ class SliderBarMenuPreload extends StatelessWidget {
                   child: InkWell(
                     onTap: () {
                       debugPrint("Tap add");
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterPage()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const RegisterPage()));
                     },
                     child: Ink(
                       child: Text(
@@ -106,14 +174,17 @@ class SliderBarMenuPreload extends StatelessWidget {
       ),
       InkWell(
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const LoginPage()));
         },
         child: Ink(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 2.w),
             child: Container(
               height: 8.h,
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: GlobalsColor.blue),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: GlobalsColor.blue),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -124,7 +195,11 @@ class SliderBarMenuPreload extends StatelessWidget {
                   SizedBox(
                     width: 2.w,
                   ),
-                  Text(S.of(context).signin, style: TextStyle(fontSize: 16.sp, color: Colors.white, fontWeight: FontWeight.bold))
+                  Text(S.of(context).signin,
+                      style: TextStyle(
+                          fontSize: 16.sp,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold))
                 ],
               ),
             ),

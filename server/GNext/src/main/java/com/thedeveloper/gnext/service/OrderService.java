@@ -3,6 +3,7 @@ package com.thedeveloper.gnext.service;
 import com.thedeveloper.gnext.entity.CityEntity;
 import com.thedeveloper.gnext.entity.OrderEntity;
 import com.thedeveloper.gnext.entity.UserEntity;
+import com.thedeveloper.gnext.enums.OrderMode;
 import com.thedeveloper.gnext.repository.OrderRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,13 +21,16 @@ public class OrderService {
         return repository.findAll();
     }
     public List<OrderEntity> findActive(boolean outcity, CityEntity city){
-        return repository.findOrderEntitiesByOutCityAndCityAndActive(outcity, city, true);
+        return repository.findOrderEntitiesByOutCityAndCityAndActiveAndMode(outcity, city, true, OrderMode.CLASSIC);
     }
-    public List<OrderEntity> findByCreator(UserEntity user, boolean outcity, CityEntity city){
-        return repository.findOrderEntitiesByCreatorAndOutCityAndCityAndActive(user, outcity, city, true);
+    public List<OrderEntity> findByCreator(UserEntity user, boolean outcity, CityEntity city, OrderMode mode){
+        return repository.findOrderEntitiesByCreatorAndOutCityAndCityAndActiveAndMode(user, outcity, city, true, mode);
     }
     public List<OrderEntity> findActive(){
-        return repository.findOrderEntitiesByActive(true);
+        return repository.findOrderEntitiesByActiveAndMode(true, OrderMode.CLASSIC);
+    }
+    public List<OrderEntity> searchOrders(boolean active, OrderMode mode, String addressFrom, String addressTo){
+        return repository.findOrderEntitiesByActiveAndModeAndAddressTo_CityAndAddressFrom_City(active, mode, addressTo, addressFrom);
     }
     public OrderEntity findById(Long id){
         return repository.findOrderEntityById(id);

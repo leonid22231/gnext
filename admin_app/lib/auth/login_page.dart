@@ -121,6 +121,7 @@ class _LoginPage extends State<LoginPage>{
                     }
                   }).onError((error, stackTrace){
                     if(error is DioException){
+                      debugPrint("$error");
                       _displayErrorMotionToast(error.response!.data);
                     }
                   });

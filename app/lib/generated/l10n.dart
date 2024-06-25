@@ -1000,6 +1000,16 @@ class S {
     );
   }
 
+  /// `Найти груз`
+  String get preload_page3 {
+    return Intl.message(
+      'Найти груз',
+      name: 'preload_page3',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Создать объявление`
   String get create_shop {
     return Intl.message(
@@ -1155,6 +1165,16 @@ class S {
     return Intl.message(
       'Политика конфиденциальности',
       name: 'profile_2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Попутчик`
+  String get poput {
+    return Intl.message(
+      'Попутчик',
+      name: 'poput',
       desc: '',
       args: [],
     );
