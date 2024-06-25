@@ -4,6 +4,7 @@ import 'package:app/api/RestClient.dart';
 import 'package:app/api/entity/UserEntity.dart';
 import 'package:app/api/entity/enums/Categories.dart';
 import 'package:app/api/entity/enums/Mode.dart';
+import 'package:app/api/entity/enums/OrderMode.dart';
 import 'package:app/api/entity/enums/UserRole.dart';
 import 'package:app/generated/l10n.dart';
 import 'package:app/pages/chats/ChatPage.dart';
@@ -12,13 +13,16 @@ import 'package:app/pages/search_page.dart';
 import 'package:app/pages/search_transportation_page.dart';
 import 'package:app/pages/seconds/chat_page.dart';
 import 'package:app/pages/seconds/create_cargo.dart';
+import 'package:app/pages/seconds/create_order_taxi.dart';
 import 'package:app/pages/seconds/create_shop.dart';
 import 'package:app/pages/seconds/create_transportation_page.dart';
+import 'package:app/pages/seconds/my_taxi_orders.dart';
 import 'package:app/pages/transportation_page.dart';
 import 'package:app/utils/GlobalsColors.dart';
 import 'package:app/utils/GlobalsWidgets.dart';
 import 'package:app/utils/SliderBarMenu.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
@@ -44,6 +48,7 @@ class _MainRouteState extends State<MainRoute> {
   Mode selectedMode = Mode.CITY;
   Mode selectedModeEv = Mode.CITY;
   File? file;
+
   @override
   Widget build(BuildContext context) {
     pages = [
@@ -89,6 +94,589 @@ class _MainRouteState extends State<MainRoute> {
         child: Builder(builder: (context) => _buildWidget(context, selectTab)),
       ),
     );
+  }
+
+  Widget? _getFloatButton(int index) {
+    //spr
+    if (index == 3) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton(
+            heroTag: "btn2",
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CustomChatPage(
+                            showTitle: true,
+                            title: pages[index],
+                            history: true,
+                            chatName: "spr",
+                            subscription: widget.userEntity.subscription,
+                          )));
+            },
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            backgroundColor: const Color(0xff317EFA),
+            child: const Icon(
+              Icons.chat,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      );
+    }
+    //sto
+    if (index == 4) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton(
+            heroTag: "btn2",
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CustomChatPage(
+                            showTitle: true,
+                            title: pages[index],
+                            history: true,
+                            chatName: "sto",
+                            subscription: widget.userEntity.subscription,
+                          )));
+            },
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            backgroundColor: const Color(0xff317EFA),
+            child: const Icon(
+              Icons.chat,
+              color: Colors.white,
+            ),
+          )
+        ],
+      );
+    }
+    //gaz
+    if (index == 5) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton(
+            heroTag: "btn2",
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CustomChatPage(
+                            showTitle: true,
+                            title: pages[index],
+                            history: true,
+                            chatName: "gaz",
+                            subscription: widget.userEntity.subscription,
+                          )));
+            },
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            backgroundColor: const Color(0xff317EFA),
+            child: const Icon(
+              Icons.chat,
+              color: Colors.white,
+            ),
+          )
+        ],
+      );
+    }
+    //swap
+    if (index == 6) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton(
+            heroTag: "btn2",
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CustomChatPage(
+                            showTitle: true,
+                            title: pages[index],
+                            history: true,
+                            chatName: "swap",
+                            subscription: widget.userEntity.subscription,
+                          )));
+            },
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            backgroundColor: const Color(0xff317EFA),
+            child: const Icon(
+              Icons.chat,
+              color: Colors.white,
+            ),
+          )
+        ],
+      );
+    }
+    //salon
+    if (index == 7) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton(
+            heroTag: "btn2",
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CustomChatPage(
+                            showTitle: true,
+                            title: pages[index],
+                            history: true,
+                            chatName: "salon",
+                            subscription: widget.userEntity.subscription,
+                          )));
+            },
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            backgroundColor: const Color(0xff317EFA),
+            child: const Icon(
+              Icons.chat,
+              color: Colors.white,
+            ),
+          )
+        ],
+      );
+    }
+    //shop
+    // if (index == 8) {
+    //   return Column(
+    //     mainAxisSize: MainAxisSize.min,
+    //     children: [
+    //       FloatingActionButton(
+    //         heroTag: "btn1",
+    //         onPressed: () {
+    //           Navigator.of(context)
+    //               .push(MaterialPageRoute(
+    //                   builder: (context) => const CreateShopPage()))
+    //               .then((value) {
+    //             _shopKey.currentState?.update();
+    //           });
+    //         },
+    //         shape:
+    //             RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+    //         backgroundColor: const Color(0xff317EFA),
+    //         child: const Icon(
+    //           Icons.add,
+    //           color: Colors.white,
+    //         ),
+    //       ),
+    //       SizedBox(
+    //         height: 2.h,
+    //       ),
+    //       FloatingActionButton(
+    //         heroTag: "btn2",
+    //         onPressed: () {
+    //           Navigator.push(
+    //               context,
+    //               MaterialPageRoute(
+    //                   builder: (context) => CustomChatPage(
+    //                       key: const Key("chat_3"),
+    //                       subscription: widget.userEntity.subscription,
+    //                       history: true,
+    //                       showTitle: true,
+    //                       title: S.of(context).page9,
+    //                       chatName: GlobalsWidgets.chats[2])));
+    //         },
+    //         shape:
+    //             RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+    //         backgroundColor: const Color(0xff317EFA),
+    //         child: const Icon(
+    //           Icons.chat,
+    //           color: Colors.white,
+    //         ),
+    //       ),
+    //     ],
+    //   );
+    // }
+    //eva
+    if (index == 2 && selectedModeEv != Mode.NONE) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          widget.userEntity.role == UserRole.USER
+              ? FloatingActionButton(
+                  heroTag: "btn1",
+                  onPressed: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(
+                            builder: (context) => CreateTransportationPage(
+                                  city: widget.userEntity.city,
+                                  createMode: selectedModeEv,
+                                )))
+                        .then((value) {
+                      _transportationKey.currentState?.update();
+                    });
+                  },
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50)),
+                  backgroundColor: const Color(0xff317EFA),
+                  child: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                )
+              : const SizedBox.shrink(),
+          widget.userEntity.role == UserRole.USER
+              ? SizedBox(
+                  height: 2.h,
+                )
+              : const SizedBox.shrink(),
+          FloatingActionButton(
+            heroTag: "btn2",
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CustomChatPage(
+                          key: const Key("chat_1"),
+                          subscription: widget.userEntity.subscription,
+                          history: true,
+                          showTitle: true,
+                          title: S.of(context).page3,
+                          chatName: GlobalsWidgets.chats[0])));
+            },
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            backgroundColor: const Color(0xff317EFA),
+            child: const Icon(
+              Icons.chat,
+              color: Colors.white,
+            ),
+          )
+        ],
+      );
+    } else if (index == 2 &&
+        selectedModeEv == Mode.NONE &&
+        widget.userEntity.role == UserRole.USER) {
+      return FloatingActionButton.extended(
+        label: const Text(
+          "Мои заказы",
+          style: TextStyle(color: Colors.white),
+        ),
+        heroTag: "btn3",
+        onPressed: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute(
+                  builder: (context) => const MyTaxiOrdersPage(
+                        mode: OrderMode.EV,
+                      )))
+              .then((value) {
+            _transportationKey.currentState?.update();
+          });
+        },
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+        backgroundColor: const Color(0xff317EFA),
+      );
+    } else if (index == 2 &&
+        selectedModeEv == Mode.NONE &&
+        widget.userEntity.role == UserRole.SPECIALIST) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          FloatingActionButton.extended(
+            label: const Text(
+              "Мои заказы",
+              style: TextStyle(color: Colors.white),
+            ),
+            heroTag: "btn3",
+            onPressed: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(
+                      builder: (context) => const MyTaxiOrdersPage(
+                            mode: OrderMode.EV,
+                          )))
+                  .then((value) {
+                _transportationKey.currentState?.update();
+              });
+            },
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            backgroundColor: const Color(0xff317EFA),
+          ),
+          SizedBox(
+            height: 2.h,
+          ),
+          FloatingActionButton.extended(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CreateOrderTaxi(
+                            city: widget.userEntity.city,
+                            mode: OrderMode.EV,
+                          )));
+            },
+            label: SizedBox(
+              width: 100.w - 20.w,
+              child: const Center(
+                child: Text(
+                  "Создать заказ +",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            backgroundColor: const Color(0xff317EFA),
+          )
+        ],
+      );
+    }
+    if ((index == 1 || index == 0) && selectedMode != Mode.NONE) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          getIndex(context, selectTab) == 0
+              ? FloatingActionButton(
+                  heroTag: "btn1",
+                  onPressed: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(
+                            builder: (context) => CreateCargoPage(
+                                  city: widget.userEntity.city,
+                                  mode: selectedMode,
+                                )))
+                        .then((value) {
+                      _transportationKey.currentState?.update();
+                    });
+                  },
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50)),
+                  backgroundColor: const Color(0xff317EFA),
+                  child: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                )
+              : const SizedBox.shrink(),
+          SizedBox(
+            height: 2.h,
+          ),
+          FloatingActionButton(
+            heroTag: "btn2",
+            onPressed: () {
+              switch (selectedMode) {
+                case Mode.CITY:
+                  {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CustomChatPage(
+                                  showTitle: true,
+                                  title: S.of(context).option2,
+                                  history: true,
+                                  chatName: "city",
+                                  subscription: widget.userEntity.subscription,
+                                )));
+                    break;
+                  }
+                case Mode.OUTCITY:
+                  {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CustomChatPage(
+                                showTitle: true,
+                                title: S.of(context).option1,
+                                history: true,
+                                chatName: "outcity",
+                                subscription: widget.userEntity.subscription)));
+                    break;
+                  }
+                default:
+                  null;
+              }
+            },
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            backgroundColor: const Color(0xff317EFA),
+            child: const Icon(
+              Icons.chat,
+              color: Colors.white,
+            ),
+          )
+        ],
+      );
+    } else if ((index == 1 || index == 0) &&
+        selectedMode == Mode.NONE &&
+        widget.userEntity.role == UserRole.USER) {
+      return FloatingActionButton.extended(
+        label: const Text(
+          "Мои заказы",
+          style: TextStyle(color: Colors.white),
+        ),
+        heroTag: "btn3",
+        onPressed: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute(
+                  builder: (context) => const MyTaxiOrdersPage(
+                        mode: OrderMode.NEW,
+                      )))
+              .then((value) {
+            _transportationKey.currentState?.update();
+          });
+        },
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+        backgroundColor: const Color(0xff317EFA),
+      );
+    } else if ((index == 1 || index == 0) &&
+        selectedMode == Mode.NONE &&
+        widget.userEntity.role == UserRole.SPECIALIST) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          FloatingActionButton.extended(
+            label: const Text(
+              "Мои заказы",
+              style: TextStyle(color: Colors.white),
+            ),
+            heroTag: "btn3",
+            onPressed: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(
+                      builder: (context) => const MyTaxiOrdersPage(
+                            mode: OrderMode.NEW,
+                          )))
+                  .then((value) {
+                _transportationKey.currentState?.update();
+              });
+            },
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            backgroundColor: const Color(0xff317EFA),
+          ),
+          SizedBox(
+            height: 2.h,
+          ),
+          FloatingActionButton.extended(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CreateOrderTaxi(
+                            mode: OrderMode.NEW,
+                            city: widget.userEntity.city,
+                          )));
+            },
+            label: SizedBox(
+              width: 100.w - 20.w,
+              child: const Center(
+                child: Text(
+                  "Создать заказ +",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            backgroundColor: const Color(0xff317EFA),
+          )
+        ],
+      );
+    }
+    return null;
+  }
+
+  int getIndex(BuildContext context, String title) {
+    for (int i = 0; i < pages.length; i++) {
+      if (pages[i] == title) {
+        return i;
+      }
+    }
+    return 0;
+  }
+
+  Widget _buildWidget(BuildContext context, String title) {
+    if (title.contains(S.of(context).page1)) {
+      return NotificationListener<ChangeModeNotify>(
+          onNotification: (m) {
+            selectedMode = m.mode;
+            setState(() {});
+            return true;
+          },
+          child: TransportationPage(
+            city: widget.userEntity.city,
+            sub: widget.userEntity.subscription,
+            key: _transportationKey,
+          ));
+    } else if (title.contains(S.of(context).page2)) {
+      return NotificationListener<ChangeModeNotify>(
+          onNotification: (m) {
+            selectedMode = m.mode;
+            setState(() {});
+            return true;
+          },
+          child: SearchPage(
+            city: widget.userEntity.city,
+            sub: widget.userEntity.subscription,
+          ));
+    } else if (title.contains(S.of(context).page3)) {
+      return NotificationListener<ChangeTransportModeNotify>(
+          onNotification: (m) {
+            selectedModeEv = m.mode;
+            setState(() {});
+            return true;
+          },
+          child: SearchTransportationPage(
+            city: widget.userEntity.city,
+          ));
+    } else if (title.contains(S.of(context).page4)) {
+      return const CatalogPage(
+        category: Categories.info,
+      );
+    } else if (title.contains(S.of(context).page5)) {
+      return const CatalogPage(
+        category: Categories.sto,
+      );
+    } else if (title.contains(S.of(context).page6)) {
+      return const CatalogPage(
+        category: Categories.modify,
+      );
+    } else if (title.contains(S.of(context).page7)) {
+      return CustomChatPage(
+          key: const Key("chat_2"),
+          subscription: widget.userEntity.subscription,
+          history: true,
+          showTitle: false,
+          title: S.of(context).page7,
+          chatName: GlobalsWidgets.chats[1]);
+    } else if (title.contains(S.of(context).page8)) {
+      return const CatalogPage(
+        category: Categories.swap,
+      );
+    } else if (title.contains(S.of(context).page9)) {
+      return CatalogPage(key: _shopKey, category: Categories.shop);
+    } else if (title.contains(S.of(context).page10)) {
+      return CustomChatPage(
+          key: const Key("chat_4"),
+          subscription: widget.userEntity.subscription,
+          history: true,
+          showTitle: false,
+          title: S.of(context).page10,
+          chatName: GlobalsWidgets.chats[4]);
+    } else if (title.contains(S.of(context).page11)) {
+      return const CatalogPage(
+        category: Categories.auto,
+      );
+    } else if (title.contains("Чат")) {
+      return ChatPage(
+        user: widget.userEntity,
+      );
+    }
+
+    return const SizedBox.shrink();
   }
 
   void addCompany(Categories category) {
@@ -338,426 +926,5 @@ class _MainRouteState extends State<MainRoute> {
             })).then((value) {
       setState(() {});
     });
-  }
-
-  Widget? _getFloatButton(int index) {
-    //spr
-    if (index == 3) {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FloatingActionButton(
-            heroTag: "btn2",
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CustomChatPage(
-                            showTitle: true,
-                            title: pages[index],
-                            history: true,
-                            chatName: "spr",
-                            subscription: widget.userEntity.subscription,
-                          )));
-            },
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-            backgroundColor: const Color(0xff317EFA),
-            child: const Icon(
-              Icons.chat,
-              color: Colors.white,
-            ),
-          ),
-        ],
-      );
-    }
-    //sto
-    if (index == 4) {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FloatingActionButton(
-            heroTag: "btn2",
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CustomChatPage(
-                            showTitle: true,
-                            title: pages[index],
-                            history: true,
-                            chatName: "sto",
-                            subscription: widget.userEntity.subscription,
-                          )));
-            },
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-            backgroundColor: const Color(0xff317EFA),
-            child: const Icon(
-              Icons.chat,
-              color: Colors.white,
-            ),
-          )
-        ],
-      );
-    }
-    //gaz
-    if (index == 5) {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FloatingActionButton(
-            heroTag: "btn2",
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CustomChatPage(
-                            showTitle: true,
-                            title: pages[index],
-                            history: true,
-                            chatName: "gaz",
-                            subscription: widget.userEntity.subscription,
-                          )));
-            },
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-            backgroundColor: const Color(0xff317EFA),
-            child: const Icon(
-              Icons.chat,
-              color: Colors.white,
-            ),
-          )
-        ],
-      );
-    }
-    //swap
-    if (index == 6) {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FloatingActionButton(
-            heroTag: "btn2",
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CustomChatPage(
-                            showTitle: true,
-                            title: pages[index],
-                            history: true,
-                            chatName: "swap",
-                            subscription: widget.userEntity.subscription,
-                          )));
-            },
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-            backgroundColor: const Color(0xff317EFA),
-            child: const Icon(
-              Icons.chat,
-              color: Colors.white,
-            ),
-          )
-        ],
-      );
-    }
-    //salon
-    if (index == 7) {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FloatingActionButton(
-            heroTag: "btn2",
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CustomChatPage(
-                            showTitle: true,
-                            title: pages[index],
-                            history: true,
-                            chatName: "salon",
-                            subscription: widget.userEntity.subscription,
-                          )));
-            },
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-            backgroundColor: const Color(0xff317EFA),
-            child: const Icon(
-              Icons.chat,
-              color: Colors.white,
-            ),
-          )
-        ],
-      );
-    }
-    //shop
-    // if (index == 8) {
-    //   return Column(
-    //     mainAxisSize: MainAxisSize.min,
-    //     children: [
-    //       FloatingActionButton(
-    //         heroTag: "btn1",
-    //         onPressed: () {
-    //           Navigator.of(context)
-    //               .push(MaterialPageRoute(
-    //                   builder: (context) => const CreateShopPage()))
-    //               .then((value) {
-    //             _shopKey.currentState?.update();
-    //           });
-    //         },
-    //         shape:
-    //             RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-    //         backgroundColor: const Color(0xff317EFA),
-    //         child: const Icon(
-    //           Icons.add,
-    //           color: Colors.white,
-    //         ),
-    //       ),
-    //       SizedBox(
-    //         height: 2.h,
-    //       ),
-    //       FloatingActionButton(
-    //         heroTag: "btn2",
-    //         onPressed: () {
-    //           Navigator.push(
-    //               context,
-    //               MaterialPageRoute(
-    //                   builder: (context) => CustomChatPage(
-    //                       key: const Key("chat_3"),
-    //                       subscription: widget.userEntity.subscription,
-    //                       history: true,
-    //                       showTitle: true,
-    //                       title: S.of(context).page9,
-    //                       chatName: GlobalsWidgets.chats[2])));
-    //         },
-    //         shape:
-    //             RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-    //         backgroundColor: const Color(0xff317EFA),
-    //         child: const Icon(
-    //           Icons.chat,
-    //           color: Colors.white,
-    //         ),
-    //       ),
-    //     ],
-    //   );
-    // }
-    //eva
-    if (index == 2) {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          widget.userEntity.role == UserRole.USER
-              ? FloatingActionButton(
-                  heroTag: "btn1",
-                  onPressed: () {
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(
-                            builder: (context) => CreateTransportationPage(
-                                  createMode: selectedModeEv,
-                                )))
-                        .then((value) {
-                      _transportationKey.currentState?.update();
-                    });
-                  },
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50)),
-                  backgroundColor: const Color(0xff317EFA),
-                  child: const Icon(
-                    Icons.add,
-                    color: Colors.white,
-                  ),
-                )
-              : const SizedBox.shrink(),
-          widget.userEntity.role == UserRole.USER
-              ? SizedBox(
-                  height: 2.h,
-                )
-              : const SizedBox.shrink(),
-          FloatingActionButton(
-            heroTag: "btn2",
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CustomChatPage(
-                          key: const Key("chat_1"),
-                          subscription: widget.userEntity.subscription,
-                          history: true,
-                          showTitle: true,
-                          title: S.of(context).page3,
-                          chatName: GlobalsWidgets.chats[0])));
-            },
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-            backgroundColor: const Color(0xff317EFA),
-            child: const Icon(
-              Icons.chat,
-              color: Colors.white,
-            ),
-          )
-        ],
-      );
-    }
-    if (index == 1 || index == 0) {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          getIndex(context, selectTab) == 0
-              ? FloatingActionButton(
-                  heroTag: "btn1",
-                  onPressed: () {
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(
-                            builder: (context) => CreateCargoPage(
-                                  mode: selectedMode,
-                                )))
-                        .then((value) {
-                      _transportationKey.currentState?.update();
-                    });
-                  },
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50)),
-                  backgroundColor: const Color(0xff317EFA),
-                  child: const Icon(
-                    Icons.add,
-                    color: Colors.white,
-                  ),
-                )
-              : const SizedBox.shrink(),
-          SizedBox(
-            height: 2.h,
-          ),
-          FloatingActionButton(
-            heroTag: "btn2",
-            onPressed: () {
-              switch (selectedMode) {
-                case Mode.CITY:
-                  {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CustomChatPage(
-                                  showTitle: true,
-                                  title: S.of(context).option2,
-                                  history: true,
-                                  chatName: "city",
-                                  subscription: widget.userEntity.subscription,
-                                )));
-                    break;
-                  }
-                case Mode.OUTCITY:
-                  {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CustomChatPage(
-                                showTitle: true,
-                                title: S.of(context).option1,
-                                history: true,
-                                chatName: "outcity",
-                                subscription: widget.userEntity.subscription)));
-                    break;
-                  }
-              }
-            },
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-            backgroundColor: const Color(0xff317EFA),
-            child: const Icon(
-              Icons.chat,
-              color: Colors.white,
-            ),
-          )
-        ],
-      );
-    }
-    return null;
-  }
-
-  int getIndex(BuildContext context, String title) {
-    for (int i = 0; i < pages.length; i++) {
-      if (pages[i] == title) {
-        return i;
-      }
-    }
-    return 0;
-  }
-
-  Widget _buildWidget(BuildContext context, String title) {
-    if (title.contains(S.of(context).page1)) {
-      return NotificationListener<ChangeModeNotify>(
-          onNotification: (m) {
-            selectedMode = m.mode;
-            setState(() {});
-            return true;
-          },
-          child: TransportationPage(
-            sub: widget.userEntity.subscription,
-            key: _transportationKey,
-          ));
-    } else if (title.contains(S.of(context).page2)) {
-      return NotificationListener<ChangeModeNotify>(
-          onNotification: (m) {
-            selectedMode = m.mode;
-            setState(() {});
-            return true;
-          },
-          child: SearchPage(
-            sub: widget.userEntity.subscription,
-          ));
-    } else if (title.contains(S.of(context).page3)) {
-      return NotificationListener<ChangeTransportModeNotify>(
-          onNotification: (m) {
-            selectedModeEv = m.mode;
-            setState(() {});
-            return true;
-          },
-          child: const SearchTransportationPage());
-    } else if (title.contains(S.of(context).page4)) {
-      return const CatalogPage(
-        category: Categories.info,
-      );
-    } else if (title.contains(S.of(context).page5)) {
-      return const CatalogPage(
-        category: Categories.sto,
-      );
-    } else if (title.contains(S.of(context).page6)) {
-      return const CatalogPage(
-        category: Categories.modify,
-      );
-    } else if (title.contains(S.of(context).page7)) {
-      return CustomChatPage(
-          key: const Key("chat_2"),
-          subscription: widget.userEntity.subscription,
-          history: true,
-          showTitle: false,
-          title: S.of(context).page7,
-          chatName: GlobalsWidgets.chats[1]);
-    } else if (title.contains(S.of(context).page8)) {
-      return const CatalogPage(
-        category: Categories.swap,
-      );
-    } else if (title.contains(S.of(context).page9)) {
-      return CatalogPage(key: _shopKey, category: Categories.shop);
-    } else if (title.contains(S.of(context).page10)) {
-      return CustomChatPage(
-          key: const Key("chat_4"),
-          subscription: widget.userEntity.subscription,
-          history: true,
-          showTitle: false,
-          title: S.of(context).page10,
-          chatName: GlobalsWidgets.chats[4]);
-    } else if (title.contains(S.of(context).page11)) {
-      return const CatalogPage(
-        category: Categories.auto,
-      );
-    } else if (title.contains("Чат")) {
-      return ChatPage(
-        user: widget.userEntity,
-      );
-    }
-
-    return const SizedBox.shrink();
   }
 }

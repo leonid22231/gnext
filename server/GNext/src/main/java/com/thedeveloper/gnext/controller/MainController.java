@@ -37,6 +37,7 @@ public class MainController {
     public ResponseEntity<?> login(@RequestParam String phone, @RequestParam String password){
         UserEntity user = userService.findUserByPhone(phone);
         if(user==null) return new ResponseEntity<>("Пользователь не найден", HttpStatus.NOT_FOUND);
+        if(user.isBlocked()) return new ResponseEntity<>("Пользователь заблокирован", HttpStatus.NOT_FOUND);
         if(!passwordEncoder.matches(password,user.getPassword())){
             return new ResponseEntity<>("Неверный пароль", HttpStatus.FORBIDDEN);
         }else{

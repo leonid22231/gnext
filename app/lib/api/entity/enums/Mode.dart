@@ -1,3 +1,5 @@
-enum Mode{
-  CITY,OUTCITY;
+enum Mode {
+  CITY,
+  OUTCITY,
+  NONE;
 }

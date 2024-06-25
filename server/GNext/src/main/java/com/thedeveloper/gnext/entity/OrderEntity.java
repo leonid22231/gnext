@@ -1,6 +1,7 @@
 package com.thedeveloper.gnext.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.thedeveloper.gnext.enums.OrderMode;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,7 +17,6 @@ public class OrderEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "creator", nullable = true, referencedColumnName = "phone")
     UserEntity creator;
-
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "specialist", nullable = true, referencedColumnName = "phone")
     UserEntity specialist;
@@ -38,5 +38,7 @@ public class OrderEntity {
     Date endDate;
     Date createDate;
     String file;
-
+    @JsonIgnore
+    @Enumerated(EnumType.STRING)
+    OrderMode mode = OrderMode.CLASSIC;
 }

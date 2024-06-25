@@ -121,9 +121,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "photo_profile": MessageLookupByLibrary.simpleMessage("Фото профиля"),
         "photo_profile_":
             MessageLookupByLibrary.simpleMessage("Добавьте фото профиля"),
+        "poput": MessageLookupByLibrary.simpleMessage("Попутчик"),
         "preload_page1": MessageLookupByLibrary.simpleMessage("Добавить груз"),
         "preload_page2":
             MessageLookupByLibrary.simpleMessage("Стать перевозчиком"),
+        "preload_page3": MessageLookupByLibrary.simpleMessage("Найти груз"),
         "price": MessageLookupByLibrary.simpleMessage("Цена"),
         "price_": MessageLookupByLibrary.simpleMessage("Введите цену"),
         "profile_1": MessageLookupByLibrary.simpleMessage("Договор оферты"),

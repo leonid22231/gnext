@@ -54,6 +54,18 @@ public class StorisController {
         ChatEntity chat = chatService.findByCityAndName(user.getCity(),chat_name);
        return new ResponseEntity<>(storisService.getStorisByChat(chat), HttpStatus.OK);
     }
+    @PostMapping("/chat/{id}/delete")
+    public ResponseEntity<?> deleteStory(@RequestParam("uid")String uid,@RequestParam("chat") String chat_name, @PathVariable Long id){
+        UserEntity user = userService.findUserByUid(uid);
+        ChatEntity chat = chatService.findByCityAndName(user.getCity(),chat_name);
+        for(StorisEntity storis : storisService.getStorisByChat(chat)){
+            if(storis.getId().equals(id)){
+                storisService.delete(storis);
+                break;
+            }
+        }
+        return new ResponseEntity<>(storisService.getStorisByChat(chat), HttpStatus.OK);
+    }
     @Async
     @GetMapping("/photo/{name}")
     public CompletableFuture<ResponseEntity<?>> getAvatar(@PathVariable String name){

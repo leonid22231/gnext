@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:app/api/RestClient.dart';
 import 'package:app/api/entity/UserEntity.dart';
+import 'package:app/api/entity/enums/WalletEvent.dart';
 import 'package:app/auth/login_page.dart';
 import 'package:app/firebase_options.dart';
 import 'package:app/generated/l10n.dart';
@@ -15,6 +17,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -52,11 +55,72 @@ class MyApp extends StatefulWidget {
 
 class _MyApp extends State<MyApp> {
   LanguageBloc? languageBloc;
+  final InAppPurchase _inAppPurchase = InAppPurchase.instance;
+  late StreamSubscription<List<PurchaseDetails>> _purchasesSubscription;
   @override
   void initState() {
     languageBloc = LanguageBloc();
     super.initState();
     initLocalization();
+    initStore();
+  }
+
+  void initStore() async {
+    final bool isAvailable = await _inAppPurchase.isAvailable();
+    debugPrint("Store availabale is $isAvailable");
+    _purchasesSubscription = _inAppPurchase.purchaseStream.listen(
+      (List<PurchaseDetails> purchaseDetailsList) {
+        handlePurchaseUpdates(purchaseDetailsList);
+      },
+      onDone: () {
+        _purchasesSubscription.cancel();
+      },
+      onError: (error) {},
+    );
+  }
+
+  handlePurchaseUpdates(List<PurchaseDetails> purchaseDetailsList) async {
+    for (int index = 0; index < purchaseDetailsList.length; index++) {
+      var purchaseStatus = purchaseDetailsList[index].status;
+      var productId = purchaseDetailsList[index].productID;
+      debugPrint("Product Id $productId");
+      debugPrint("Product Status $purchaseStatus");
+      switch (purchaseDetailsList[index].status) {
+        case PurchaseStatus.pending:
+          print(' purchase is in pending ');
+          continue;
+        case PurchaseStatus.error:
+          print(' purchase error ');
+          break;
+        case PurchaseStatus.canceled:
+          print(' purchase cancel ');
+          break;
+        case PurchaseStatus.purchased:
+          print(' purchased ');
+          break;
+        case PurchaseStatus.restored:
+          print(' purchase restore ');
+          break;
+      }
+
+      if (purchaseDetailsList[index].pendingCompletePurchase) {
+        await _inAppPurchase
+            .completePurchase(purchaseDetailsList[index])
+            .then((value) {
+          if (purchaseStatus == PurchaseStatus.purchased) {
+            Dio dio = Dio();
+            RestClient client = RestClient(dio);
+            client
+                .walletEvent(GlobalsWidgets.uid, WalletEvent.ADD,
+                    double.parse(productId.split("_")[1]))
+                .then((value) {
+              GlobalsWidgets.wallet += double.parse(productId.split("_")[1]);
+              Navigator.pop(context);
+            });
+          }
+        });
+      }
+    }
   }
 
   @override

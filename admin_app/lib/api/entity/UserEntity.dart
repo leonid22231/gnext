@@ -16,9 +16,21 @@ class UserEntity {
   CityEntity city;
   double wallet;
   bool subscription;
+  bool blocked;
+  UserEntity(
+      {required this.id,
+      required this.uid,
+      required this.name,
+      required this.surname,
+      required this.phone,
+      required this.city,
+      this.photo,
+      required this.role,
+      required this.wallet,
+      required this.subscription,
+      required this.blocked});
 
-  UserEntity({required this.id, required this.uid, required this.name, required this.surname, required this.phone, required this.city, this.photo, required this.role, required this.wallet, required this.subscription});
-
-  factory UserEntity.fromJson(Map<String, dynamic> json) => _$UserEntityFromJson(json);
+  factory UserEntity.fromJson(Map<String, dynamic> json) =>
+      _$UserEntityFromJson(json);
   Map<String, dynamic> toJson() => _$UserEntityToJson(this);
 }

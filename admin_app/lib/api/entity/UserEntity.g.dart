@@ -17,6 +17,7 @@ UserEntity _$UserEntityFromJson(Map<String, dynamic> json) => UserEntity(
       role: $enumDecode(_$UserRoleEnumMap, json['role']),
       wallet: (json['wallet'] as num).toDouble(),
       subscription: json['subscription'] as bool,
+      blocked: json['blocked'] as bool,
     );
 
 Map<String, dynamic> _$UserEntityToJson(UserEntity instance) =>
@@ -31,6 +32,7 @@ Map<String, dynamic> _$UserEntityToJson(UserEntity instance) =>
       'city': instance.city,
       'wallet': instance.wallet,
       'subscription': instance.subscription,
+      'blocked': instance.blocked,
     };
 
 const _$UserRoleEnumMap = {

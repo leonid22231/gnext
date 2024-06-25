@@ -1,9 +1,7 @@
 package com.thedeveloper.gnext.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonView;
 import com.thedeveloper.gnext.enums.UserRole;
-import com.thedeveloper.gnext.utils.Views;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -41,4 +39,5 @@ public class UserEntity {
     Date subStart;
     String telegram;
     String whatsapp;
+    boolean blocked = false;
 }

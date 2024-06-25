@@ -69,6 +69,9 @@ abstract class RestClient {
   @GET("storis/chat")
   Future<List<StorisEntity>> getStoris(
       @Query("uid") String uid, @Query("chat") String chat);
+  @POST("storis/chat/{id}/delete")
+  Future<List<StorisEntity>> deleteStoris(
+      @Query("uid") String uid, @Query("chat") String chat, @Path("id") int id);
   @GET("location/AdminCountries")
   Future<List<CountryEntity>> getCountries();
   @POST("orders/create")
@@ -104,6 +107,10 @@ abstract class RestClient {
   Future<StatisticModel> getStat();
   @GET("admin/users")
   Future<List<UserEntity>> findUsers(@Query("query") String? query);
+  @POST("admin/users/{phone}/block")
+  Future<UserEntity> blockUser(@Path("phone") String phone);
+  @POST("admin/users/{phone}/unblock")
+  Future<UserEntity> unBlockUser(@Path("phone") String phone);
   @GET("admin/chats")
   Future<List<ChatEntity>> findChats(
       @Query("countryId") int countryId, @Query("cityId") int cityId);
@@ -113,6 +120,12 @@ abstract class RestClient {
     @Query("cityId") int cityId,
     @Query("name") String name,
   );
+  @POST("admin/chats/messages/{id}/delete")
+  Future<List<MessageEntity>> deleteMessage(
+      @Query("countryId") int countryId,
+      @Query("cityId") int cityId,
+      @Query("name") String name,
+      @Path("id") int id);
   @GET("admin/filters")
   Future<List<FilterEntity>> findFilters();
   @GET("user/walletHistory")
