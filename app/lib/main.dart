@@ -17,6 +17,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_localized_locales/flutter_localized_locales.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -143,6 +144,7 @@ class _MyApp extends State<MyApp> {
               title: 'Gnext Logistics',
               localizationsDelegates: const [
                 S.delegate,
+                LocaleNamesLocalizationsDelegate(),
                 GlobalMaterialLocalizations.delegate,
                 GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
@@ -151,6 +153,13 @@ class _MyApp extends State<MyApp> {
               supportedLocales: const [
                 Locale('ru', 'RU'),
                 Locale('kk', 'KZ'),
+                Locale('hi', 'IN'),
+                Locale('hy', 'AM'),
+                Locale('ky', 'KG'),
+                Locale('ko', 'KR'),
+                Locale('zh', 'CN'),
+                Locale('uz', 'UZ'),
+                Locale('pl', 'PL')
               ],
               locale: Locale(state.locale, ''),
               theme: ThemeData(

@@ -1,5 +1,6 @@
 package com.thedeveloper.gnext.entity;
 
+import com.thedeveloper.gnext.enums.TransportationCategory;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -26,6 +27,8 @@ public class TransportationEntity {
     AddressEntity addressFrom;
     boolean active = true;
     boolean outCity;
+    @Enumerated(EnumType.STRING)
+    TransportationCategory category = TransportationCategory.ev;
     double price;
     String description;
     Date date;

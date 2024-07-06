@@ -25,8 +25,26 @@ class OrderEntity {
   String? description;
   String? file;
 
-  OrderEntity({required this.id, required this.creator, this.specialist, required this.city, required this.addressTo, required this.addressFrom, required this.price, required this.customPrice, required this.outCity, required this.active, this.file, this.description, required this.startDate, required this.endDate, required this.createDate});
+  @override
+  bool operator ==(Object other) => other is OrderEntity && other.id == id;
+  OrderEntity(
+      {required this.id,
+      required this.creator,
+      this.specialist,
+      required this.city,
+      required this.addressTo,
+      required this.addressFrom,
+      required this.price,
+      required this.customPrice,
+      required this.outCity,
+      required this.active,
+      this.file,
+      this.description,
+      required this.startDate,
+      required this.endDate,
+      required this.createDate});
 
-  factory OrderEntity.fromJson(Map<String, dynamic> json) => _$OrderEntityFromJson(json);
+  factory OrderEntity.fromJson(Map<String, dynamic> json) =>
+      _$OrderEntityFromJson(json);
   Map<String, dynamic> toJson() => _$OrderEntityToJson(this);
 }

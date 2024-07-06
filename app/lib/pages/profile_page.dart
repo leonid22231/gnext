@@ -13,6 +13,7 @@ import 'package:app/api/entity/enums/WalletEvent.dart';
 import 'package:app/auth/login_page.dart';
 import 'package:app/generated/l10n.dart';
 import 'package:app/main_route.dart';
+import 'package:app/pages/seconds/change_lng.dart';
 import 'package:app/utils/GlobalsColors.dart';
 import 'package:app/utils/GlobalsWidgets.dart';
 import 'package:app/utils/localization/localization_block.dart';
@@ -800,80 +801,46 @@ class _ProfilePage extends State<ProfilePage> {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(3.w),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        GestureDetector(
-                          onTap: () async {
-                            SharedPreferences spref =
-                                await SharedPreferences.getInstance();
-                            spref.setString("lng", "kk");
-                            final loginBloc =
-                                BlocProvider.of<LanguageBloc>(context);
-                            loginBloc.add(
-                              ToggleLanguageEvent('kk'), // 0 - en, 1 - es
-                            );
-                          },
-                          child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(12)),
-                                  color: selectedLanguage.languageCode == "kk"
-                                      ? Color(0xffffdb54)
-                                      : Colors.transparent),
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 6, horizontal: 8),
-                                child: Center(
-                                  child: Text(
-                                    "Қаз",
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                ),
-                              )),
-                        ),
-                        const SizedBox(
-                          width: 4,
-                        ),
-                        GestureDetector(
-                          onTap: () async {
-                            SharedPreferences spref =
-                                await SharedPreferences.getInstance();
-                            spref.setString("lng", "ru");
-                            final loginBloc =
-                                BlocProvider.of<LanguageBloc>(context);
-                            loginBloc.add(
-                              ToggleLanguageEvent('ru'), // 0 - en, 1 - es
-                            );
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12)),
-                                color: selectedLanguage.languageCode == "ru"
-                                    ? Color(0xffffdb54)
-                                    : Colors.transparent),
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 6, horizontal: 8),
-                              child: Center(
-                                child: Text(
-                                  "Рус",
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
                 ],
               ),
               SizedBox(
                 height: 5.h,
+              ),
+              InkWell(
+                onTap: () async {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ChangeLanguage()));
+                },
+                borderRadius: BorderRadius.circular(15),
+                child: Ink(
+                  padding: EdgeInsets.symmetric(vertical: 2.h),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Icon(Icons.language),
+                      SizedBox(
+                        width: 5.w,
+                      ),
+                      Flexible(
+                          fit: FlexFit.tight,
+                          child: Text(
+                            S.of(context).change_lng,
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 18.sp),
+                          )),
+                      SizedBox(
+                        width: 5.w,
+                      ),
+                      const Icon(Icons.keyboard_arrow_right_sharp)
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 1.h,
               ),
               InkWell(
                 onTap: () {

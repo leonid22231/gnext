@@ -3,7 +3,7 @@ description: "GNext logistic application"
 
 publish_to: 'none'
 
-version: 4.5.1+5.8
+version: 5.1.1+6.5
 
 environment:
   sdk: '>=3.2.6 <4.0.0'
@@ -48,6 +48,7 @@ dependencies:
   firebase_crashlytics: ^3.5.5
   currency_converter: ^0.0.2
   in_app_purchase: ^3.2.0
+  flutter_localized_locales: ^2.0.5
 
 icons_launcher:
   image_path: "assets/icon.png"

@@ -355,104 +355,244 @@ class TransportationPageState extends State<TransportationPage>
             future: getMyOrders(false),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                List<OrderEntity> list = snapshot.data!;
-                return ListView.separated(
-                  itemCount: list.length,
-                  itemBuilder: (context, index) {
-                    OrderEntity order = list[index];
-                    return InkWell(
-                      onTap: (GlobalsWidgets.role == UserRole.USER ||
-                              (widget.sub &&
-                                  GlobalsWidgets.role == UserRole.SPECIALIST))
-                          ? () {
-                              Navigator.of(context)
-                                  .push(MaterialPageRoute(
-                                      builder: (context) =>
-                                          OrderPage(order: order)))
-                                  .then((value) {
-                                setState(() {});
-                              });
-                            }
-                          : null,
-                      child: Container(
-                        width: double.maxFinite,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(9),
-                            color: const Color(0xff787878)),
-                        child: Padding(
-                          padding: EdgeInsets.all(2.h),
+                List<OrderEntity> myList = snapshot.data!;
+                return FutureBuilder(
+                    future: getActiveOrders(false),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        List<OrderEntity> allList = snapshot.data!;
+                        return SingleChildScrollView(
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "${order.addressFrom.street}, ${order.addressFrom.house ?? ""} ->",
-                                    style: TextStyle(
-                                        fontSize: 14.sp,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    "${order.price.round()} ₸",
-                                    style: TextStyle(
-                                        fontSize: 16.sp,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  )
-                                ],
+                              Text(S.of(context).you_orders),
+                              ListView.separated(
+                                primary: false,
+                                shrinkWrap: true,
+                                itemCount: myList.length,
+                                itemBuilder: (context, index) {
+                                  OrderEntity order = myList[index];
+                                  return InkWell(
+                                    onTap:
+                                        (GlobalsWidgets.role == UserRole.USER ||
+                                                (widget.sub &&
+                                                    GlobalsWidgets.role ==
+                                                        UserRole.SPECIALIST))
+                                            ? () {
+                                                Navigator.of(context)
+                                                    .push(MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            OrderPage(
+                                                                order: order)))
+                                                    .then((value) {
+                                                  setState(() {});
+                                                });
+                                              }
+                                            : null,
+                                    child: Container(
+                                      width: double.maxFinite,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(9),
+                                          color: const Color(0xff787878)),
+                                      child: Padding(
+                                        padding: EdgeInsets.all(2.h),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  "${order.addressFrom.street}, ${order.addressFrom.house ?? ""} ->",
+                                                  style: TextStyle(
+                                                      fontSize: 14.sp,
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Text(
+                                                  "${order.price.round()} ₸",
+                                                  style: TextStyle(
+                                                      fontSize: 16.sp,
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 1.h,
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                    "${order.addressTo.street}, ${order.addressTo.house ?? ""}",
+                                                    style: TextStyle(
+                                                        fontSize: 14.sp,
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold))
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 1.h,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  "${DateFormat("dd EE.").format(order.startDate.toLocal())} - ${DateFormat("dd EE, MMM").format(order.endDate.toLocal())}",
+                                                  style: TextStyle(
+                                                      color: const Color(
+                                                          0xffCFCFCF),
+                                                      fontSize: 14.sp,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Text(
+                                                  DateFormat("dd MMM").format(
+                                                      order.createDate
+                                                          .toLocal()),
+                                                  style: TextStyle(
+                                                      color: const Color(
+                                                          0xffCFCFCF),
+                                                      fontSize: 14.sp,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                separatorBuilder:
+                                    (BuildContext context, int index) {
+                                  return SizedBox(
+                                    height: 2.h,
+                                  );
+                                },
                               ),
-                              SizedBox(
-                                height: 1.h,
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                      "${order.addressTo.street}, ${order.addressTo.house ?? ""}",
-                                      style: TextStyle(
-                                          fontSize: 14.sp,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold))
-                                ],
-                              ),
-                              SizedBox(
-                                height: 1.h,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "${DateFormat("dd EE.").format(order.startDate.toLocal())} - ${DateFormat("dd EE, MMM").format(order.endDate.toLocal())}",
-                                    style: TextStyle(
-                                        color: const Color(0xffCFCFCF),
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    DateFormat("dd MMM")
-                                        .format(order.createDate.toLocal()),
-                                    style: TextStyle(
-                                        color: const Color(0xffCFCFCF),
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.bold),
-                                  )
-                                ],
+                              Text(S.of(context).not_you_orders),
+                              ListView.separated(
+                                primary: false,
+                                shrinkWrap: true,
+                                itemCount: allList.length,
+                                itemBuilder: (context, index) {
+                                  OrderEntity order = allList[index];
+                                  if (myList.contains(order)) {
+                                    return const SizedBox.shrink();
+                                  }
+                                  return InkWell(
+                                    child: Container(
+                                      width: double.maxFinite,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(9),
+                                          color: const Color(0xff787878)),
+                                      child: Padding(
+                                        padding: EdgeInsets.all(2.h),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  "${order.addressFrom.street}, ${order.addressFrom.house ?? ""} ->",
+                                                  style: TextStyle(
+                                                      fontSize: 14.sp,
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Text(
+                                                  "${order.price.round()} ₸",
+                                                  style: TextStyle(
+                                                      fontSize: 16.sp,
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 1.h,
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                    "${order.addressTo.street}, ${order.addressTo.house ?? ""}",
+                                                    style: TextStyle(
+                                                        fontSize: 14.sp,
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold))
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 1.h,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  "${DateFormat("dd EE.").format(order.startDate.toLocal())} - ${DateFormat("dd EE, MMM").format(order.endDate.toLocal())}",
+                                                  style: TextStyle(
+                                                      color: const Color(
+                                                          0xffCFCFCF),
+                                                      fontSize: 14.sp,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Text(
+                                                  DateFormat("dd MMM").format(
+                                                      order.createDate
+                                                          .toLocal()),
+                                                  style: TextStyle(
+                                                      color: const Color(
+                                                          0xffCFCFCF),
+                                                      fontSize: 14.sp,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                separatorBuilder:
+                                    (BuildContext context, int index) {
+                                  if (myList.contains(allList[index])) {
+                                    return const SizedBox.shrink();
+                                  }
+                                  return SizedBox(
+                                    height: 2.h,
+                                  );
+                                },
                               )
                             ],
                           ),
-                        ),
-                      ),
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return SizedBox(
-                      height: 2.h,
-                    );
-                  },
-                );
+                        );
+                      } else {
+                        return SizedBox();
+                      }
+                    });
               } else {
                 return const SizedBox.shrink();
               }
@@ -466,103 +606,257 @@ class TransportationPageState extends State<TransportationPage>
             future: getMyOrders(true),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                List<OrderEntity> list = snapshot.data!;
-                return ListView.separated(
-                  itemCount: list.length,
-                  itemBuilder: (context, index) {
-                    OrderEntity order = list[index];
-                    return InkWell(
-                      onTap: (GlobalsWidgets.role == UserRole.USER ||
-                              (widget.sub &&
-                                  GlobalsWidgets.role == UserRole.SPECIALIST))
-                          ? () {
-                              Navigator.of(context)
-                                  .push(MaterialPageRoute(
-                                      builder: (context) =>
-                                          OrderPage(order: order)))
-                                  .then((value) {
-                                setState(() {});
-                              });
-                            }
-                          : null,
-                      child: Container(
-                        width: double.maxFinite,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(9),
-                            color: const Color(0xff787878)),
-                        child: Padding(
-                          padding: EdgeInsets.all(2.h),
+                List<OrderEntity> myList = snapshot.data!;
+                return FutureBuilder(
+                    future: getActiveOrders(true),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        List<OrderEntity> allList = snapshot.data!;
+                        return SingleChildScrollView(
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "${order.addressFrom.city} ->",
-                                    style: TextStyle(
-                                        fontSize: 14.sp,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    "${order.price.round()} ₸",
-                                    style: TextStyle(
-                                        fontSize: 16.sp,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  )
-                                ],
+                              Text(S.of(context).you_orders),
+                              ListView.separated(
+                                shrinkWrap: true,
+                                primary: false,
+                                itemCount: myList.length,
+                                itemBuilder: (context, index) {
+                                  OrderEntity order = myList[index];
+                                  return InkWell(
+                                    onTap:
+                                        (GlobalsWidgets.role == UserRole.USER ||
+                                                (widget.sub &&
+                                                    GlobalsWidgets.role ==
+                                                        UserRole.SPECIALIST))
+                                            ? () {
+                                                Navigator.of(context)
+                                                    .push(MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            OrderPage(
+                                                                order: order)))
+                                                    .then((value) {
+                                                  setState(() {});
+                                                });
+                                              }
+                                            : null,
+                                    child: Container(
+                                      width: double.maxFinite,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(9),
+                                          color: const Color(0xff787878)),
+                                      child: Padding(
+                                        padding: EdgeInsets.all(2.h),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  "${order.addressFrom.city} ->",
+                                                  style: TextStyle(
+                                                      fontSize: 14.sp,
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Text(
+                                                  "${order.price.round()} ₸",
+                                                  style: TextStyle(
+                                                      fontSize: 16.sp,
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 1.h,
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(order.addressTo.city,
+                                                    style: TextStyle(
+                                                        fontSize: 14.sp,
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold))
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 1.h,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  "${DateFormat("dd EE.").format(order.startDate.toLocal())} - ${DateFormat("dd EE, MMM").format(order.endDate.toLocal())}",
+                                                  style: TextStyle(
+                                                      color: const Color(
+                                                          0xffCFCFCF),
+                                                      fontSize: 14.sp,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Text(
+                                                  DateFormat("dd MMM").format(
+                                                      order.createDate
+                                                          .toLocal()),
+                                                  style: TextStyle(
+                                                      color: const Color(
+                                                          0xffCFCFCF),
+                                                      fontSize: 14.sp,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                separatorBuilder:
+                                    (BuildContext context, int index) {
+                                  return SizedBox(
+                                    height: 2.h,
+                                  );
+                                },
                               ),
-                              SizedBox(
-                                height: 1.h,
-                              ),
-                              Row(
-                                children: [
-                                  Text(order.addressTo.city,
-                                      style: TextStyle(
-                                          fontSize: 14.sp,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold))
-                                ],
-                              ),
-                              SizedBox(
-                                height: 1.h,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "${DateFormat("dd EE.").format(order.startDate.toLocal())} - ${DateFormat("dd EE, MMM").format(order.endDate.toLocal())}",
-                                    style: TextStyle(
-                                        color: const Color(0xffCFCFCF),
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    DateFormat("dd MMM")
-                                        .format(order.createDate.toLocal()),
-                                    style: TextStyle(
-                                        color: const Color(0xffCFCFCF),
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.bold),
-                                  )
-                                ],
+                              Text(S.of(context).not_you_orders),
+                              ListView.separated(
+                                shrinkWrap: true,
+                                primary: false,
+                                itemCount: allList.length,
+                                itemBuilder: (context, index) {
+                                  OrderEntity order = allList[index];
+                                  if (myList.contains(order)) {
+                                    return const SizedBox.shrink();
+                                  }
+                                  return InkWell(
+                                    onTap: ((widget.sub &&
+                                            GlobalsWidgets.role ==
+                                                UserRole.SPECIALIST))
+                                        ? () {
+                                            Navigator.of(context)
+                                                .push(MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        OrderPage(
+                                                            order: order)))
+                                                .then((value) {
+                                              setState(() {});
+                                            });
+                                          }
+                                        : null,
+                                    child: Container(
+                                      width: double.maxFinite,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(9),
+                                          color: const Color(0xff787878)),
+                                      child: Padding(
+                                        padding: EdgeInsets.all(2.h),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  "${order.addressFrom.city} ->",
+                                                  style: TextStyle(
+                                                      fontSize: 14.sp,
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Text(
+                                                  "${order.price.round()} ₸",
+                                                  style: TextStyle(
+                                                      fontSize: 16.sp,
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 1.h,
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(order.addressTo.city,
+                                                    style: TextStyle(
+                                                        fontSize: 14.sp,
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold))
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 1.h,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  "${DateFormat("dd EE.").format(order.startDate.toLocal())} - ${DateFormat("dd EE, MMM").format(order.endDate.toLocal())}",
+                                                  style: TextStyle(
+                                                      color: const Color(
+                                                          0xffCFCFCF),
+                                                      fontSize: 14.sp,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Text(
+                                                  DateFormat("dd MMM").format(
+                                                      order.createDate
+                                                          .toLocal()),
+                                                  style: TextStyle(
+                                                      color: const Color(
+                                                          0xffCFCFCF),
+                                                      fontSize: 14.sp,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                separatorBuilder:
+                                    (BuildContext context, int index) {
+                                  if (myList.contains(allList[index])) {
+                                    return const SizedBox.shrink();
+                                  }
+                                  return SizedBox(
+                                    height: 2.h,
+                                  );
+                                },
                               ),
                             ],
                           ),
-                        ),
-                      ),
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return SizedBox(
-                      height: 2.h,
-                    );
-                  },
-                );
+                        );
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    });
               } else {
                 return const SizedBox.shrink();
               }
@@ -573,6 +867,12 @@ class TransportationPageState extends State<TransportationPage>
   }
 
   update() => setState(() {});
+  Future<List<OrderEntity>> getActiveOrders(bool out) {
+    Dio dio = Dio();
+    RestClient client = RestClient(dio);
+    return client.activeOrders(GlobalsWidgets.uid, out);
+  }
+
   Future<List<OrderEntity>> getMyOrders(bool out) {
     Dio dio = Dio();
     RestClient client = RestClient(dio);

@@ -15,6 +15,7 @@ import 'package:app/api/entity/enums/Categories.dart';
 import 'package:app/api/entity/enums/MessageType.dart';
 import 'package:app/api/entity/enums/OrderMode.dart';
 import 'package:app/api/entity/enums/StoryType.dart';
+import 'package:app/api/entity/enums/TransportationCategory.dart';
 import 'package:app/api/entity/enums/UserRole.dart';
 import 'package:app/api/entity/enums/WalletEvent.dart';
 import 'package:dio/dio.dart';
@@ -145,15 +146,20 @@ abstract class RestClient {
       @Query("uid") String uid,
       @Query("price") double price,
       @Query("description") String description,
+      @Query("category") TransportationCategory category,
       @Query("outcity") bool outcity,
       @Query("date") DateTime date,
       @Part(name: "properties") PropertiesModel properties);
   @GET("transportings/my")
   Future<List<TransportationEntity>> findMyTransportation(
-      @Query("uid") String uid, @Query("outcity") bool outcity);
+      @Query("uid") String uid,
+      @Query("category") TransportationCategory category,
+      @Query("outcity") bool outcity);
   @GET("transportings/active")
   Future<List<TransportationEntity>> findActiveTransportation(
-      @Query("uid") String uid, @Query("outcity") bool outcity);
+      @Query("uid") String uid,
+      @Query("category") TransportationCategory category,
+      @Query("outcity") bool outcity);
   @POST("transportings/stop")
   Future<void> stopTransportation(@Query("id") int id);
   @POST("user/save")

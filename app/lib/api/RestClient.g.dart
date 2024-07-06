@@ -980,6 +980,7 @@ class _RestClient implements RestClient {
     String uid,
     double price,
     String description,
+    TransportationCategory category,
     bool outcity,
     DateTime date,
     PropertiesModel properties,
@@ -989,6 +990,7 @@ class _RestClient implements RestClient {
       r'uid': uid,
       r'price': price,
       r'description': description,
+      r'category': category.name,
       r'outcity': outcity,
       r'date': date.toIso8601String(),
     };
@@ -1020,11 +1022,13 @@ class _RestClient implements RestClient {
   @override
   Future<List<TransportationEntity>> findMyTransportation(
     String uid,
+    TransportationCategory category,
     bool outcity,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'uid': uid,
+      r'category': category.name,
       r'outcity': outcity,
     };
     final _headers = <String, dynamic>{};
@@ -1056,11 +1060,13 @@ class _RestClient implements RestClient {
   @override
   Future<List<TransportationEntity>> findActiveTransportation(
     String uid,
+    TransportationCategory category,
     bool outcity,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'uid': uid,
+      r'category': category.name,
       r'outcity': outcity,
     };
     final _headers = <String, dynamic>{};

@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:app/api/RestClient.dart';
@@ -5,10 +6,16 @@ import 'package:app/api/entity/UserEntity.dart';
 import 'package:app/api/entity/enums/Categories.dart';
 import 'package:app/api/entity/enums/Mode.dart';
 import 'package:app/api/entity/enums/OrderMode.dart';
+import 'package:app/api/entity/enums/TransportationCategory.dart';
 import 'package:app/api/entity/enums/UserRole.dart';
 import 'package:app/generated/l10n.dart';
+import 'package:app/pages/auto_transport_page.dart';
 import 'package:app/pages/chats/ChatPage.dart';
 import 'package:app/pages/catalog_page.dart';
+import 'package:app/pages/ex_transport_page.dart';
+import 'package:app/pages/man_transport_page.dart';
+import 'package:app/pages/pog_transport_page.dart';
+import 'package:app/pages/sam_transport_page.dart';
 import 'package:app/pages/search_page.dart';
 import 'package:app/pages/search_transportation_page.dart';
 import 'package:app/pages/seconds/chat_page.dart';
@@ -17,6 +24,7 @@ import 'package:app/pages/seconds/create_order_taxi.dart';
 import 'package:app/pages/seconds/create_shop.dart';
 import 'package:app/pages/seconds/create_transportation_page.dart';
 import 'package:app/pages/seconds/my_taxi_orders.dart';
+import 'package:app/pages/taxi_page.dart';
 import 'package:app/pages/transportation_page.dart';
 import 'package:app/utils/GlobalsColors.dart';
 import 'package:app/utils/GlobalsWidgets.dart';
@@ -40,13 +48,34 @@ class _MainRouteState extends State<MainRoute> {
   int activeTab = 0;
   final GlobalKey<SliderDrawerState> _sliderDrawerKey =
       GlobalKey<SliderDrawerState>();
+
   final GlobalKey<TransportationPageState> _transportationKey =
       GlobalKey<TransportationPageState>();
-  final GlobalKey<CatalogPageState> _shopKey = GlobalKey<CatalogPageState>();
+
+  final GlobalKey<TaxiPageState> _taxiKey = GlobalKey<TaxiPageState>();
+  final GlobalKey<ManTransportPageState> _manKey =
+      GlobalKey<ManTransportPageState>();
+  final GlobalKey<ExTransportPageState> _exKey =
+      GlobalKey<ExTransportPageState>();
+  final GlobalKey<SamTransportPageState> _samKey =
+      GlobalKey<SamTransportPageState>();
+  final GlobalKey<AutoTransportPageState> _autoKey =
+      GlobalKey<AutoTransportPageState>();
+  final GlobalKey<PogTransportPageState> _pogKey =
+      GlobalKey<PogTransportPageState>();
   String selectTab = "";
   List<String> pages = [];
   Mode selectedMode = Mode.CITY;
   Mode selectedModeEv = Mode.CITY;
+  Mode selectedModeTaxi = Mode.OUTCITY;
+  Mode selectedModeMan = Mode.CITY;
+  //only
+  Mode selectedModeEx = Mode.CITY;
+  //only
+  Mode selectedModeAuto = Mode.OUTCITY;
+  Mode selectedModeSam = Mode.CITY;
+  //only
+  Mode selectedModePog = Mode.CITY;
   File? file;
 
   @override
@@ -58,8 +87,10 @@ class _MainRouteState extends State<MainRoute> {
       S.of(context).page4,
       S.of(context).page5,
       S.of(context).page6,
+      S.of(context).page7,
       S.of(context).page8,
       S.of(context).page11,
+      S.of(context).page12,
       "Чат"
     ];
     if (widget.userEntity.role == UserRole.SPECIALIST && activeTab == 0) {
@@ -97,207 +128,280 @@ class _MainRouteState extends State<MainRoute> {
   }
 
   Widget? _getFloatButton(int index) {
-    //spr
+    log("Index $index");
+    //манипулятор
     if (index == 3) {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          FloatingActionButton(
-            heroTag: "btn2",
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CustomChatPage(
-                            showTitle: true,
-                            title: pages[index],
-                            history: true,
-                            chatName: "spr",
-                            subscription: widget.userEntity.subscription,
-                          )));
-            },
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-            backgroundColor: const Color(0xff317EFA),
-            child: const Icon(
-              Icons.chat,
-              color: Colors.white,
-            ),
-          ),
+          widget.userEntity.role == UserRole.USER
+              ? FloatingActionButton(
+                  heroTag: "btn1",
+                  onPressed: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(
+                            builder: (context) => CreateTransportationPage(
+                                  category: TransportationCategory.man,
+                                  city: widget.userEntity.city,
+                                  createMode: selectedModeMan,
+                                )))
+                        .then((value) {
+                      _manKey.currentState?.update();
+                    });
+                  },
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50)),
+                  backgroundColor: const Color(0xff317EFA),
+                  child: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                )
+              : const SizedBox.shrink(),
         ],
       );
     }
-    //sto
-    if (index == 4) {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FloatingActionButton(
-            heroTag: "btn2",
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CustomChatPage(
-                            showTitle: true,
-                            title: pages[index],
-                            history: true,
-                            chatName: "sto",
-                            subscription: widget.userEntity.subscription,
-                          )));
-            },
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-            backgroundColor: const Color(0xff317EFA),
-            child: const Icon(
-              Icons.chat,
-              color: Colors.white,
-            ),
-          )
-        ],
-      );
-    }
-    //gaz
-    if (index == 5) {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FloatingActionButton(
-            heroTag: "btn2",
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CustomChatPage(
-                            showTitle: true,
-                            title: pages[index],
-                            history: true,
-                            chatName: "gaz",
-                            subscription: widget.userEntity.subscription,
-                          )));
-            },
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-            backgroundColor: const Color(0xff317EFA),
-            child: const Icon(
-              Icons.chat,
-              color: Colors.white,
-            ),
-          )
-        ],
-      );
-    }
-    //swap
+    //эксковатор
     if (index == 6) {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          FloatingActionButton(
-            heroTag: "btn2",
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CustomChatPage(
-                            showTitle: true,
-                            title: pages[index],
-                            history: true,
-                            chatName: "swap",
-                            subscription: widget.userEntity.subscription,
-                          )));
-            },
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-            backgroundColor: const Color(0xff317EFA),
-            child: const Icon(
-              Icons.chat,
-              color: Colors.white,
-            ),
-          )
+          widget.userEntity.role == UserRole.USER
+              ? FloatingActionButton(
+                  heroTag: "btn1",
+                  onPressed: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(
+                            builder: (context) => CreateTransportationPage(
+                                  category: TransportationCategory.ex,
+                                  city: widget.userEntity.city,
+                                  createMode: selectedModeEx,
+                                  full: false,
+                                )))
+                        .then((value) {
+                      _exKey.currentState?.update();
+                    });
+                  },
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50)),
+                  backgroundColor: const Color(0xff317EFA),
+                  child: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                )
+              : const SizedBox.shrink(),
         ],
       );
     }
-    //salon
+    //самосвал
+    if (index == 4) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          widget.userEntity.role == UserRole.USER
+              ? FloatingActionButton(
+                  heroTag: "btn1",
+                  onPressed: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(
+                            builder: (context) => CreateTransportationPage(
+                                  category: TransportationCategory.sam,
+                                  city: widget.userEntity.city,
+                                  createMode: selectedModeSam,
+                                )))
+                        .then((value) {
+                      _samKey.currentState?.update();
+                    });
+                  },
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50)),
+                  backgroundColor: const Color(0xff317EFA),
+                  child: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                )
+              : const SizedBox.shrink(),
+        ],
+      );
+    }
+    //автовоз
+    if (index == 5) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          widget.userEntity.role == UserRole.USER
+              ? FloatingActionButton(
+                  heroTag: "btn1",
+                  onPressed: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(
+                            builder: (context) => CreateTransportationPage(
+                                  category: TransportationCategory.auto,
+                                  city: widget.userEntity.city,
+                                  createMode: selectedModeAuto,
+                                )))
+                        .then((value) {
+                      _autoKey.currentState?.update();
+                    });
+                  },
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50)),
+                  backgroundColor: const Color(0xff317EFA),
+                  child: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                )
+              : const SizedBox.shrink(),
+        ],
+      );
+    }
+
+    //погрузчик
     if (index == 7) {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          FloatingActionButton(
-            heroTag: "btn2",
+          widget.userEntity.role == UserRole.USER
+              ? FloatingActionButton(
+                  heroTag: "btn1",
+                  onPressed: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(
+                            builder: (context) => CreateTransportationPage(
+                                  category: TransportationCategory.pog,
+                                  city: widget.userEntity.city,
+                                  full: false,
+                                  createMode: selectedModePog,
+                                )))
+                        .then((value) {
+                      _pogKey.currentState?.update();
+                    });
+                  },
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50)),
+                  backgroundColor: const Color(0xff317EFA),
+                  child: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                )
+              : const SizedBox.shrink(),
+        ],
+      );
+    }
+    //taxi
+    if (index == 9 && selectedModeTaxi != Mode.NONE) {
+      log("Taxi mode $selectedModeTaxi");
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          widget.userEntity.role == UserRole.USER
+              ? FloatingActionButton(
+                  heroTag: "btn1",
+                  onPressed: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(
+                            builder: (context) => CreateTransportationPage(
+                                  category: TransportationCategory.taxi,
+                                  city: widget.userEntity.city,
+                                  createMode: Mode.OUTCITY,
+                                )))
+                        .then((value) {
+                      _taxiKey.currentState?.update();
+                    });
+                  },
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50)),
+                  backgroundColor: const Color(0xff317EFA),
+                  child: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                )
+              : const SizedBox.shrink(),
+        ],
+      );
+    } else if (index == 9 &&
+        selectedModeTaxi == Mode.NONE &&
+        widget.userEntity.role == UserRole.USER) {
+      return FloatingActionButton.extended(
+        label: const Text(
+          "Мои заказы",
+          style: TextStyle(color: Colors.white),
+        ),
+        heroTag: "btn3",
+        onPressed: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute(
+                  builder: (context) => const MyTaxiOrdersPage(
+                        mode: OrderMode.TAXI,
+                      )))
+              .then((value) {
+            _taxiKey.currentState?.update();
+          });
+        },
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+        backgroundColor: const Color(0xff317EFA),
+      );
+    } else if (index == 9 &&
+        selectedModeTaxi == Mode.NONE &&
+        widget.userEntity.role == UserRole.SPECIALIST) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          FloatingActionButton.extended(
+            label: const Text(
+              "Мои заказы",
+              style: TextStyle(color: Colors.white),
+            ),
+            heroTag: "btn3",
             onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CustomChatPage(
-                            showTitle: true,
-                            title: pages[index],
-                            history: true,
-                            chatName: "salon",
-                            subscription: widget.userEntity.subscription,
-                          )));
+              Navigator.of(context)
+                  .push(MaterialPageRoute(
+                      builder: (context) => const MyTaxiOrdersPage(
+                            mode: OrderMode.TAXI,
+                          )))
+                  .then((value) {
+                _transportationKey.currentState?.update();
+              });
             },
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
             backgroundColor: const Color(0xff317EFA),
-            child: const Icon(
-              Icons.chat,
-              color: Colors.white,
+          ),
+          SizedBox(
+            height: 2.h,
+          ),
+          FloatingActionButton.extended(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CreateOrderTaxi(
+                            city: widget.userEntity.city,
+                            mode: OrderMode.TAXI,
+                          )));
+            },
+            label: SizedBox(
+              width: 100.w - 20.w,
+              child: const Center(
+                child: Text(
+                  "Создать заказ +",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
             ),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            backgroundColor: const Color(0xff317EFA),
           )
         ],
       );
     }
-    //shop
-    // if (index == 8) {
-    //   return Column(
-    //     mainAxisSize: MainAxisSize.min,
-    //     children: [
-    //       FloatingActionButton(
-    //         heroTag: "btn1",
-    //         onPressed: () {
-    //           Navigator.of(context)
-    //               .push(MaterialPageRoute(
-    //                   builder: (context) => const CreateShopPage()))
-    //               .then((value) {
-    //             _shopKey.currentState?.update();
-    //           });
-    //         },
-    //         shape:
-    //             RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-    //         backgroundColor: const Color(0xff317EFA),
-    //         child: const Icon(
-    //           Icons.add,
-    //           color: Colors.white,
-    //         ),
-    //       ),
-    //       SizedBox(
-    //         height: 2.h,
-    //       ),
-    //       FloatingActionButton(
-    //         heroTag: "btn2",
-    //         onPressed: () {
-    //           Navigator.push(
-    //               context,
-    //               MaterialPageRoute(
-    //                   builder: (context) => CustomChatPage(
-    //                       key: const Key("chat_3"),
-    //                       subscription: widget.userEntity.subscription,
-    //                       history: true,
-    //                       showTitle: true,
-    //                       title: S.of(context).page9,
-    //                       chatName: GlobalsWidgets.chats[2])));
-    //         },
-    //         shape:
-    //             RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-    //         backgroundColor: const Color(0xff317EFA),
-    //         child: const Icon(
-    //           Icons.chat,
-    //           color: Colors.white,
-    //         ),
-    //       ),
-    //     ],
-    //   );
-    // }
     //eva
     if (index == 2 && selectedModeEv != Mode.NONE) {
       return Column(
@@ -310,6 +414,7 @@ class _MainRouteState extends State<MainRoute> {
                     Navigator.of(context)
                         .push(MaterialPageRoute(
                             builder: (context) => CreateTransportationPage(
+                                  category: TransportationCategory.ev,
                                   city: widget.userEntity.city,
                                   createMode: selectedModeEv,
                                 )))
@@ -630,34 +735,41 @@ class _MainRouteState extends State<MainRoute> {
             return true;
           },
           child: SearchTransportationPage(
+            category: TransportationCategory.ev,
             city: widget.userEntity.city,
           ));
     } else if (title.contains(S.of(context).page4)) {
-      return const CatalogPage(
-        category: Categories.info,
-      );
+      return NotificationListener<ChangeModeManNotify>(
+          onNotification: (m) {
+            selectedModeMan = m.mode;
+            setState(() {});
+            return true;
+          },
+          child: ManTransportPage(
+            sub: widget.userEntity.subscription,
+            city: widget.userEntity.city,
+          ));
     } else if (title.contains(S.of(context).page5)) {
-      return const CatalogPage(
-        category: Categories.sto,
-      );
+      return NotificationListener<ChangeModeSamNotify>(
+          onNotification: (m) {
+            selectedModeSam = m.mode;
+            setState(() {});
+            return true;
+          },
+          child: SamTransportPage(
+              sub: widget.userEntity.subscription,
+              city: widget.userEntity.city));
     } else if (title.contains(S.of(context).page6)) {
-      return const CatalogPage(
-        category: Categories.modify,
-      );
+      return AutoTransportPage(
+          sub: widget.userEntity.subscription, city: widget.userEntity.city);
     } else if (title.contains(S.of(context).page7)) {
-      return CustomChatPage(
-          key: const Key("chat_2"),
-          subscription: widget.userEntity.subscription,
-          history: true,
-          showTitle: false,
-          title: S.of(context).page7,
-          chatName: GlobalsWidgets.chats[1]);
-    } else if (title.contains(S.of(context).page8)) {
-      return const CatalogPage(
-        category: Categories.swap,
+      return ExTransportPage(
+        sub: widget.userEntity.subscription,
+        city: widget.userEntity.city,
       );
-    } else if (title.contains(S.of(context).page9)) {
-      return CatalogPage(key: _shopKey, category: Categories.shop);
+    } else if (title.contains(S.of(context).page8)) {
+      return PogTransportPage(
+          sub: widget.userEntity.subscription, city: widget.userEntity.city);
     } else if (title.contains(S.of(context).page10)) {
       return CustomChatPage(
           key: const Key("chat_4"),
@@ -674,257 +786,266 @@ class _MainRouteState extends State<MainRoute> {
       return ChatPage(
         user: widget.userEntity,
       );
+    } else if (title.contains(S.of(context).page12)) {
+      return NotificationListener<ChangeModeTaxiNotify>(
+          onNotification: (m) {
+            selectedModeTaxi = m.mode;
+            setState(() {});
+            return true;
+          },
+          child: TaxiPage(
+              sub: widget.userEntity.subscription,
+              city: widget.userEntity.city));
     }
-
     return const SizedBox.shrink();
   }
 
-  void addCompany(Categories category) {
-    String? temp_name;
-    String? temp_phone;
-    String? temp_street;
-    String? temp_house;
-    showDialog(
-        context: context,
-        builder: (context) => StatefulBuilder(builder: (context, state) {
-              return AlertDialog(
-                title: Text(
-                  "Добавить комапнию",
-                  style: TextStyle(fontSize: 18.sp),
-                ),
-                content: Container(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Название",
-                          style: TextStyle(
-                              fontSize: 14.sp, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          height: 1.h,
-                        ),
-                        SizedBox(
-                          height: 8.h,
-                          child: TextFormField(
-                            onChanged: (value) {
-                              temp_name = value;
-                            },
-                            style: TextStyle(fontSize: 16.sp),
-                            decoration: InputDecoration(
-                              hintText: "Введите название города",
-                              hintStyle: TextStyle(fontSize: 16.sp),
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(9),
-                                  borderSide: const BorderSide(
-                                      color: Color(0xffD9D9D9))),
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(9),
-                                  borderSide: const BorderSide(
-                                      color: Color(0xffD9D9D9))),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 1.h,
-                        ),
-                        Text(
-                          "Номер телефона",
-                          style: TextStyle(
-                              fontSize: 14.sp, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          height: 1.h,
-                        ),
-                        SizedBox(
-                          height: 8.h,
-                          child: TextFormField(
-                            onChanged: (value) {
-                              temp_phone = value;
-                            },
-                            style: TextStyle(fontSize: 16.sp),
-                            keyboardType: const TextInputType.numberWithOptions(
-                                decimal: true),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                  RegExp('[0-9.,]+')),
-                            ],
-                            decoration: InputDecoration(
-                              hintText: "Введите номер телефона",
-                              hintStyle: TextStyle(fontSize: 16.sp),
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(9),
-                                  borderSide: const BorderSide(
-                                      color: Color(0xffD9D9D9))),
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(9),
-                                  borderSide: const BorderSide(
-                                      color: Color(0xffD9D9D9))),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 1.h,
-                        ),
-                        Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            "Адрес",
-                            style: TextStyle(
-                                fontSize: 16.sp, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 1.h,
-                        ),
-                        Text(
-                          "Улица",
-                          style: TextStyle(
-                              fontSize: 14.sp, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          height: 1.h,
-                        ),
-                        SizedBox(
-                          height: 8.h,
-                          child: TextFormField(
-                            onChanged: (value) {
-                              temp_street = value;
-                            },
-                            style: TextStyle(fontSize: 16.sp),
-                            decoration: InputDecoration(
-                              hintText: "Введите название",
-                              hintStyle: TextStyle(fontSize: 16.sp),
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(9),
-                                  borderSide: const BorderSide(
-                                      color: Color(0xffD9D9D9))),
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(9),
-                                  borderSide: const BorderSide(
-                                      color: Color(0xffD9D9D9))),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 1.h,
-                        ),
-                        Text(
-                          "Номер дома",
-                          style: TextStyle(
-                              fontSize: 14.sp, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          height: 1.h,
-                        ),
-                        SizedBox(
-                          height: 8.h,
-                          child: TextFormField(
-                            onChanged: (value) {
-                              temp_house = value;
-                            },
-                            style: TextStyle(fontSize: 16.sp),
-                            decoration: InputDecoration(
-                              hintText: "Введите номер дома",
-                              hintStyle: TextStyle(fontSize: 16.sp),
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(9),
-                                  borderSide: const BorderSide(
-                                      color: Color(0xffD9D9D9))),
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(9),
-                                  borderSide: const BorderSide(
-                                      color: Color(0xffD9D9D9))),
-                            ),
-                          ),
-                        ),
-                        category == Categories.auto
-                            ? Align(
-                                alignment: Alignment.center,
-                                child: SizedBox(
-                                  height: 6.h,
-                                  child: OutlinedButton(
-                                    style: OutlinedButton.styleFrom(
-                                        backgroundColor:
-                                            const Color(0xff317EFA),
-                                        side: BorderSide.none,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5))),
-                                    onPressed: () async {
-                                      final ImagePicker picker = ImagePicker();
-                                      final XFile? image =
-                                          await picker.pickImage(
-                                              source: ImageSource.gallery,
-                                              preferredCameraDevice:
-                                                  CameraDevice.rear);
-                                      if (image != null) {
-                                        file =
-                                            File.fromUri(Uri.parse(image.path));
-                                      }
-                                    },
-                                    child: const Text(
-                                      "Добавить фото",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ),
-                                ),
-                              )
-                            : const SizedBox.shrink(),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text(S.of(context).cancel,
-                                      style: TextStyle(
-                                          color: GlobalsColor.blue,
-                                          fontSize: 14.sp))),
-                              SizedBox(
-                                width: 5.w,
-                              ),
-                              TextButton(
-                                  onPressed: () {
-                                    Dio dio = Dio();
-                                    RestClient client = RestClient(dio);
-                                    String ph = "";
-                                    if (temp_phone![0].contains("8")) {
-                                      ph += temp_phone!.replaceFirst("8", "7");
-                                    }
-                                    client
-                                        .createCompany(
-                                            GlobalsWidgets.uid,
-                                            category,
-                                            temp_name!,
-                                            ph,
-                                            temp_street!,
-                                            temp_house!,
-                                            file)
-                                        .then(
-                                            (value) => Navigator.pop(context));
-                                  },
-                                  child: Text(
-                                    S.of(context).add,
-                                    style: TextStyle(
-                                        color: GlobalsColor.blue,
-                                        fontSize: 14.sp),
-                                  )),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            })).then((value) {
-      setState(() {});
-    });
-  }
+  // void addCompany(Categories category) {
+  //   String? temp_name;
+  //   String? temp_phone;
+  //   String? temp_street;
+  //   String? temp_house;
+  //   showDialog(
+  //       context: context,
+  //       builder: (context) => StatefulBuilder(builder: (context, state) {
+  //             return AlertDialog(
+  //               title: Text(
+  //                 "Добавить комапнию",
+  //                 style: TextStyle(fontSize: 18.sp),
+  //               ),
+  //               content: Container(
+  //                 child: SingleChildScrollView(
+  //                   child: Column(
+  //                     mainAxisSize: MainAxisSize.min,
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Text(
+  //                         "Название",
+  //                         style: TextStyle(
+  //                             fontSize: 14.sp, fontWeight: FontWeight.bold),
+  //                       ),
+  //                       SizedBox(
+  //                         height: 1.h,
+  //                       ),
+  //                       SizedBox(
+  //                         height: 8.h,
+  //                         child: TextFormField(
+  //                           onChanged: (value) {
+  //                             temp_name = value;
+  //                           },
+  //                           style: TextStyle(fontSize: 16.sp),
+  //                           decoration: InputDecoration(
+  //                             hintText: "Введите название города",
+  //                             hintStyle: TextStyle(fontSize: 16.sp),
+  //                             enabledBorder: OutlineInputBorder(
+  //                                 borderRadius: BorderRadius.circular(9),
+  //                                 borderSide: const BorderSide(
+  //                                     color: Color(0xffD9D9D9))),
+  //                             focusedBorder: OutlineInputBorder(
+  //                                 borderRadius: BorderRadius.circular(9),
+  //                                 borderSide: const BorderSide(
+  //                                     color: Color(0xffD9D9D9))),
+  //                           ),
+  //                         ),
+  //                       ),
+  //                       SizedBox(
+  //                         height: 1.h,
+  //                       ),
+  //                       Text(
+  //                         "Номер телефона",
+  //                         style: TextStyle(
+  //                             fontSize: 14.sp, fontWeight: FontWeight.bold),
+  //                       ),
+  //                       SizedBox(
+  //                         height: 1.h,
+  //                       ),
+  //                       SizedBox(
+  //                         height: 8.h,
+  //                         child: TextFormField(
+  //                           onChanged: (value) {
+  //                             temp_phone = value;
+  //                           },
+  //                           style: TextStyle(fontSize: 16.sp),
+  //                           keyboardType: const TextInputType.numberWithOptions(
+  //                               decimal: true),
+  //                           inputFormatters: [
+  //                             FilteringTextInputFormatter.allow(
+  //                                 RegExp('[0-9.,]+')),
+  //                           ],
+  //                           decoration: InputDecoration(
+  //                             hintText: "Введите номер телефона",
+  //                             hintStyle: TextStyle(fontSize: 16.sp),
+  //                             enabledBorder: OutlineInputBorder(
+  //                                 borderRadius: BorderRadius.circular(9),
+  //                                 borderSide: const BorderSide(
+  //                                     color: Color(0xffD9D9D9))),
+  //                             focusedBorder: OutlineInputBorder(
+  //                                 borderRadius: BorderRadius.circular(9),
+  //                                 borderSide: const BorderSide(
+  //                                     color: Color(0xffD9D9D9))),
+  //                           ),
+  //                         ),
+  //                       ),
+  //                       SizedBox(
+  //                         height: 1.h,
+  //                       ),
+  //                       Align(
+  //                         alignment: Alignment.center,
+  //                         child: Text(
+  //                           "Адрес",
+  //                           style: TextStyle(
+  //                               fontSize: 16.sp, fontWeight: FontWeight.bold),
+  //                         ),
+  //                       ),
+  //                       SizedBox(
+  //                         height: 1.h,
+  //                       ),
+  //                       Text(
+  //                         "Улица",
+  //                         style: TextStyle(
+  //                             fontSize: 14.sp, fontWeight: FontWeight.bold),
+  //                       ),
+  //                       SizedBox(
+  //                         height: 1.h,
+  //                       ),
+  //                       SizedBox(
+  //                         height: 8.h,
+  //                         child: TextFormField(
+  //                           onChanged: (value) {
+  //                             temp_street = value;
+  //                           },
+  //                           style: TextStyle(fontSize: 16.sp),
+  //                           decoration: InputDecoration(
+  //                             hintText: "Введите название",
+  //                             hintStyle: TextStyle(fontSize: 16.sp),
+  //                             enabledBorder: OutlineInputBorder(
+  //                                 borderRadius: BorderRadius.circular(9),
+  //                                 borderSide: const BorderSide(
+  //                                     color: Color(0xffD9D9D9))),
+  //                             focusedBorder: OutlineInputBorder(
+  //                                 borderRadius: BorderRadius.circular(9),
+  //                                 borderSide: const BorderSide(
+  //                                     color: Color(0xffD9D9D9))),
+  //                           ),
+  //                         ),
+  //                       ),
+  //                       SizedBox(
+  //                         height: 1.h,
+  //                       ),
+  //                       Text(
+  //                         "Номер дома",
+  //                         style: TextStyle(
+  //                             fontSize: 14.sp, fontWeight: FontWeight.bold),
+  //                       ),
+  //                       SizedBox(
+  //                         height: 1.h,
+  //                       ),
+  //                       SizedBox(
+  //                         height: 8.h,
+  //                         child: TextFormField(
+  //                           onChanged: (value) {
+  //                             temp_house = value;
+  //                           },
+  //                           style: TextStyle(fontSize: 16.sp),
+  //                           decoration: InputDecoration(
+  //                             hintText: "Введите номер дома",
+  //                             hintStyle: TextStyle(fontSize: 16.sp),
+  //                             enabledBorder: OutlineInputBorder(
+  //                                 borderRadius: BorderRadius.circular(9),
+  //                                 borderSide: const BorderSide(
+  //                                     color: Color(0xffD9D9D9))),
+  //                             focusedBorder: OutlineInputBorder(
+  //                                 borderRadius: BorderRadius.circular(9),
+  //                                 borderSide: const BorderSide(
+  //                                     color: Color(0xffD9D9D9))),
+  //                           ),
+  //                         ),
+  //                       ),
+  //                       category == Categories.auto
+  //                           ? Align(
+  //                               alignment: Alignment.center,
+  //                               child: SizedBox(
+  //                                 height: 6.h,
+  //                                 child: OutlinedButton(
+  //                                   style: OutlinedButton.styleFrom(
+  //                                       backgroundColor:
+  //                                           const Color(0xff317EFA),
+  //                                       side: BorderSide.none,
+  //                                       shape: RoundedRectangleBorder(
+  //                                           borderRadius:
+  //                                               BorderRadius.circular(5))),
+  //                                   onPressed: () async {
+  //                                     final ImagePicker picker = ImagePicker();
+  //                                     final XFile? image =
+  //                                         await picker.pickImage(
+  //                                             source: ImageSource.gallery,
+  //                                             preferredCameraDevice:
+  //                                                 CameraDevice.rear);
+  //                                     if (image != null) {
+  //                                       file =
+  //                                           File.fromUri(Uri.parse(image.path));
+  //                                     }
+  //                                   },
+  //                                   child: const Text(
+  //                                     "Добавить фото",
+  //                                     style: TextStyle(color: Colors.white),
+  //                                   ),
+  //                                 ),
+  //                               ),
+  //                             )
+  //                           : const SizedBox.shrink(),
+  //                       Align(
+  //                         alignment: Alignment.centerRight,
+  //                         child: Row(
+  //                           mainAxisAlignment: MainAxisAlignment.end,
+  //                           children: [
+  //                             TextButton(
+  //                                 onPressed: () {
+  //                                   Navigator.pop(context);
+  //                                 },
+  //                                 child: Text(S.of(context).cancel,
+  //                                     style: TextStyle(
+  //                                         color: GlobalsColor.blue,
+  //                                         fontSize: 14.sp))),
+  //                             SizedBox(
+  //                               width: 5.w,
+  //                             ),
+  //                             TextButton(
+  //                                 onPressed: () {
+  //                                   Dio dio = Dio();
+  //                                   RestClient client = RestClient(dio);
+  //                                   String ph = "";
+  //                                   if (temp_phone![0].contains("8")) {
+  //                                     ph += temp_phone!.replaceFirst("8", "7");
+  //                                   }
+  //                                   client
+  //                                       .createCompany(
+  //                                           GlobalsWidgets.uid,
+  //                                           category,
+  //                                           temp_name!,
+  //                                           ph,
+  //                                           temp_street!,
+  //                                           temp_house!,
+  //                                           file)
+  //                                       .then(
+  //                                           (value) => Navigator.pop(context));
+  //                                 },
+  //                                 child: Text(
+  //                                   S.of(context).add,
+  //                                   style: TextStyle(
+  //                                       color: GlobalsColor.blue,
+  //                                       fontSize: 14.sp),
+  //                                 )),
+  //                           ],
+  //                         ),
+  //                       )
+  //                     ],
+  //                   ),
+  //                 ),
+  //               ),
+  //             );
+  //           })).then((value) {
+  //     setState(() {});
+  //   });
+  // }
 }

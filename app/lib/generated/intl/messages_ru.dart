@@ -32,6 +32,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "address": MessageLookupByLibrary.simpleMessage("Адрес:"),
         "call": MessageLookupByLibrary.simpleMessage("Позвонить"),
         "cancel": MessageLookupByLibrary.simpleMessage("Отмена"),
+        "change_lng": MessageLookupByLibrary.simpleMessage("Изменить язык"),
         "chat": MessageLookupByLibrary.simpleMessage("Чат"),
         "city": MessageLookupByLibrary.simpleMessage("По городу"),
         "code_error": MessageLookupByLibrary.simpleMessage("Неверный код!"),
@@ -41,6 +42,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "create_2": MessageLookupByLibrary.simpleMessage("Откуда"),
         "create_3": MessageLookupByLibrary.simpleMessage("Куда"),
         "create_4": MessageLookupByLibrary.simpleMessage("Когда"),
+        "create_ate": MessageLookupByLibrary.simpleMessage("Создано:"),
         "create_shop":
             MessageLookupByLibrary.simpleMessage("Создать объявление"),
         "create_shop_house":
@@ -55,8 +57,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "create_shop_street_": MessageLookupByLibrary.simpleMessage("Улица"),
         "date": MessageLookupByLibrary.simpleMessage("Дата загрузки"),
         "date_": MessageLookupByLibrary.simpleMessage("Дата разгрузки"),
-        "date_create": MessageLookupByLibrary.simpleMessage("Когда забрать"),
+        "date_create": MessageLookupByLibrary.simpleMessage("Когда"),
         "date_pick": MessageLookupByLibrary.simpleMessage("Выберите дату"),
+        "date_start": MessageLookupByLibrary.simpleMessage("Дата отправления"),
         "desc": MessageLookupByLibrary.simpleMessage("Описание"),
         "doc": MessageLookupByLibrary.simpleMessage("Документы"),
         "dog": MessageLookupByLibrary.simpleMessage("Договорная"),
@@ -83,13 +86,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "gos_number_": MessageLookupByLibrary.simpleMessage("Введите госномер"),
         "help": MessageLookupByLibrary.simpleMessage("Помощь с приложением"),
         "help_1": MessageLookupByLibrary.simpleMessage("Удаление аккаунта"),
+        "image_view":
+            MessageLookupByLibrary.simpleMessage("Просмотр изображения"),
         "loading": MessageLookupByLibrary.simpleMessage("Загрузка..."),
         "min_sum": MessageLookupByLibrary.simpleMessage(
             "Минимальная сумма оплаты 1\$"),
+        "my_orders": MessageLookupByLibrary.simpleMessage("Мои заказы"),
         "name": MessageLookupByLibrary.simpleMessage("Имя"),
         "name_": MessageLookupByLibrary.simpleMessage("Введите имя"),
         "no_city": MessageLookupByLibrary.simpleMessage("Межгород"),
         "not_fount": MessageLookupByLibrary.simpleMessage("Не найдено"),
+        "not_you_orders":
+            MessageLookupByLibrary.simpleMessage("Другие заказы:"),
         "number_phone": MessageLookupByLibrary.simpleMessage("Номер телефона"),
         "number_phone_":
             MessageLookupByLibrary.simpleMessage("Введите номер телефона"),
@@ -99,13 +107,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "page1": MessageLookupByLibrary.simpleMessage("Грузоперевозки"),
         "page10": MessageLookupByLibrary.simpleMessage("Грузчики"),
         "page11": MessageLookupByLibrary.simpleMessage("Автосалон"),
+        "page12": MessageLookupByLibrary.simpleMessage("Такси межгород"),
         "page2": MessageLookupByLibrary.simpleMessage("Поиск груза"),
         "page3": MessageLookupByLibrary.simpleMessage("Найти эвакуатор"),
-        "page4": MessageLookupByLibrary.simpleMessage("Справочник"),
-        "page5": MessageLookupByLibrary.simpleMessage("СТО"),
-        "page6": MessageLookupByLibrary.simpleMessage("Переоборудование"),
-        "page7": MessageLookupByLibrary.simpleMessage("Авторазбор"),
-        "page8": MessageLookupByLibrary.simpleMessage("Свап"),
+        "page4": MessageLookupByLibrary.simpleMessage("Манипулятор"),
+        "page5": MessageLookupByLibrary.simpleMessage("Самосвал"),
+        "page6": MessageLookupByLibrary.simpleMessage("Автовоз"),
+        "page7": MessageLookupByLibrary.simpleMessage("Эксковатор"),
+        "page8": MessageLookupByLibrary.simpleMessage("Погрузчик"),
         "page9": MessageLookupByLibrary.simpleMessage("Авторынок"),
         "password": MessageLookupByLibrary.simpleMessage("Пароль"),
         "password_": MessageLookupByLibrary.simpleMessage("Введите пароль"),
@@ -147,6 +156,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "surname": MessageLookupByLibrary.simpleMessage("Фамилия"),
         "surname_": MessageLookupByLibrary.simpleMessage("Введите фамилию"),
         "text": MessageLookupByLibrary.simpleMessage("Текст..."),
+        "transport_end": MessageLookupByLibrary.simpleMessage("Завершен"),
         "typing": MessageLookupByLibrary.simpleMessage("Написать"),
         "user": MessageLookupByLibrary.simpleMessage("Пользователь"),
         "user_name": MessageLookupByLibrary.simpleMessage("имя_пользователя"),
@@ -159,6 +169,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "warning_2": MessageLookupByLibrary.simpleMessage(
             "Сначала введите номер телефона!"),
         "warning_3":
-            MessageLookupByLibrary.simpleMessage("Выберите фотографию!")
+            MessageLookupByLibrary.simpleMessage("Выберите фотографию!"),
+        "you_orders": MessageLookupByLibrary.simpleMessage("Ваши заказы:")
       };
 }

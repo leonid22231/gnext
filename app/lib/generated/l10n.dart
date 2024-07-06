@@ -80,50 +80,50 @@ class S {
     );
   }
 
-  /// `Справочник`
+  /// `Манипулятор`
   String get page4 {
     return Intl.message(
-      'Справочник',
+      'Манипулятор',
       name: 'page4',
       desc: '',
       args: [],
     );
   }
 
-  /// `СТО`
+  /// `Самосвал`
   String get page5 {
     return Intl.message(
-      'СТО',
+      'Самосвал',
       name: 'page5',
       desc: '',
       args: [],
     );
   }
 
-  /// `Переоборудование`
+  /// `Автовоз`
   String get page6 {
     return Intl.message(
-      'Переоборудование',
+      'Автовоз',
       name: 'page6',
       desc: '',
       args: [],
     );
   }
 
-  /// `Авторазбор`
+  /// `Эксковатор`
   String get page7 {
     return Intl.message(
-      'Авторазбор',
+      'Эксковатор',
       name: 'page7',
       desc: '',
       args: [],
     );
   }
 
-  /// `Свап`
+  /// `Погрузчик`
   String get page8 {
     return Intl.message(
-      'Свап',
+      'Погрузчик',
       name: 'page8',
       desc: '',
       args: [],
@@ -155,6 +155,16 @@ class S {
     return Intl.message(
       'Автосалон',
       name: 'page11',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Такси межгород`
+  String get page12 {
+    return Intl.message(
+      'Такси межгород',
+      name: 'page12',
       desc: '',
       args: [],
     );
@@ -1100,10 +1110,10 @@ class S {
     );
   }
 
-  /// `Когда забрать`
+  /// `Когда`
   String get date_create {
     return Intl.message(
-      'Когда забрать',
+      'Когда',
       name: 'date_create',
       desc: '',
       args: [],
@@ -1179,6 +1189,86 @@ class S {
       args: [],
     );
   }
+
+  /// `Мои заказы`
+  String get my_orders {
+    return Intl.message(
+      'Мои заказы',
+      name: 'my_orders',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Создано:`
+  String get create_ate {
+    return Intl.message(
+      'Создано:',
+      name: 'create_ate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Просмотр изображения`
+  String get image_view {
+    return Intl.message(
+      'Просмотр изображения',
+      name: 'image_view',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Дата отправления`
+  String get date_start {
+    return Intl.message(
+      'Дата отправления',
+      name: 'date_start',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ваши заказы:`
+  String get you_orders {
+    return Intl.message(
+      'Ваши заказы:',
+      name: 'you_orders',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Другие заказы:`
+  String get not_you_orders {
+    return Intl.message(
+      'Другие заказы:',
+      name: 'not_you_orders',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Изменить язык`
+  String get change_lng {
+    return Intl.message(
+      'Изменить язык',
+      name: 'change_lng',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Завершен`
+  String get transport_end {
+    return Intl.message(
+      'Завершен',
+      name: 'transport_end',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
@@ -1187,7 +1277,14 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   List<Locale> get supportedLocales {
     return const <Locale>[
       Locale.fromSubtags(languageCode: 'ru'),
+      Locale.fromSubtags(languageCode: 'hi'),
+      Locale.fromSubtags(languageCode: 'hy'),
       Locale.fromSubtags(languageCode: 'kk'),
+      Locale.fromSubtags(languageCode: 'ko'),
+      Locale.fromSubtags(languageCode: 'ky'),
+      Locale.fromSubtags(languageCode: 'pl'),
+      Locale.fromSubtags(languageCode: 'uz'),
+      Locale.fromSubtags(languageCode: 'zh'),
     ];
   }
 

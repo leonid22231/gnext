@@ -8,7 +8,9 @@ import 'package:app/api/entity/enums/OrderMode.dart';
 import 'package:app/api/entity/enums/TransportationCategory.dart';
 import 'package:app/api/entity/enums/UserRole.dart';
 import 'package:app/generated/l10n.dart';
+import 'package:app/pages/profile_page.dart';
 import 'package:app/pages/seconds/create_cargo.dart';
+import 'package:app/pages/seconds/order_page.dart';
 import 'package:app/pages/seconds/transportation_page.dart';
 import 'package:app/pages/seconds/user_profile.dart';
 import 'package:app/utils/GlobalsColors.dart';
@@ -21,67 +23,59 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class SearchTransportationPage extends StatefulWidget {
+class AutoTransportPage extends StatefulWidget {
+  final bool sub;
   final CityEntity city;
-  final TransportationCategory category;
-  const SearchTransportationPage(
-      {required this.city, required this.category, super.key});
+  const AutoTransportPage({required this.sub, required this.city, super.key});
 
   @override
-  State<StatefulWidget> createState() => _SearchTransportationState();
+  State<StatefulWidget> createState() => AutoTransportPageState();
 }
 
-class _SearchTransportationState extends State<SearchTransportationPage>
+class AutoTransportPageState extends State<AutoTransportPage>
     with TickerProviderStateMixin {
-  Mode selectedMode = Mode.CITY;
+  Mode selectedMode = Mode.OUTCITY;
   late TabController _controller;
   CityEntity? otkuda;
   CityEntity? kuda;
   DateTime? date;
-
+  TransportationCategory category = TransportationCategory.auto;
+  List<String> res = [];
   @override
   void initState() {
     super.initState();
-    _controller = TabController(length: 3, vsync: this);
+    _controller = TabController(length: 1, vsync: this);
     otkuda = widget.city;
-    WidgetsBinding.instance.addPostFrameCallback(
-        (_) => ChangeTransportModeNotify(selectedMode).dispatch(context));
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 3.h)
-            .copyWith(top: 0),
-        child: Column(
-          children: [
-            ButtonsTabBar(
-              controller: _controller,
-              backgroundColor: GlobalsColor.blue,
-              unselectedBackgroundColor: Colors.white,
-              unselectedLabelStyle: const TextStyle(color: Colors.black),
-              labelStyle: const TextStyle(
-                  color: Colors.white, fontWeight: FontWeight.bold),
-              onTap: (index) {
-                selectedMode = Mode.values[index];
-                ChangeTransportModeNotify(selectedMode).dispatch(context);
-                setState(() {});
-              },
-              tabs: [
-                Tab(
-                  text: S.of(context).city,
-                ),
-                Tab(
-                  text: S.of(context).no_city,
-                ),
-                Tab(
-                  text: S.of(context).poput,
-                )
-              ],
-            ),
-            _getBody(selectedMode)
-          ],
-        ));
+      padding:
+          EdgeInsets.symmetric(horizontal: 5.w, vertical: 3.h).copyWith(top: 0),
+      child: Column(
+        children: [
+          ButtonsTabBar(
+            controller: _controller,
+            backgroundColor: GlobalsColor.blue,
+            unselectedBackgroundColor: Colors.white,
+            unselectedLabelStyle: const TextStyle(color: Colors.black),
+            labelStyle: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold),
+            onTap: (index) {
+              selectedMode = Mode.values[index];
+              setState(() {});
+            },
+            tabs: [
+              Tab(
+                text: S.of(context).no_city,
+              ),
+            ],
+          ),
+          _getBody(Mode.OUTCITY)
+        ],
+      ),
+    );
   }
 
   Widget _getBody(Mode mode) {
@@ -91,7 +85,7 @@ class _SearchTransportationState extends State<SearchTransportationPage>
             child: SizedBox(
           child: SingleChildScrollView(
             child: Padding(
-              padding: EdgeInsets.only(bottom: 20.h),
+              padding: EdgeInsets.only(bottom: 10.h),
               child: Column(
                 children: [
                   FutureBuilder(
@@ -229,8 +223,8 @@ class _SearchTransportationState extends State<SearchTransportationPage>
                   ),
                   (kuda != null && otkuda != null)
                       ? FutureBuilder(
-                          future: RestClient(Dio())
-                              .searchOrders(OrderMode.EV, kuda!.id, otkuda!.id),
+                          future: RestClient(Dio()).searchOrders(
+                              OrderMode.TAXI, kuda!.id, otkuda!.id),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               List<OrderEntity> orders = snapshot.data!;
@@ -266,7 +260,7 @@ class _SearchTransportationState extends State<SearchTransportationPage>
                                                 ],
                                               ),
                                             ),
-                                            VerticalDivider(
+                                            const VerticalDivider(
                                               color: Colors.black,
                                             ),
                                             Expanded(
@@ -307,7 +301,7 @@ class _SearchTransportationState extends State<SearchTransportationPage>
                                                     "Создано: ${DateFormat("d MMMM, HH:mm").format(currentOrder.createDate)}")
                                               ],
                                             )),
-                                            VerticalDivider(
+                                            const VerticalDivider(
                                               color: Colors.black,
                                             ),
                                             CircleAvatar(
@@ -874,6 +868,7 @@ class _SearchTransportationState extends State<SearchTransportationPage>
     }
   }
 
+  update() => setState(() {});
   void onClick(TransportationEntity transportationEntity) {
     Navigator.push(
         context,
@@ -882,22 +877,28 @@ class _SearchTransportationState extends State<SearchTransportationPage>
                 TransportationViewPage(transportation: transportationEntity)));
   }
 
-  Future<List<TransportationEntity>> getMyTransportation(bool out) {
+  Future<List<TransportationEntity>> getMyTransportation(bool outCity) {
     Dio dio = Dio();
     RestClient client = RestClient(dio);
-    return client.findMyTransportation(
-        GlobalsWidgets.uid, widget.category, out);
+    return client.findMyTransportation(GlobalsWidgets.uid, category, outCity);
   }
 
-  Future<List<TransportationEntity>> getActiveTransportation(bool out) {
+  Future<List<TransportationEntity>> getActiveTransportation(bool outCity) {
     Dio dio = Dio();
     RestClient client = RestClient(dio);
     return client.findActiveTransportation(
-        GlobalsWidgets.uid, widget.category, out);
+        GlobalsWidgets.uid, category, outCity);
   }
 }
 
-class ChangeTransportModeNotify extends Notification {
-  Mode mode;
-  ChangeTransportModeNotify(this.mode);
+class CustomAddress {
+  String street;
+  String house;
+
+  @override
+  String toString() {
+    return "$street, $house";
+  }
+
+  CustomAddress(this.street, this.house);
 }

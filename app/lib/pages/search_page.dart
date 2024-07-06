@@ -189,7 +189,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                                     color: Colors.black,
                                   ),
                                   hintText: date == null
-                                      ? "Дата отправления"
+                                      ? S.of(context).date_start
                                       : DateFormat("dd MMMM y").format(date!),
                                   onClick: () {
                                     BottomPicker.date(

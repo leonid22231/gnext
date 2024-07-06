@@ -5,6 +5,7 @@ import 'package:app/api/RestClient.dart';
 import 'package:app/api/entity/CityEntity.dart';
 import 'package:app/api/entity/PropertiesEntity.dart';
 import 'package:app/api/entity/enums/Mode.dart';
+import 'package:app/api/entity/enums/TransportationCategory.dart';
 import 'package:app/generated/l10n.dart';
 import 'package:app/pages/seconds/create_cargo.dart';
 import 'package:app/utils/GlobalsColors.dart';
@@ -23,8 +24,14 @@ import 'package:http/http.dart' as http;
 class CreateTransportationPage extends StatefulWidget {
   final Mode createMode;
   final CityEntity city;
+  final TransportationCategory category;
+  final bool? full;
   const CreateTransportationPage(
-      {required this.createMode, required this.city, super.key});
+      {required this.createMode,
+      this.full,
+      required this.category,
+      required this.city,
+      super.key});
   @override
   State<StatefulWidget> createState() => _CreateTransportationState();
 }
@@ -63,60 +70,64 @@ class _CreateTransportationState extends State<CreateTransportationPage> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _smallTitle("Откуда"),
-                Padding(
-                  padding: EdgeInsets.only(right: 5.w),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                          width: 5.w,
-                          child: const Center(
-                            child: Text(
-                              "*",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.redAccent),
-                            ),
-                          )),
-                      Expanded(
-                          child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: 2.h,
-                          ),
-                          Text(
-                            S.of(context).select_city,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black.withOpacity(0.5)),
-                          ),
-                          SizedBox(
-                            height: 1.h,
-                          ),
-                          CustomDropdown<CityEntity>(
-                            items: snapshot.data!.cities,
-                            initialItem: snapshot.data!.cities[item],
-                            hintText: S.of(context).select_city,
-                            decoration: CustomDropdownDecoration(
-                              closedBorder:
-                                  Border.all(color: const Color(0xffD9D9D9)),
-                              closedFillColor: Colors.transparent,
-                              expandedBorder:
-                                  Border.all(color: const Color(0xffD9D9D9)),
-                              expandedFillColor: Colors.white,
-                            ),
-                            onChanged: (city) {
-                              otkudaCity = city;
-                            },
-                          )
-                        ],
-                      ))
-                    ],
-                  ),
-                ),
+                widget.full ?? true
+                    ? _smallTitle("Откуда")
+                    : const SizedBox.shrink(),
+                widget.full ?? true
+                    ? Padding(
+                        padding: EdgeInsets.only(right: 5.w),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(
+                                width: 5.w,
+                                child: const Center(
+                                  child: Text(
+                                    "*",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.redAccent),
+                                  ),
+                                )),
+                            Expanded(
+                                child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  height: 2.h,
+                                ),
+                                Text(
+                                  S.of(context).select_city,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black.withOpacity(0.5)),
+                                ),
+                                SizedBox(
+                                  height: 1.h,
+                                ),
+                                CustomDropdown<CityEntity>(
+                                  items: snapshot.data!.cities,
+                                  initialItem: snapshot.data!.cities[item],
+                                  hintText: S.of(context).select_city,
+                                  decoration: CustomDropdownDecoration(
+                                    closedBorder: Border.all(
+                                        color: const Color(0xffD9D9D9)),
+                                    closedFillColor: Colors.transparent,
+                                    expandedBorder: Border.all(
+                                        color: const Color(0xffD9D9D9)),
+                                    expandedFillColor: Colors.white,
+                                  ),
+                                  onChanged: (city) {
+                                    otkudaCity = city;
+                                  },
+                                )
+                              ],
+                            ))
+                          ],
+                        ),
+                      )
+                    : const SizedBox.shrink(),
                 SizedBox(
                   height: 1.h,
                 ),
@@ -203,19 +214,21 @@ class _CreateTransportationState extends State<CreateTransportationPage> {
             ],
           ),
         ),
-        _smallTitle("Откуда"),
+        widget.full ?? true ? _smallTitle("Откуда") : const SizedBox.shrink(),
         SizedBox(
           height: 1.h,
         ),
-        InputWidget(
-          readOnly: false,
-          required: true,
-          width: 90.w,
-          hintText: "Улица",
-          onChange: (value) {
-            address1 = value;
-          },
-        ),
+        widget.full ?? true
+            ? InputWidget(
+                readOnly: false,
+                required: true,
+                width: 90.w,
+                hintText: "Улица",
+                onChange: (value) {
+                  address1 = value;
+                },
+              )
+            : const SizedBox.shrink(),
         _smallTitle("Куда"),
         SizedBox(
           height: 1.h,
@@ -377,7 +390,12 @@ class _CreateTransportationState extends State<CreateTransportationPage> {
                                 description != null &&
                                 price > 0 &&
                                 address1 != null &&
-                                address2 != null)) {
+                                address2 != null) ||
+                            (!(widget.full ?? true) &&
+                                address2 != null &&
+                                description != null &&
+                                dateTime1 != null &&
+                                price > 0)) {
                           if (!outcity) {
                             kudaCity = otkudaCity;
                           }
@@ -385,7 +403,7 @@ class _CreateTransportationState extends State<CreateTransportationPage> {
                               city2 = kudaCity!.name;
                           String? house1, house2;
                           String? street1, street2;
-                          if (!outcity) {
+                          if (!outcity && (widget.full ?? true)) {
                             var tempAddress1 = address1!.split(",");
                             var tempAddress2 = address2!.split(",");
                             if (tempAddress1.length > 1) {
@@ -404,6 +422,16 @@ class _CreateTransportationState extends State<CreateTransportationPage> {
                             } else {
                               street2 = address2;
                             }
+                          } else if (!outcity) {
+                            var tempAddress2 = address2!.split(",");
+                            if (tempAddress2.length > 1) {
+                              street2 = tempAddress2[0];
+                              if (tempAddress2[1].isNotEmpty) {
+                                house2 = tempAddress2[1];
+                              }
+                            } else {
+                              street2 = address2;
+                            }
                           }
                           AddressModel addressFrom =
                               AddressModel(street1, house1, city1);
@@ -414,8 +442,14 @@ class _CreateTransportationState extends State<CreateTransportationPage> {
                           PropertiesModel properties =
                               PropertiesModel(addressTo, addressFrom);
                           client
-                              .createTransporting(GlobalsWidgets.uid, price,
-                                  description!, outcity, dateTime1!, properties)
+                              .createTransporting(
+                                  GlobalsWidgets.uid,
+                                  price,
+                                  description!,
+                                  widget.category,
+                                  outcity,
+                                  dateTime1!,
+                                  properties)
                               .then((value) {
                             Navigator.pop(context);
                           }).onError((error, stackTrace) {

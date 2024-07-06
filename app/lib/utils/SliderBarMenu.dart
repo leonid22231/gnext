@@ -237,6 +237,14 @@ class SliderBarMenu extends StatelessWidget {
                 S.of(context).page3),
             Menu(
                 ClipRRect(
+                    borderRadius: BorderRadius.circular(0),
+                    child: Image.asset(
+                      "assets/govno_icon_8.jpg",
+                      //fit: BoxFit.cover,
+                    )),
+                S.of(context).page12),
+            Menu(
+                ClipRRect(
                   borderRadius: BorderRadius.circular(0),
                   child: Image.asset(
                     "assets/govno_icon_6.jpg",
@@ -244,6 +252,15 @@ class SliderBarMenu extends StatelessWidget {
                   ),
                 ),
                 S.of(context).page4),
+            Menu(
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(0),
+                  child: Image.asset(
+                    "assets/govno_icon_4.jpg",
+                    //fit: BoxFit.cover,
+                  ),
+                ),
+                S.of(context).page7),
             Menu(
                 ClipRRect(
                   borderRadius: BorderRadius.circular(0),
@@ -272,15 +289,6 @@ class SliderBarMenu extends StatelessWidget {
                   ),
                 ),
                 S.of(context).page8),
-            Menu(
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(0),
-                  child: Image.asset(
-                    "assets/govno_icon_4.jpg",
-                    //fit: BoxFit.cover,
-                  ),
-                ),
-                S.of(context).page11),
             //Menu(Image.asset("assets/icon 8.png"), S.of(context).page9),
             //Menu(Image.asset("assets/icon 9.png"), S.of(context).page10),
           ]

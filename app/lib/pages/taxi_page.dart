@@ -8,7 +8,9 @@ import 'package:app/api/entity/enums/OrderMode.dart';
 import 'package:app/api/entity/enums/TransportationCategory.dart';
 import 'package:app/api/entity/enums/UserRole.dart';
 import 'package:app/generated/l10n.dart';
+import 'package:app/pages/profile_page.dart';
 import 'package:app/pages/seconds/create_cargo.dart';
+import 'package:app/pages/seconds/order_page.dart';
 import 'package:app/pages/seconds/transportation_page.dart';
 import 'package:app/pages/seconds/user_profile.dart';
 import 'package:app/utils/GlobalsColors.dart';
@@ -21,67 +23,63 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class SearchTransportationPage extends StatefulWidget {
+class TaxiPage extends StatefulWidget {
+  final bool sub;
   final CityEntity city;
-  final TransportationCategory category;
-  const SearchTransportationPage(
-      {required this.city, required this.category, super.key});
+  const TaxiPage({required this.sub, required this.city, super.key});
 
   @override
-  State<StatefulWidget> createState() => _SearchTransportationState();
+  State<StatefulWidget> createState() => TaxiPageState();
 }
 
-class _SearchTransportationState extends State<SearchTransportationPage>
-    with TickerProviderStateMixin {
-  Mode selectedMode = Mode.CITY;
+class TaxiPageState extends State<TaxiPage> with TickerProviderStateMixin {
+  Mode selectedMode = Mode.OUTCITY;
   late TabController _controller;
   CityEntity? otkuda;
   CityEntity? kuda;
   DateTime? date;
-
+  List<String> res = [];
   @override
   void initState() {
     super.initState();
-    _controller = TabController(length: 3, vsync: this);
+    _controller = TabController(length: 2, vsync: this);
     otkuda = widget.city;
     WidgetsBinding.instance.addPostFrameCallback(
-        (_) => ChangeTransportModeNotify(selectedMode).dispatch(context));
+        (_) => ChangeModeTaxiNotify(selectedMode).dispatch(context));
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 3.h)
-            .copyWith(top: 0),
-        child: Column(
-          children: [
-            ButtonsTabBar(
-              controller: _controller,
-              backgroundColor: GlobalsColor.blue,
-              unselectedBackgroundColor: Colors.white,
-              unselectedLabelStyle: const TextStyle(color: Colors.black),
-              labelStyle: const TextStyle(
-                  color: Colors.white, fontWeight: FontWeight.bold),
-              onTap: (index) {
-                selectedMode = Mode.values[index];
-                ChangeTransportModeNotify(selectedMode).dispatch(context);
-                setState(() {});
-              },
-              tabs: [
-                Tab(
-                  text: S.of(context).city,
-                ),
-                Tab(
-                  text: S.of(context).no_city,
-                ),
-                Tab(
-                  text: S.of(context).poput,
-                )
-              ],
-            ),
-            _getBody(selectedMode)
-          ],
-        ));
+      padding:
+          EdgeInsets.symmetric(horizontal: 5.w, vertical: 3.h).copyWith(top: 0),
+      child: Column(
+        children: [
+          ButtonsTabBar(
+            controller: _controller,
+            backgroundColor: GlobalsColor.blue,
+            unselectedBackgroundColor: Colors.white,
+            unselectedLabelStyle: const TextStyle(color: Colors.black),
+            labelStyle: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold),
+            onTap: (index) {
+              selectedMode = Mode.values[index + 1];
+              ChangeModeTaxiNotify(selectedMode).dispatch(context);
+              setState(() {});
+            },
+            tabs: [
+              Tab(
+                text: S.of(context).no_city,
+              ),
+              Tab(
+                text: S.of(context).poput,
+              ),
+            ],
+          ),
+          _getBody(selectedMode)
+        ],
+      ),
+    );
   }
 
   Widget _getBody(Mode mode) {
@@ -91,7 +89,7 @@ class _SearchTransportationState extends State<SearchTransportationPage>
             child: SizedBox(
           child: SingleChildScrollView(
             child: Padding(
-              padding: EdgeInsets.only(bottom: 20.h),
+              padding: EdgeInsets.only(bottom: 10.h),
               child: Column(
                 children: [
                   FutureBuilder(
@@ -229,8 +227,8 @@ class _SearchTransportationState extends State<SearchTransportationPage>
                   ),
                   (kuda != null && otkuda != null)
                       ? FutureBuilder(
-                          future: RestClient(Dio())
-                              .searchOrders(OrderMode.EV, kuda!.id, otkuda!.id),
+                          future: RestClient(Dio()).searchOrders(
+                              OrderMode.TAXI, kuda!.id, otkuda!.id),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               List<OrderEntity> orders = snapshot.data!;
@@ -266,7 +264,7 @@ class _SearchTransportationState extends State<SearchTransportationPage>
                                                 ],
                                               ),
                                             ),
-                                            VerticalDivider(
+                                            const VerticalDivider(
                                               color: Colors.black,
                                             ),
                                             Expanded(
@@ -307,7 +305,7 @@ class _SearchTransportationState extends State<SearchTransportationPage>
                                                     "Создано: ${DateFormat("d MMMM, HH:mm").format(currentOrder.createDate)}")
                                               ],
                                             )),
-                                            VerticalDivider(
+                                            const VerticalDivider(
                                               color: Colors.black,
                                             ),
                                             CircleAvatar(
@@ -355,257 +353,100 @@ class _SearchTransportationState extends State<SearchTransportationPage>
         return Expanded(
             child: SizedBox(
           child: FutureBuilder(
-            future: getMyTransportation(false),
+            future: GlobalsWidgets.role == UserRole.USER
+                ? getMyTransportation()
+                : getActiveTransportation(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                List<TransportationEntity> myList = snapshot.data!;
-                return FutureBuilder(
-                    future: getActiveTransportation(false),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        List<TransportationEntity> allList = snapshot.data!;
-                        return SingleChildScrollView(
+                List<TransportationEntity> list = snapshot.data!;
+                return ListView.separated(
+                  itemCount: list.length,
+                  itemBuilder: (context, index) {
+                    TransportationEntity order = list[index];
+                    return InkWell(
+                      onTap: () {
+                        onClick(order);
+                      },
+                      child: Container(
+                        width: double.maxFinite,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(9),
+                            color: const Color(0xff787878)),
+                        child: Padding(
+                          padding: EdgeInsets.all(2.h),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              GlobalsWidgets.role == UserRole.USER
-                                  ? Text(S.of(context).you_orders)
-                                  : const SizedBox.shrink(),
-                              GlobalsWidgets.role == UserRole.USER
-                                  ? ListView.separated(
-                                      shrinkWrap: true,
-                                      primary: false,
-                                      itemCount: myList.length,
-                                      itemBuilder: (context, index) {
-                                        TransportationEntity order =
-                                            myList[index];
-                                        return InkWell(
-                                          onTap: () {
-                                            onClick(order);
-                                          },
-                                          child: Container(
-                                            width: double.maxFinite,
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(9),
-                                                color: const Color(0xff787878)),
-                                            child: Padding(
-                                              padding: EdgeInsets.all(2.h),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Text(
-                                                        "${order.addressFrom.street}${order.addressFrom.house != null ? "," : ""} ${order.addressFrom.house ?? ""} ->",
-                                                        style: TextStyle(
-                                                            fontSize: 14.sp,
-                                                            color: Colors.white,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                      Text(
-                                                        "${order.price.round()} ₸",
-                                                        style: TextStyle(
-                                                            fontSize: 16.sp,
-                                                            color: Colors.white,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      )
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height: 1.h,
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Text(
-                                                          "${order.addressTo.street}${order.addressFrom.street != null ? "," : ""} ${order.addressTo.house ?? ""}",
-                                                          style: TextStyle(
-                                                              fontSize: 14.sp,
-                                                              color:
-                                                                  Colors.white,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold))
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height: 1.h,
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Text(
-                                                        DateFormat("dd EE. MMM")
-                                                            .format(order.date
-                                                                .toLocal()),
-                                                        style: TextStyle(
-                                                            color: const Color(
-                                                                0xffCFCFCF),
-                                                            fontSize: 14.sp,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                      Text(
-                                                        DateFormat("dd MMM")
-                                                            .format(order
-                                                                .createDate
-                                                                .toLocal()),
-                                                        style: TextStyle(
-                                                            color: const Color(
-                                                                0xffCFCFCF),
-                                                            fontSize: 14.sp,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      )
-                                                    ],
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                      separatorBuilder:
-                                          (BuildContext context, int index) {
-                                        return SizedBox(
-                                          height: 2.h,
-                                        );
-                                      },
-                                    )
-                                  : const SizedBox.shrink(),
-                              GlobalsWidgets.role == UserRole.USER
-                                  ? Text(S.of(context).not_you_orders)
-                                  : const SizedBox.shrink(),
-                              ListView.separated(
-                                shrinkWrap: true,
-                                primary: false,
-                                itemCount: allList.length,
-                                itemBuilder: (context, index) {
-                                  TransportationEntity order = allList[index];
-                                  if (myList.contains(order)) {
-                                    return const SizedBox.shrink();
-                                  }
-                                  return InkWell(
-                                    onTap: () {
-                                      if (GlobalsWidgets.role ==
-                                          UserRole.SPECIALIST) onClick(order);
-                                    },
-                                    child: Container(
-                                      width: double.maxFinite,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(9),
-                                          color: const Color(0xff787878)),
-                                      child: Padding(
-                                        padding: EdgeInsets.all(2.h),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  "${order.addressFrom.street}${order.addressFrom.house != null ? "," : ""} ${order.addressFrom.house ?? ""} ->",
-                                                  style: TextStyle(
-                                                      fontSize: 14.sp,
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                Text(
-                                                  "${order.price.round()} ₸",
-                                                  style: TextStyle(
-                                                      fontSize: 16.sp,
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              height: 1.h,
-                                            ),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                    "${order.addressTo.street}${order.addressFrom.street != null ? "," : ""} ${order.addressTo.house ?? ""}",
-                                                    style: TextStyle(
-                                                        fontSize: 14.sp,
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.bold))
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              height: 1.h,
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  DateFormat("dd EE. MMM")
-                                                      .format(
-                                                          order.date.toLocal()),
-                                                  style: TextStyle(
-                                                      color: const Color(
-                                                          0xffCFCFCF),
-                                                      fontSize: 14.sp,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                Text(
-                                                  DateFormat("dd MMM").format(
-                                                      order.createDate
-                                                          .toLocal()),
-                                                  style: TextStyle(
-                                                      color: const Color(
-                                                          0xffCFCFCF),
-                                                      fontSize: 14.sp,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                                separatorBuilder:
-                                    (BuildContext context, int index) {
-                                  if (myList.contains(allList[index])) {
-                                    return const SizedBox.shrink();
-                                  }
-                                  return SizedBox(
-                                    height: 2.h,
-                                  );
-                                },
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "${order.addressFrom.street}${order.addressFrom.house != null ? "," : ""} ${order.addressFrom.house ?? ""} ->",
+                                    style: TextStyle(
+                                        fontSize: 14.sp,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    "${order.price.round()} ₸",
+                                    style: TextStyle(
+                                        fontSize: 16.sp,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  )
+                                ],
+                              ),
+                              SizedBox(
+                                height: 1.h,
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                      "${order.addressTo.street}${order.addressFrom.street != null ? "," : ""} ${order.addressTo.house ?? ""}",
+                                      style: TextStyle(
+                                          fontSize: 14.sp,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold))
+                                ],
+                              ),
+                              SizedBox(
+                                height: 1.h,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    DateFormat("dd EE. MMM")
+                                        .format(order.date.toLocal()),
+                                    style: TextStyle(
+                                        color: const Color(0xffCFCFCF),
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    DateFormat("dd MMM")
+                                        .format(order.createDate.toLocal()),
+                                    style: TextStyle(
+                                        color: const Color(0xffCFCFCF),
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.bold),
+                                  )
+                                ],
                               )
                             ],
                           ),
-                        );
-                      } else {
-                        return const SizedBox.shrink();
-                      }
-                    });
+                        ),
+                      ),
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return SizedBox(
+                      height: 2.h,
+                    );
+                  },
+                );
               } else {
                 return const SizedBox.shrink();
               }
@@ -616,12 +457,12 @@ class _SearchTransportationState extends State<SearchTransportationPage>
         return Expanded(
             child: SizedBox(
           child: FutureBuilder(
-            future: getMyTransportation(true),
+            future: getMyTransportation(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 List<TransportationEntity> myList = snapshot.data!;
                 return FutureBuilder(
-                    future: getActiveTransportation(true),
+                    future: getActiveTransportation(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         List<TransportationEntity> allList = snapshot.data!;
@@ -874,6 +715,7 @@ class _SearchTransportationState extends State<SearchTransportationPage>
     }
   }
 
+  update() => setState(() {});
   void onClick(TransportationEntity transportationEntity) {
     Navigator.push(
         context,
@@ -882,22 +724,34 @@ class _SearchTransportationState extends State<SearchTransportationPage>
                 TransportationViewPage(transportation: transportationEntity)));
   }
 
-  Future<List<TransportationEntity>> getMyTransportation(bool out) {
+  Future<List<TransportationEntity>> getMyTransportation() {
     Dio dio = Dio();
     RestClient client = RestClient(dio);
     return client.findMyTransportation(
-        GlobalsWidgets.uid, widget.category, out);
+        GlobalsWidgets.uid, TransportationCategory.taxi, true);
   }
 
-  Future<List<TransportationEntity>> getActiveTransportation(bool out) {
+  Future<List<TransportationEntity>> getActiveTransportation() {
     Dio dio = Dio();
     RestClient client = RestClient(dio);
     return client.findActiveTransportation(
-        GlobalsWidgets.uid, widget.category, out);
+        GlobalsWidgets.uid, TransportationCategory.taxi, true);
   }
 }
 
-class ChangeTransportModeNotify extends Notification {
+class ChangeModeTaxiNotify extends Notification {
   Mode mode;
-  ChangeTransportModeNotify(this.mode);
+  ChangeModeTaxiNotify(this.mode);
+}
+
+class CustomAddress {
+  String street;
+  String house;
+
+  @override
+  String toString() {
+    return "$street, $house";
+  }
+
+  CustomAddress(this.street, this.house);
 }

@@ -1,6 +1,7 @@
 import 'package:app/api/RestClient.dart';
 import 'package:app/api/entity/OrderEntity.dart';
 import 'package:app/api/entity/enums/OrderMode.dart';
+import 'package:app/generated/l10n.dart';
 import 'package:app/pages/seconds/user_profile.dart';
 import 'package:app/utils/GlobalsColors.dart';
 import 'package:app/utils/GlobalsWidgets.dart';
@@ -23,7 +24,7 @@ class _MyTaxiOrdersState extends State<MyTaxiOrdersPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text("Мои заказы"),
+        title: Text(S.of(context).my_orders),
       ),
       body: Padding(
         padding: EdgeInsets.all(3.h),
@@ -91,7 +92,7 @@ class _MyTaxiOrdersState extends State<MyTaxiOrdersPage> {
                                     height: 1,
                                   ),
                                   Text(
-                                      "Создано: ${DateFormat("d MMMM, HH:mm").format(currentOrder.createDate)}")
+                                      "${S.of(context).create_ate} ${DateFormat("d MMMM, HH:mm").format(currentOrder.createDate)}")
                                 ],
                               )),
                               const VerticalDivider(

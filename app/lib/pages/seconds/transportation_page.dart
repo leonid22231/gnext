@@ -16,7 +16,8 @@ class TransportationViewPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(S.of(context).page3, style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w700)),
+        title: Text(S.of(context).page3,
+            style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w700)),
       ),
       body: Padding(
         padding: EdgeInsets.all(2.h).copyWith(bottom: 15.h),
@@ -50,19 +51,31 @@ class TransportationViewPage extends StatelessWidget {
                               children: [
                                 Text(
                                   "${transportation.addressFrom.street}, ${transportation.addressFrom.house ?? ""} ->",
-                                  style: TextStyle(fontSize: 16.sp, color: Colors.white, fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                      fontSize: 16.sp,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(
                                   height: 1.h,
                                 ),
                                 Text(
-                                  DateFormat("dd EE.").format(transportation.date.toLocal()),
-                                  style: TextStyle(color: const Color(0xffCFCFCF), fontSize: 16.sp, fontWeight: FontWeight.bold),
+                                  DateFormat("dd EE.")
+                                      .format(transportation.date.toLocal()),
+                                  style: TextStyle(
+                                      color: const Color(0xffCFCFCF),
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(
                                   height: 2.h,
                                 ),
-                                Text("${transportation.addressTo.street}, ${transportation.addressTo.house ?? ""}", style: TextStyle(fontSize: 16.sp, color: Colors.white, fontWeight: FontWeight.bold))
+                                Text(
+                                    "${transportation.addressTo.street}, ${transportation.addressTo.house ?? ""}",
+                                    style: TextStyle(
+                                        fontSize: 16.sp,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold))
                               ],
                             )
                           ],
@@ -86,7 +99,10 @@ class TransportationViewPage extends StatelessWidget {
                               children: [
                                 Text(
                                   "${transportation.addressFrom.city} ->",
-                                  style: TextStyle(fontSize: 16.sp, color: Colors.white, fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                      fontSize: 16.sp,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(
                                   height: 1.h,
@@ -94,7 +110,11 @@ class TransportationViewPage extends StatelessWidget {
                                 SizedBox(
                                   height: 2.h,
                                 ),
-                                Text(transportation.addressTo.city, style: TextStyle(fontSize: 16.sp, color: Colors.white, fontWeight: FontWeight.bold))
+                                Text(transportation.addressTo.city,
+                                    style: TextStyle(
+                                        fontSize: 16.sp,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold))
                               ],
                             )
                           ],
@@ -109,7 +129,10 @@ class TransportationViewPage extends StatelessWidget {
                     children: [
                       Text(
                         "${transportation.price.round()} ₸",
-                        style: TextStyle(fontSize: 18.sp, color: Colors.white, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 18.sp,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
                         width: 1.w,
@@ -125,7 +148,10 @@ class TransportationViewPage extends StatelessWidget {
                   alignment: Alignment.center,
                   child: Text(
                     "${S.of(context).desc}:",
-                    style: TextStyle(color: Colors.white, fontSize: 18.sp, fontWeight: FontWeight.w700),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w700),
                   ),
                 ),
                 SizedBox(
@@ -134,7 +160,10 @@ class TransportationViewPage extends StatelessWidget {
                 Expanded(
                     child: Text(
                   transportation.description,
-                  style: TextStyle(color: Colors.white, fontSize: 16.sp, fontWeight: FontWeight.w700),
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w700),
                 )),
                 transportation.creator.uid != GlobalsWidgets.uid
                     ? Padding(
@@ -146,8 +175,12 @@ class TransportationViewPage extends StatelessWidget {
                                 children: [
                                   ClipOval(
                                     child: SizedBox.fromSize(
-                                      size: const Size.fromRadius(25), // Image radius
-                                      child: Image.network(GlobalsWidgets.getPhoto(transportation.creator.photo), fit: BoxFit.cover),
+                                      size: const Size.fromRadius(
+                                          25), // Image radius
+                                      child: Image.network(
+                                          GlobalsWidgets.getPhoto(
+                                              transportation.creator.photo),
+                                          fit: BoxFit.cover),
                                     ),
                                   ),
                                   SizedBox(
@@ -155,12 +188,15 @@ class TransportationViewPage extends StatelessWidget {
                                   ),
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         "${transportation.creator.name} ${transportation.creator.surname}",
                                         textAlign: TextAlign.start,
-                                        style: TextStyle(fontSize: 16.sp, color: Colors.white),
+                                        style: TextStyle(
+                                            fontSize: 16.sp,
+                                            color: Colors.white),
                                       ),
                                       SizedBox(
                                         height: 1.h,
@@ -168,7 +204,9 @@ class TransportationViewPage extends StatelessWidget {
                                       Text(
                                         "+${transportation.creator.phone}",
                                         textAlign: TextAlign.start,
-                                        style: TextStyle(fontSize: 14.sp, color: Colors.white),
+                                        style: TextStyle(
+                                            fontSize: 14.sp,
+                                            color: Colors.white),
                                       ),
                                     ],
                                   )
@@ -185,16 +223,22 @@ class TransportationViewPage extends StatelessWidget {
                                   onPressed: () {
                                     Dio dio = Dio();
                                     RestClient client = RestClient(dio);
-                                    client.findChat(GlobalsWidgets.uid, transportation.creator.uid, null).then((value) {
+                                    client
+                                        .findChat(GlobalsWidgets.uid,
+                                            transportation.creator.uid, null)
+                                        .then((value) {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) => UserProfile(
-                                                    user: transportation.creator,
+                                                    user:
+                                                        transportation.creator,
                                                   )));
                                     });
                                   },
-                                  style: OutlinedButton.styleFrom(side: const BorderSide(color: Colors.white)),
+                                  style: OutlinedButton.styleFrom(
+                                      side: const BorderSide(
+                                          color: Colors.white)),
                                   child: Text(
                                     S.of(context).connect,
                                     style: const TextStyle(color: Colors.white),
@@ -207,16 +251,23 @@ class TransportationViewPage extends StatelessWidget {
                         width: double.maxFinite,
                         height: 5.h,
                         child: OutlinedButton(
-                            onPressed: () {
-                              Dio dio = Dio();
-                              RestClient client = RestClient(dio);
-                              client.stopTransportation(transportation.id).then((value) {
-                                Navigator.pop(context);
-                              });
-                            },
-                            style: OutlinedButton.styleFrom(side: const BorderSide(color: Colors.white)),
+                            onPressed: transportation.active
+                                ? () {
+                                    Dio dio = Dio();
+                                    RestClient client = RestClient(dio);
+                                    client
+                                        .stopTransportation(transportation.id)
+                                        .then((value) {
+                                      Navigator.pop(context);
+                                    });
+                                  }
+                                : null,
+                            style: OutlinedButton.styleFrom(
+                                side: const BorderSide(color: Colors.white)),
                             child: Text(
-                              S.of(context).end,
+                              transportation.active
+                                  ? S.of(context).end
+                                  : S.of(context).transport_end,
                               style: const TextStyle(color: Colors.white),
                             )),
                       ),

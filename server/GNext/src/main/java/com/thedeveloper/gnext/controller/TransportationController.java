@@ -7,6 +7,7 @@ import com.thedeveloper.gnext.entity.AddressEntity;
 import com.thedeveloper.gnext.entity.OrderEntity;
 import com.thedeveloper.gnext.entity.TransportationEntity;
 import com.thedeveloper.gnext.entity.UserEntity;
+import com.thedeveloper.gnext.enums.TransportationCategory;
 import com.thedeveloper.gnext.service.AddressService;
 import com.thedeveloper.gnext.service.TransportationService;
 import com.thedeveloper.gnext.service.UserService;
@@ -27,11 +28,12 @@ public class TransportationController {
     UserService userService;
     AddressService addressService;
     @PostMapping(value = "/create", consumes = {MediaType.ALL_VALUE})
-    public ResponseEntity<?> createTransportation(@RequestParam String uid, @RequestParam double price, @RequestParam String description, @RequestParam boolean outcity, @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,@ModelAttribute(name = "properties") String propertiesModel) throws JsonProcessingException {
+    public ResponseEntity<?> createTransportation(@RequestParam String uid, @RequestParam double price, @RequestParam String description, @RequestParam boolean outcity,@RequestParam TransportationCategory category, @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,@ModelAttribute(name = "properties") String propertiesModel) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         PropertiesModel properties = objectMapper.readValue(propertiesModel, PropertiesModel.class);
         UserEntity user = userService.findUserByUid(uid);
         TransportationEntity transportation = new TransportationEntity();
+        transportation.setCategory(category);
         transportation.setCreator(user);
         transportation.setCity(user.getCity());
         transportation.setDescription(description);
@@ -59,14 +61,14 @@ public class TransportationController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @GetMapping("/active")
-    public ResponseEntity<?> activeOrders(@RequestParam String uid, @RequestParam boolean outcity){
+    public ResponseEntity<?> activeOrders(@RequestParam String uid, @RequestParam boolean outcity, @RequestParam TransportationCategory category){
         UserEntity user = userService.findUserByUid(uid);
-        return new ResponseEntity<>(transportationService.findActive(user, outcity), HttpStatus.OK);
+        return new ResponseEntity<>(transportationService.findActive(user, outcity, category), HttpStatus.OK);
     }
     @GetMapping("/my")
-    public ResponseEntity<?> userTransportation(@RequestParam String uid, @RequestParam boolean outcity) {
+    public ResponseEntity<?> userTransportation(@RequestParam String uid, @RequestParam boolean outcity, @RequestParam TransportationCategory category) {
         UserEntity user = userService.findUserByUid(uid);
-        return new ResponseEntity<>(transportationService.findByCreatorAndCityAndOutcity(user, outcity), HttpStatus.OK);
+        return new ResponseEntity<>(transportationService.findByCreatorAndCityAndOutcity(user, outcity, category), HttpStatus.OK);
     }
 
 }

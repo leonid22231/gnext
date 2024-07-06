@@ -1,5 +1,6 @@
 enum OrderMode {
   CLASSIC,
   EV,
-  NEW;
+  NEW,
+  TAXI;
 }
