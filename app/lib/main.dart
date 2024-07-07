@@ -28,7 +28,9 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  if (Platform.isAndroid) {
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  }
   FirebaseAuth auth = FirebaseAuth.instance;
   if (auth.currentUser != null) {
     debugPrint("Current user not null");
@@ -187,7 +189,9 @@ class _MyApp extends State<MyApp> {
                           return const SizedBox.shrink();
                         }
                       })
-                  : PreloadPage(),
+                  : Platform.isAndroid
+                      ? PreloadPage()
+                      : const LoginPage(),
             );
           } else {
             return const SizedBox.shrink();

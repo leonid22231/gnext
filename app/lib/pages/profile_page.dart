@@ -444,19 +444,8 @@ class _ProfilePage extends State<ProfilePage> {
                                                                           .black),
                                                                 ))
                                                             : Platform.isIOS
-                                                                ? OutlinedButton(
-                                                                    onPressed:
-                                                                        () {},
-                                                                    child:
-                                                                        const Text(
-                                                                      "Apple pay",
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .center,
-                                                                      style: TextStyle(
-                                                                          color:
-                                                                              Colors.black),
-                                                                    ))
+                                                                ? const SizedBox
+                                                                    .shrink()
                                                                 : const SizedBox
                                                                     .shrink()
                                                       ],
