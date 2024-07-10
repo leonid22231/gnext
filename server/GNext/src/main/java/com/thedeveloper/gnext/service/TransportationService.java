@@ -14,7 +14,12 @@ import java.util.List;
 @AllArgsConstructor
 public class TransportationService {
     TransportationRepository repository;
-
+    public void delete(TransportationEntity entity){
+        repository.delete(entity);
+    }
+    public List<TransportationEntity> findAllByUser(UserEntity user){
+        return repository.findTransportationEntitiesByCreator(user);
+    }
     public List<TransportationEntity> findByCreatorAndCityAndOutcity(UserEntity creator, boolean outcity, TransportationCategory category){
         return repository.findTransportationEntitiesByCreatorAndOutCityAndCityAndCategoryAndActive(creator, outcity, creator.getCity(), category, true);
     }

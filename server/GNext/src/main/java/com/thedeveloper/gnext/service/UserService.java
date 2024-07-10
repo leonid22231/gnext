@@ -25,6 +25,9 @@ public class UserService {
     public void save(UserEntity user){
         userRepository.save(user);
     }
+    public void delete(UserEntity user){
+        userRepository.delete(user);
+    }
     public List<UserEntity> findAll(){
         return userRepository.findAll();
     }

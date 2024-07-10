@@ -22,6 +22,9 @@ public class ChatService {
     public ChatEntity findByCityAndName(CityEntity city, String name){
         return repository.findChatEntityByCityAndName(city, name);
     }
+    public void delete(ChatEntity chatEntity){
+        repository.delete(chatEntity);
+    }
     public ChatEntity findById(String id){
         return repository.findChatEntityById(id);
     }

@@ -371,7 +371,7 @@ class TaxiPageState extends State<TaxiPage> with TickerProviderStateMixin {
                         width: double.maxFinite,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(9),
-                            color: const Color(0xff787878)),
+                            color: GlobalsColor.userCardColor),
                         child: Padding(
                           padding: EdgeInsets.all(2.h),
                           child: Column(
@@ -490,7 +490,8 @@ class TaxiPageState extends State<TaxiPage> with TickerProviderStateMixin {
                                             decoration: BoxDecoration(
                                                 borderRadius:
                                                     BorderRadius.circular(9),
-                                                color: const Color(0xff787878)),
+                                                color:
+                                                    GlobalsColor.userCardColor),
                                             child: Padding(
                                               padding: EdgeInsets.all(2.h),
                                               child: Column(
@@ -608,7 +609,7 @@ class TaxiPageState extends State<TaxiPage> with TickerProviderStateMixin {
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(9),
-                                          color: const Color(0xff787878)),
+                                          color: GlobalsColor.userCardColor),
                                       child: Padding(
                                         padding: EdgeInsets.all(2.h),
                                         child: Column(

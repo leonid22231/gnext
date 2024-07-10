@@ -2,6 +2,7 @@ package com.thedeveloper.gnext.service;
 
 import com.thedeveloper.gnext.entity.ChatEntity;
 import com.thedeveloper.gnext.entity.MessageEntity;
+import com.thedeveloper.gnext.entity.UserEntity;
 import com.thedeveloper.gnext.repository.MessageRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,4 +25,11 @@ public class MessageService {
     public void delete(MessageEntity message){
         repository.delete(message);
     }
+    public List<MessageEntity> findAllMessagesByUser(UserEntity user){
+        return repository.findMessageEntitiesByUser(user);
+    }
+    public List<MessageEntity> findGetReaders(UserEntity user){
+        return repository.findMessageEntitiesByReadersContaining(user);
+    }
+
 }

@@ -14,4 +14,5 @@ public interface TransportationRepository extends JpaRepository<TransportationEn
     List<TransportationEntity> findTransportationEntitiesByCreatorAndOutCityAndCityAndCategoryAndActive(UserEntity creator, boolean outcity, CityEntity city, TransportationCategory category, boolean active);
     List<TransportationEntity> findTransportationEntitiesByActiveAndCityAndOutCityAndCategory(boolean active, CityEntity city, boolean outcity, TransportationCategory category);
     TransportationEntity findTransportationEntityById(Long id);
+    List<TransportationEntity> findTransportationEntitiesByCreator(UserEntity creator);
 }

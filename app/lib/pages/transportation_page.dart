@@ -263,7 +263,7 @@ class TransportationPageState extends State<TransportationPage>
                                                 ],
                                               ),
                                             ),
-                                            VerticalDivider(
+                                            const VerticalDivider(
                                               color: Colors.black,
                                             ),
                                             Expanded(
@@ -304,7 +304,7 @@ class TransportationPageState extends State<TransportationPage>
                                                     "Создано: ${DateFormat("d MMMM, HH:mm").format(currentOrder.createDate)}")
                                               ],
                                             )),
-                                            VerticalDivider(
+                                            const VerticalDivider(
                                               color: Colors.black,
                                             ),
                                             CircleAvatar(
@@ -393,7 +393,7 @@ class TransportationPageState extends State<TransportationPage>
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(9),
-                                          color: const Color(0xff787878)),
+                                          color: GlobalsColor.userCardColor),
                                       child: Padding(
                                         padding: EdgeInsets.all(2.h),
                                         child: Column(
@@ -496,7 +496,7 @@ class TransportationPageState extends State<TransportationPage>
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(9),
-                                          color: const Color(0xff787878)),
+                                          color: GlobalsColor.userCardColor),
                                       child: Padding(
                                         padding: EdgeInsets.all(2.h),
                                         child: Column(
@@ -645,7 +645,7 @@ class TransportationPageState extends State<TransportationPage>
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(9),
-                                          color: const Color(0xff787878)),
+                                          color: GlobalsColor.userCardColor),
                                       child: Padding(
                                         padding: EdgeInsets.all(2.h),
                                         child: Column(
@@ -761,7 +761,7 @@ class TransportationPageState extends State<TransportationPage>
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(9),
-                                          color: const Color(0xff787878)),
+                                          color: GlobalsColor.userCardColor),
                                       child: Padding(
                                         padding: EdgeInsets.all(2.h),
                                         child: Column(

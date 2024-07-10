@@ -21,6 +21,9 @@ public class CodeService {
     public void save(CodeEntity code){
         repository.save(code);
     }
+    public void delete(CodeEntity code){
+        repository.delete(code);
+    }
     public String sendCode(UserEntity user){
         List<CodeEntity> existCode = repository.findCodeEntitiesByUser(user);
         if(!existCode.isEmpty()){

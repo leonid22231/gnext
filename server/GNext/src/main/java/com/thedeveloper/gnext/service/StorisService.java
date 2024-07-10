@@ -2,6 +2,7 @@ package com.thedeveloper.gnext.service;
 
 import com.thedeveloper.gnext.entity.ChatEntity;
 import com.thedeveloper.gnext.entity.StorisEntity;
+import com.thedeveloper.gnext.entity.UserEntity;
 import com.thedeveloper.gnext.repository.StorisRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,9 @@ public class StorisService {
     public void save(StorisEntity storisEntity){
         storisRepository.save(storisEntity);
     }
+    public List<StorisEntity> findAllByUser(UserEntity user){
+        return storisRepository.findStorisEntitiesByUser(user);
+    }
     public List<StorisEntity> getStorisByChat(ChatEntity chat){
         return storisRepository.findStorisEntitiesByChatOrderByCreateDateAsc(chat);
     }
@@ -24,4 +28,5 @@ public class StorisService {
     public void delete(StorisEntity storis){
         storisRepository.delete(storis);
     }
+
 }

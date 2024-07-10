@@ -21,6 +21,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Slf4j
 public class MainController {
+    TransportationService transportationService;
     UserService userService;
     PasswordEncoder passwordEncoder;
     ImageService imageService;
@@ -33,6 +34,8 @@ public class MainController {
     CodeService codeService;
     FileService fileService;
     AddressService addressService;
+    OrderService orderService;
+    StorisService storisService;
     @GetMapping("/login")
     public ResponseEntity<?> login(@RequestParam String phone, @RequestParam String password){
         UserEntity user = userService.findUserByPhone(phone);
@@ -69,6 +72,48 @@ public class MainController {
         if(user==null) return new ResponseEntity<>("Пользователь не найден", HttpStatus.NOT_FOUND);
 
         return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+    @DeleteMapping("/deleteUser")
+    public ResponseEntity<?> deleteUser(@RequestParam String uid){
+        UserEntity user = userService.findUserByUid(uid);
+        List<MessageEntity> userMessages = messageService.findAllMessagesByUser(user).stream().toList();
+        for(MessageEntity messageEntity : userMessages){
+            messageService.delete(messageEntity);
+        }
+        List<ChatEntity> allUserChats = chatService.findByUser(user).stream().toList();
+        for(ChatEntity chatEntity : allUserChats){
+            chatService.delete(chatEntity);
+        }
+        List<OrderEntity> orderEntities = orderService.findAllByUser(user).stream().toList();
+        for(OrderEntity orderEntity : orderEntities){
+            orderService.delete(orderEntity);
+        }
+        List<TransportationEntity> transportationEntities = transportationService.findAllByUser(user).stream().toList();
+        for(TransportationEntity transportationEntity : transportationEntities){
+            transportationService.delete(transportationEntity);
+        }
+        List<WalletEventEntity> walletEventEntities = walletEventService.findByUser(user).stream().toList();
+        for(WalletEventEntity walletEventEntity : walletEventEntities){
+            walletEventService.delete(walletEventEntity);
+        }
+        List<StorisEntity> storisEntities = storisService.findAllByUser(user).stream().toList();
+        for(StorisEntity storisEntity : storisEntities){
+            storisService.delete(storisEntity);
+        }
+        List<CodeEntity> codeEntities = codeService.findCodesByUser(user).stream().toList();
+        for(CodeEntity codeEntity : codeEntities){
+            codeService.delete(codeEntity);
+        }
+        for(MessageEntity message : messageService.findGetReaders(user)){
+            for(int i = 0; i < message.getReaders().size(); i++){
+                if(message.getReaders().get(i).getId().equals(user.getId())){
+                    message.getReaders().remove(i);
+                }
+            }
+            messageService.save(message);
+        }
+        userService.delete(user);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
     @PostMapping("/uid")
     public ResponseEntity<?> setUid(@RequestParam String phone, @RequestParam String uid){

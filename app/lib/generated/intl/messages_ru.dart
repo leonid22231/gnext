@@ -160,7 +160,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "typing": MessageLookupByLibrary.simpleMessage("Написать"),
         "user": MessageLookupByLibrary.simpleMessage("Пользователь"),
         "user_name": MessageLookupByLibrary.simpleMessage("имя_пользователя"),
-        "user_role_1": MessageLookupByLibrary.simpleMessage("Работодатель"),
+        "user_role_1": MessageLookupByLibrary.simpleMessage("Пользователь"),
         "user_role_2": MessageLookupByLibrary.simpleMessage("Перевозчик"),
         "video": MessageLookupByLibrary.simpleMessage("Видео"),
         "video_": MessageLookupByLibrary.simpleMessage("Видео (Камера)"),

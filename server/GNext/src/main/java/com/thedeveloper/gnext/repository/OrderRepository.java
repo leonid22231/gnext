@@ -16,4 +16,5 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
     List<OrderEntity> findOrderEntitiesByActiveAndMode(boolean active,OrderMode mode);
     List<OrderEntity> findOrderEntitiesByActiveAndModeAndAddressTo_CityAndAddressFrom_City(boolean active, OrderMode mode, String cityTo, String cityFrom);
     OrderEntity findOrderEntityById(Long id);
+    List<OrderEntity> findOrderEntitiesByCreator(UserEntity creator);
 }

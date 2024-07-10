@@ -17,8 +17,14 @@ public class OrderService {
     public void save(OrderEntity orderEntity){
         repository.save(orderEntity);
     }
+    public void delete(OrderEntity orderEntity){
+        repository.delete(orderEntity);
+    }
     public List<OrderEntity> findAll(){
         return repository.findAll();
+    }
+    public List<OrderEntity> findAllByUser(UserEntity user){
+        return repository.findOrderEntitiesByCreator(user);
     }
     public List<OrderEntity> findActive(boolean outcity, CityEntity city){
         return repository.findOrderEntitiesByOutCityAndCityAndActiveAndMode(outcity, city, true, OrderMode.CLASSIC);

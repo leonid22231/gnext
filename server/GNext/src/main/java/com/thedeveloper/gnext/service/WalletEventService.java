@@ -12,7 +12,9 @@ import java.util.List;
 @AllArgsConstructor
 public class WalletEventService {
     WalletEventRepository repository;
-
+    public void delete(WalletEventEntity entity) {
+        repository.delete(entity);
+    }
     public void save(WalletEventEntity event){
         repository.save(event);
     }
