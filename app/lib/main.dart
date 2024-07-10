@@ -189,9 +189,7 @@ class _MyApp extends State<MyApp> {
                           return const SizedBox.shrink();
                         }
                       })
-                  : Platform.isAndroid
-                      ? PreloadPage()
-                      : const LoginPage(),
+                  : PreloadPage(),
             );
           } else {
             return const SizedBox.shrink();
