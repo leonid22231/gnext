@@ -1269,6 +1269,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Вы уверены что хотите удалить аккаунт ?`
+  String get delete_account {
+    return Intl.message(
+      'Вы уверены что хотите удалить аккаунт ?',
+      name: 'delete_accound',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

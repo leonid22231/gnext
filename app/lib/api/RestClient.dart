@@ -53,6 +53,8 @@ abstract class RestClient {
       @Query("uid") String uid,
       @Query("notifyToken") String notifyToken,
       @Part(name: "photo") File? file);
+  @DELETE("user/deleteUser")
+  Future<void> deleteUser(@Query("uid") String uid);
   @POST("user/changePhoto")
   @MultiPart()
   Future<String> changePhoto(

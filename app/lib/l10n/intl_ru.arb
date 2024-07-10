@@ -120,5 +120,6 @@
   "you_orders": "Ваши заказы:",
   "not_you_orders": "Другие заказы:",
   "change_lng": "Изменить язык",
-  "transport_end": "Завершен"
+  "transport_end": "Завершен",
+  "delete_account": "Вы уверены что хотите удалить аккаунт ?"
 }

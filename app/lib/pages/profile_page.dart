@@ -859,24 +859,6 @@ class _ProfilePage extends State<ProfilePage> {
                                     style: const TextStyle(color: Colors.white),
                                   ),
                                 ),
-                                SizedBox(
-                                  height: 2.h,
-                                ),
-                                OutlinedButton(
-                                  onPressed: () {
-                                    launchUrl(
-                                        Uri.parse(
-                                            "https://forms.gle/JccFuuxj713Gn6Ew6"),
-                                        mode: LaunchMode.externalApplication);
-                                  },
-                                  style: OutlinedButton.styleFrom(
-                                      backgroundColor: Colors.red,
-                                      side: BorderSide.none),
-                                  child: Text(
-                                    S.of(context).help_1,
-                                    style: const TextStyle(color: Colors.white),
-                                  ),
-                                ),
                               ],
                             ),
                             actions: [
@@ -981,6 +963,87 @@ class _ProfilePage extends State<ProfilePage> {
                           fit: FlexFit.tight,
                           child: Text(
                             S.of(context).profile_2,
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 18.sp),
+                          )),
+                      SizedBox(
+                        width: 5.w,
+                      ),
+                      const Icon(Icons.keyboard_arrow_right_sharp)
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 1.h,
+              ),
+              InkWell(
+                onTap: () async {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return StatefulBuilder(builder: (context, state) {
+                          return AlertDialog(
+                            title: Text(
+                              S.of(context).help_1,
+                              style: TextStyle(fontSize: 16.sp),
+                            ),
+                            content: Text(S.of(context).delete_account),
+                            actions: [
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                  textStyle:
+                                      Theme.of(context).textTheme.labelLarge,
+                                ),
+                                child: Text(S.of(context).ok),
+                                onPressed: () async {
+                                  Dio dio = Dio();
+                                  RestClient client = RestClient(dio);
+                                  await client.deleteUser(GlobalsWidgets.uid);
+                                  GlobalsWidgets.uid = "";
+                                  FirebaseAuth.instance.signOut();
+                                  (await SharedPreferences.getInstance())
+                                      .remove("phone");
+                                  if (context.mounted) {
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const LoginPage()),
+                                        (route) => false);
+                                  }
+                                },
+                              ),
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                  textStyle:
+                                      Theme.of(context).textTheme.labelLarge,
+                                ),
+                                child: Text(S.of(context).cancel),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        });
+                      });
+                },
+                borderRadius: BorderRadius.circular(15),
+                child: Ink(
+                  padding: EdgeInsets.symmetric(vertical: 2.h),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Icon(Icons.delete_forever_outlined),
+                      SizedBox(
+                        width: 5.w,
+                      ),
+                      Flexible(
+                          fit: FlexFit.tight,
+                          child: Text(
+                            S.of(context).help_1,
                             textAlign: TextAlign.start,
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 18.sp),
