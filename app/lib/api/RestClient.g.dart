@@ -116,14 +116,14 @@ class _RestClient implements RestClient {
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     final _data = FormData();
-    if(file!=null){
+    if (file != null) {
       _data.files.add(MapEntry(
-      'photo',
-      MultipartFile.fromFileSync(
-        file.path,
-        filename: file.path.split(Platform.pathSeparator).last,
-      ),
-    ));
+        'photo',
+        MultipartFile.fromFileSync(
+          file.path,
+          filename: file.path.split(Platform.pathSeparator).last,
+        ),
+      ));
     }
     final _result = await _dio.fetch<String>(_setStreamType<String>(Options(
       method: 'POST',
@@ -628,14 +628,14 @@ class _RestClient implements RestClient {
       'properties',
       jsonEncode(properties),
     ));
-    if(file!=null){
+    if (file != null) {
       _data.files.add(MapEntry(
-      'file',
-      MultipartFile.fromFileSync(
-        file.path,
-        filename: file.path.split(Platform.pathSeparator).last,
-      ),
-    ));
+        'file',
+        MultipartFile.fromFileSync(
+          file.path,
+          filename: file.path.split(Platform.pathSeparator).last,
+        ),
+      ));
     }
     await _dio.fetch<void>(_setStreamType<void>(Options(
       method: 'POST',
@@ -857,14 +857,14 @@ class _RestClient implements RestClient {
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     final _data = FormData();
-    if(file!=null){
+    if (file != null) {
       _data.files.add(MapEntry(
-      'photo',
-      MultipartFile.fromFileSync(
-        file.path,
-        filename: file.path.split(Platform.pathSeparator).last,
-      ),
-    ));
+        'photo',
+        MultipartFile.fromFileSync(
+          file.path,
+          filename: file.path.split(Platform.pathSeparator).last,
+        ),
+      ));
     }
     await _dio.fetch<void>(_setStreamType<void>(Options(
       method: 'POST',

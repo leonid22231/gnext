@@ -508,7 +508,7 @@ class _SearchTransportationState extends State<SearchTransportationPage>
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(9),
-                                          color: GlobalsColor.userCardColor),
+                                          color: GlobalsColor.nonUserCardColor),
                                       child: Padding(
                                         padding: EdgeInsets.all(2.h),
                                         child: Column(
@@ -769,7 +769,7 @@ class _SearchTransportationState extends State<SearchTransportationPage>
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(9),
-                                          color: GlobalsColor.userCardColor),
+                                          color: GlobalsColor.nonUserCardColor),
                                       child: Padding(
                                         padding: EdgeInsets.all(2.h),
                                         child: Column(

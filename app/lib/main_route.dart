@@ -21,8 +21,10 @@ import 'package:app/pages/search_transportation_page.dart';
 import 'package:app/pages/seconds/chat_page.dart';
 import 'package:app/pages/seconds/create_cargo.dart';
 import 'package:app/pages/seconds/create_order_taxi.dart';
+import 'package:app/pages/seconds/create_service.dart';
 import 'package:app/pages/seconds/create_shop.dart';
 import 'package:app/pages/seconds/create_transportation_page.dart';
+import 'package:app/pages/seconds/my_services_page.dart';
 import 'package:app/pages/seconds/my_taxi_orders.dart';
 import 'package:app/pages/taxi_page.dart';
 import 'package:app/pages/transportation_page.dart';
@@ -129,8 +131,9 @@ class _MainRouteState extends State<MainRoute> {
 
   Widget? _getFloatButton(int index) {
     log("Index $index");
+
     //манипулятор
-    if (index == 3) {
+    if (index == 3 && widget.userEntity.role == UserRole.USER) {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -160,9 +163,68 @@ class _MainRouteState extends State<MainRoute> {
               : const SizedBox.shrink(),
         ],
       );
+    } else if (index == 3 &&
+        selectedModeMan == Mode.NONE &&
+        widget.userEntity.role == UserRole.SPECIALIST) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          FloatingActionButton.extended(
+            label: const Text(
+              "Мои услуги",
+              style: TextStyle(color: Colors.white),
+            ),
+            heroTag: "btn3",
+            onPressed: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(
+                      builder: (context) => const MyServicesPage(
+                            mode: OrderMode.MAN,
+                          )))
+                  .then((value) {
+                _transportationKey.currentState?.update();
+              });
+            },
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            backgroundColor: const Color(0xff317EFA),
+          ),
+          SizedBox(
+            height: 2.h,
+          ),
+          FloatingActionButton.extended(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CreateService(
+                            city: widget.userEntity.city,
+                            mode: OrderMode.MAN,
+                          )));
+            },
+            label: SizedBox(
+              width: 100.w - 20.w,
+              child: const Center(
+                child: Text(
+                  "Создать услугу +",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            backgroundColor: const Color(0xff317EFA),
+          )
+        ],
+      );
+    } else if (index == 3 &&
+        widget.userEntity.role == UserRole.SPECIALIST &&
+        selectedModeMan != Mode.NONE) {
+      return null;
     }
     //эксковатор
-    if (index == 6) {
+    if (index == 6 && widget.userEntity.role == UserRole.USER) {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -193,9 +255,68 @@ class _MainRouteState extends State<MainRoute> {
               : const SizedBox.shrink(),
         ],
       );
+    } else if (index == 6 &&
+        selectedModeEx == Mode.NONE &&
+        widget.userEntity.role == UserRole.SPECIALIST) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          FloatingActionButton.extended(
+            label: const Text(
+              "Мои услуги",
+              style: TextStyle(color: Colors.white),
+            ),
+            heroTag: "btn3",
+            onPressed: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(
+                      builder: (context) => const MyServicesPage(
+                            mode: OrderMode.EX,
+                          )))
+                  .then((value) {
+                _transportationKey.currentState?.update();
+              });
+            },
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            backgroundColor: const Color(0xff317EFA),
+          ),
+          SizedBox(
+            height: 2.h,
+          ),
+          FloatingActionButton.extended(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CreateService(
+                            city: widget.userEntity.city,
+                            mode: OrderMode.EX,
+                          )));
+            },
+            label: SizedBox(
+              width: 100.w - 20.w,
+              child: const Center(
+                child: Text(
+                  "Создать услугу +",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            backgroundColor: const Color(0xff317EFA),
+          )
+        ],
+      );
+    } else if (index == 6 &&
+        widget.userEntity.role == UserRole.SPECIALIST &&
+        selectedModeEx != Mode.NONE) {
+      return null;
     }
     //самосвал
-    if (index == 4) {
+    if (index == 4 && widget.userEntity.role == UserRole.USER) {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -225,9 +346,68 @@ class _MainRouteState extends State<MainRoute> {
               : const SizedBox.shrink(),
         ],
       );
+    } else if (index == 4 &&
+        selectedModeSam == Mode.NONE &&
+        widget.userEntity.role == UserRole.SPECIALIST) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          FloatingActionButton.extended(
+            label: const Text(
+              "Мои услуги",
+              style: TextStyle(color: Colors.white),
+            ),
+            heroTag: "btn3",
+            onPressed: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(
+                      builder: (context) => const MyServicesPage(
+                            mode: OrderMode.SAM,
+                          )))
+                  .then((value) {
+                _transportationKey.currentState?.update();
+              });
+            },
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            backgroundColor: const Color(0xff317EFA),
+          ),
+          SizedBox(
+            height: 2.h,
+          ),
+          FloatingActionButton.extended(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CreateService(
+                            city: widget.userEntity.city,
+                            mode: OrderMode.SAM,
+                          )));
+            },
+            label: SizedBox(
+              width: 100.w - 20.w,
+              child: const Center(
+                child: Text(
+                  "Создать услугу +",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            backgroundColor: const Color(0xff317EFA),
+          )
+        ],
+      );
+    } else if (index == 4 &&
+        widget.userEntity.role == UserRole.SPECIALIST &&
+        selectedModeSam != Mode.NONE) {
+      return null;
     }
     //автовоз
-    if (index == 5) {
+    if (index == 5 && widget.userEntity.role == UserRole.USER) {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -257,10 +437,69 @@ class _MainRouteState extends State<MainRoute> {
               : const SizedBox.shrink(),
         ],
       );
+    } else if (index == 5 &&
+        selectedModeAuto == Mode.NONE &&
+        widget.userEntity.role == UserRole.SPECIALIST) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          FloatingActionButton.extended(
+            label: const Text(
+              "Мои услуги",
+              style: TextStyle(color: Colors.white),
+            ),
+            heroTag: "btn3",
+            onPressed: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(
+                      builder: (context) => const MyServicesPage(
+                            mode: OrderMode.AUTO,
+                          )))
+                  .then((value) {
+                _transportationKey.currentState?.update();
+              });
+            },
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            backgroundColor: const Color(0xff317EFA),
+          ),
+          SizedBox(
+            height: 2.h,
+          ),
+          FloatingActionButton.extended(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CreateService(
+                            city: widget.userEntity.city,
+                            mode: OrderMode.AUTO,
+                          )));
+            },
+            label: SizedBox(
+              width: 100.w - 20.w,
+              child: const Center(
+                child: Text(
+                  "Создать услугу +",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            backgroundColor: const Color(0xff317EFA),
+          )
+        ],
+      );
+    } else if (index == 5 &&
+        widget.userEntity.role == UserRole.SPECIALIST &&
+        selectedModeAuto != Mode.NONE) {
+      return null;
     }
 
     //погрузчик
-    if (index == 7) {
+    if (index == 7 && widget.userEntity.role == UserRole.USER) {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -291,6 +530,65 @@ class _MainRouteState extends State<MainRoute> {
               : const SizedBox.shrink(),
         ],
       );
+    } else if (index == 7 &&
+        selectedModePog == Mode.NONE &&
+        widget.userEntity.role == UserRole.SPECIALIST) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          FloatingActionButton.extended(
+            label: const Text(
+              "Мои услуги",
+              style: TextStyle(color: Colors.white),
+            ),
+            heroTag: "btn3",
+            onPressed: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(
+                      builder: (context) => const MyServicesPage(
+                            mode: OrderMode.POG,
+                          )))
+                  .then((value) {
+                _transportationKey.currentState?.update();
+              });
+            },
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            backgroundColor: const Color(0xff317EFA),
+          ),
+          SizedBox(
+            height: 2.h,
+          ),
+          FloatingActionButton.extended(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CreateService(
+                            city: widget.userEntity.city,
+                            mode: OrderMode.POG,
+                          )));
+            },
+            label: SizedBox(
+              width: 100.w - 20.w,
+              child: const Center(
+                child: Text(
+                  "Создать услугу +",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            backgroundColor: const Color(0xff317EFA),
+          )
+        ],
+      );
+    } else if (index == 7 &&
+        widget.userEntity.role == UserRole.SPECIALIST &&
+        selectedModePog != Mode.NONE) {
+      return null;
     }
     //taxi
     if (index == 9 && selectedModeTaxi != Mode.NONE) {
@@ -694,6 +992,7 @@ class _MainRouteState extends State<MainRoute> {
     return null;
   }
 
+//TAB
   int getIndex(BuildContext context, String title) {
     for (int i = 0; i < pages.length; i++) {
       if (pages[i] == title) {
@@ -760,16 +1059,36 @@ class _MainRouteState extends State<MainRoute> {
               sub: widget.userEntity.subscription,
               city: widget.userEntity.city));
     } else if (title.contains(S.of(context).page6)) {
-      return AutoTransportPage(
-          sub: widget.userEntity.subscription, city: widget.userEntity.city);
+      return NotificationListener<ChangeModeAutoNotify>(
+          onNotification: (m) {
+            selectedModeAuto = m.mode;
+            setState(() {});
+            return true;
+          },
+          child: AutoTransportPage(
+              sub: widget.userEntity.subscription,
+              city: widget.userEntity.city));
     } else if (title.contains(S.of(context).page7)) {
-      return ExTransportPage(
-        sub: widget.userEntity.subscription,
-        city: widget.userEntity.city,
-      );
+      return NotificationListener<ChangeModeExNotify>(
+          onNotification: (m) {
+            selectedModeEx = m.mode;
+            setState(() {});
+            return true;
+          },
+          child: ExTransportPage(
+            sub: widget.userEntity.subscription,
+            city: widget.userEntity.city,
+          ));
     } else if (title.contains(S.of(context).page8)) {
-      return PogTransportPage(
-          sub: widget.userEntity.subscription, city: widget.userEntity.city);
+      return NotificationListener<ChangeModePogNotify>(
+          onNotification: (m) {
+            selectedModePog = m.mode;
+            setState(() {});
+            return true;
+          },
+          child: PogTransportPage(
+              sub: widget.userEntity.subscription,
+              city: widget.userEntity.city));
     } else if (title.contains(S.of(context).page10)) {
       return CustomChatPage(
           key: const Key("chat_4"),

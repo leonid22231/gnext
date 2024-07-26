@@ -1190,6 +1190,16 @@ class S {
     );
   }
 
+  /// `Услуги`
+  String get services {
+    return Intl.message(
+      'Услуги',
+      name: 'services',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Мои заказы`
   String get my_orders {
     return Intl.message(
@@ -1274,7 +1284,7 @@ class S {
   String get delete_account {
     return Intl.message(
       'Вы уверены что хотите удалить аккаунт ?',
-      name: 'delete_accound',
+      name: 'delete_account',
       desc: '',
       args: [],
     );

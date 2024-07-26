@@ -5,5 +5,5 @@ enum TransportationCategory {
   sam,
   auto,
   ex,
-  pog;
+  pog,assen;
 }

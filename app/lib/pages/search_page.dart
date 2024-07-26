@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:app/api/RestClient.dart';
 import 'package:app/api/entity/CityEntity.dart';
@@ -38,6 +40,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    log("Init state");
     otkuda = widget.city;
     _controller = TabController(length: 3, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback(

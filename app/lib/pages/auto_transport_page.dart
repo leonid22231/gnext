@@ -35,6 +35,7 @@ class AutoTransportPage extends StatefulWidget {
 class AutoTransportPageState extends State<AutoTransportPage>
     with TickerProviderStateMixin {
   Mode selectedMode = Mode.OUTCITY;
+  List<Mode> supportedMods = [Mode.OUTCITY, Mode.NONE];
   late TabController _controller;
   CityEntity? otkuda;
   CityEntity? kuda;
@@ -44,7 +45,7 @@ class AutoTransportPageState extends State<AutoTransportPage>
   @override
   void initState() {
     super.initState();
-    _controller = TabController(length: 1, vsync: this);
+    _controller = TabController(length: 2, vsync: this);
     otkuda = widget.city;
   }
 
@@ -63,16 +64,20 @@ class AutoTransportPageState extends State<AutoTransportPage>
             labelStyle: const TextStyle(
                 color: Colors.white, fontWeight: FontWeight.bold),
             onTap: (index) {
-              selectedMode = Mode.values[index];
+              selectedMode = supportedMods[index];
+              ChangeModeAutoNotify(selectedMode).dispatch(context);
               setState(() {});
             },
             tabs: [
               Tab(
                 text: S.of(context).no_city,
               ),
+              Tab(
+                text: S.of(context).services,
+              ),
             ],
           ),
-          _getBody(Mode.OUTCITY)
+          _getBody(supportedMods[_controller.index])
         ],
       ),
     );
@@ -89,257 +94,103 @@ class AutoTransportPageState extends State<AutoTransportPage>
               child: Column(
                 children: [
                   FutureBuilder(
-                      future:
-                          RestClient(Dio()).findCountryByCity(widget.city.id),
+                      future: RestClient(Dio()).searchOrders(
+                          OrderMode.AUTO, widget.city.id, widget.city.id),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          return Column(
-                            children: [
-                              Stack(
-                                alignment: Alignment.centerRight,
-                                children: [
-                                  SizedBox(
-                                    child: Column(
+                          List<OrderEntity> orders = snapshot.data!;
+                          return ListView.separated(
+                              shrinkWrap: true,
+                              primary: false,
+                              itemBuilder: (context, index) {
+                                OrderEntity currentOrder = orders[index];
+                                return Container(
+                                  child: IntrinsicHeight(
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        CustomDropdown<CityEntity>(
-                                          items: snapshot.data!.cities,
-                                          initialItem: otkuda,
-                                          hintText: S.of(context).select_city,
-                                          decoration: CustomDropdownDecoration(
-                                            closedBorder: Border.all(
-                                                color: const Color(0xffD9D9D9)),
-                                            closedFillColor: Colors.transparent,
-                                            expandedBorder: Border.all(
-                                                color: const Color(0xffD9D9D9)),
-                                            expandedFillColor: Colors.white,
-                                          ),
-                                          onChanged: (city) {
-                                            otkuda = city;
-                                            setState(() {});
-                                          },
-                                        ),
                                         SizedBox(
-                                          height: 2.h,
-                                        ),
-                                        CustomDropdown<CityEntity>(
-                                          items: snapshot.data!.cities,
-                                          initialItem: kuda,
-                                          hintText: S.of(context).select_city,
-                                          decoration: CustomDropdownDecoration(
-                                            closedBorder: Border.all(
-                                                color: const Color(0xffD9D9D9)),
-                                            closedFillColor: Colors.transparent,
-                                            expandedBorder: Border.all(
-                                                color: const Color(0xffD9D9D9)),
-                                            expandedFillColor: Colors.white,
+                                          width: 8.h,
+                                          child: Column(
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(1000),
+                                                child: Image.network(
+                                                    height: 8.h,
+                                                    width: 8.h,
+                                                    fit: BoxFit.cover,
+                                                    GlobalsWidgets.getPhoto(
+                                                        currentOrder
+                                                            .creator.photo)),
+                                              ),
+                                              Text(
+                                                  "${currentOrder.creator.name} ${currentOrder.creator.surname}")
+                                            ],
                                           ),
-                                          onChanged: (city) {
-                                            kuda = city;
-                                            setState(() {});
-                                          },
+                                        ),
+                                        const VerticalDivider(
+                                          color: Colors.black,
+                                        ),
+                                        Expanded(
+                                            child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text("${currentOrder.price} ₸"),
+                                            Divider(
+                                              color:
+                                                  Colors.black.withOpacity(0.2),
+                                              height: 1,
+                                            ),
+                                            Text(currentOrder.description!),
+                                            Divider(
+                                              color:
+                                                  Colors.black.withOpacity(0.2),
+                                              height: 1,
+                                            ),
+                                            Text(
+                                                "Создано: ${DateFormat("d MMMM, HH:mm").format(currentOrder.createDate)}")
+                                          ],
+                                        )),
+                                        const VerticalDivider(
+                                          color: Colors.black,
+                                        ),
+                                        CircleAvatar(
+                                          radius: 8.w,
+                                          backgroundColor: GlobalsColor.blue,
+                                          child: IconButton(
+                                              onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            UserProfile(
+                                                                user: currentOrder
+                                                                    .creator)));
+                                              },
+                                              icon: const Icon(
+                                                Icons.person,
+                                                color: Colors.white,
+                                              )),
                                         )
                                       ],
                                     ),
                                   ),
-                                  Padding(
-                                      padding: EdgeInsets.only(right: 10.w),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          if (otkuda != null && kuda != null) {
-                                            CityEntity temp = otkuda!;
-                                            otkuda = kuda;
-                                            kuda = temp;
-                                          }
-                                          setState(() {});
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(1000),
-                                              border: Border.all(
-                                                  color:
-                                                      const Color(0xffD9D9D9))),
-                                          padding: EdgeInsets.all(2.w),
-                                          child: RotatedBox(
-                                            quarterTurns: 1,
-                                            child: Icon(
-                                                size: 8.w,
-                                                Icons.swap_horiz_outlined),
-                                          ),
-                                        ),
-                                      )),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 2.h,
-                              ),
-                              SizedBox(
-                                width: double.maxFinite,
-                                child: InputWidget(
-                                  readOnly: true,
-                                  required: false,
-                                  showRequired: false,
-                                  width: 100.w - 10.w,
-                                  prefixIcon: const Icon(
-                                    Icons.edit_calendar_outlined,
-                                    color: Colors.black,
-                                  ),
-                                  hintText: date == null
-                                      ? S.of(context).date_start
-                                      : DateFormat("dd MMMM y").format(date!),
-                                  onClick: () {
-                                    BottomPicker.date(
-                                            title: S.of(context).date_pick,
-                                            buttonContent: Text(
-                                              S.of(context).ok,
-                                              style: const TextStyle(
-                                                  color: Colors.white),
-                                            ),
-                                            buttonSingleColor:
-                                                const Color(0xff317EFA),
-                                            titleStyle: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16.sp,
-                                                color: const Color(0xff317EFA)),
-                                            onSubmit: (index) {
-                                              date = index;
-                                              setState(() {});
-                                            },
-                                            bottomPickerTheme:
-                                                BottomPickerTheme.morningSalad)
-                                        .show(context);
-                                  },
-                                ),
-                              ),
-                            ],
-                          );
+                                );
+                              },
+                              separatorBuilder: (context, index) {
+                                return Divider(
+                                  height: 2.h,
+                                  color: Colors.black,
+                                );
+                              },
+                              itemCount: orders.length);
                         } else {
                           return const SizedBox.shrink();
                         }
-                      }),
-                  SizedBox(
-                    height: 2.h,
-                  ),
-                  (kuda != null && otkuda != null)
-                      ? FutureBuilder(
-                          future: RestClient(Dio()).searchOrders(
-                              OrderMode.TAXI, kuda!.id, otkuda!.id),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              List<OrderEntity> orders = snapshot.data!;
-                              return ListView.separated(
-                                  shrinkWrap: true,
-                                  primary: false,
-                                  itemBuilder: (context, index) {
-                                    OrderEntity currentOrder = orders[index];
-                                    return Container(
-                                      child: IntrinsicHeight(
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            SizedBox(
-                                              width: 8.h,
-                                              child: Column(
-                                                children: [
-                                                  ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            1000),
-                                                    child: Image.network(
-                                                        height: 8.h,
-                                                        width: 8.h,
-                                                        fit: BoxFit.cover,
-                                                        GlobalsWidgets.getPhoto(
-                                                            currentOrder.creator
-                                                                .photo)),
-                                                  ),
-                                                  Text(
-                                                      "${currentOrder.creator.name} ${currentOrder.creator.surname}")
-                                                ],
-                                              ),
-                                            ),
-                                            const VerticalDivider(
-                                              color: Colors.black,
-                                            ),
-                                            Expanded(
-                                                child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(currentOrder
-                                                    .addressFrom.city),
-                                                Text(currentOrder
-                                                    .addressTo.city),
-                                                Divider(
-                                                  color: Colors.black
-                                                      .withOpacity(0.2),
-                                                  height: 1,
-                                                ),
-                                                Text("${currentOrder.price} ₸"),
-                                                Divider(
-                                                  color: Colors.black
-                                                      .withOpacity(0.2),
-                                                  height: 1,
-                                                ),
-                                                Text(DateFormat("d MMMM, HH:mm")
-                                                    .format(currentOrder
-                                                        .startDate)),
-                                                Divider(
-                                                  color: Colors.black
-                                                      .withOpacity(0.2),
-                                                  height: 1,
-                                                ),
-                                                Text(currentOrder.description!),
-                                                Divider(
-                                                  color: Colors.black
-                                                      .withOpacity(0.2),
-                                                  height: 1,
-                                                ),
-                                                Text(
-                                                    "Создано: ${DateFormat("d MMMM, HH:mm").format(currentOrder.createDate)}")
-                                              ],
-                                            )),
-                                            const VerticalDivider(
-                                              color: Colors.black,
-                                            ),
-                                            CircleAvatar(
-                                              radius: 8.w,
-                                              backgroundColor:
-                                                  GlobalsColor.blue,
-                                              child: IconButton(
-                                                  onPressed: () {
-                                                    Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                UserProfile(
-                                                                    user: currentOrder
-                                                                        .creator)));
-                                                  },
-                                                  icon: const Icon(
-                                                    Icons.person,
-                                                    color: Colors.white,
-                                                  )),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  separatorBuilder: (context, index) {
-                                    return Divider(
-                                      height: 2.h,
-                                      color: Colors.black,
-                                    );
-                                  },
-                                  itemCount: orders.length);
-                            } else {
-                              return const SizedBox.shrink();
-                            }
-                          })
-                      : const SizedBox.shrink()
+                      })
                 ],
               ),
             ),
@@ -502,7 +353,7 @@ class AutoTransportPageState extends State<AutoTransportPage>
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(9),
-                                          color: GlobalsColor.userCardColor),
+                                          color: GlobalsColor.nonUserCardColor),
                                       child: Padding(
                                         padding: EdgeInsets.all(2.h),
                                         child: Column(
@@ -763,7 +614,7 @@ class AutoTransportPageState extends State<AutoTransportPage>
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(9),
-                                          color: GlobalsColor.userCardColor),
+                                          color: GlobalsColor.nonUserCardColor),
                                       child: Padding(
                                         padding: EdgeInsets.all(2.h),
                                         child: Column(
@@ -891,6 +742,11 @@ class AutoTransportPageState extends State<AutoTransportPage>
     return client.findActiveTransportation(
         GlobalsWidgets.uid, category, outCity);
   }
+}
+
+class ChangeModeAutoNotify extends Notification {
+  Mode mode;
+  ChangeModeAutoNotify(this.mode);
 }
 
 class CustomAddress {

@@ -60,6 +60,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "date_create": MessageLookupByLibrary.simpleMessage("Когда"),
         "date_pick": MessageLookupByLibrary.simpleMessage("Выберите дату"),
         "date_start": MessageLookupByLibrary.simpleMessage("Дата отправления"),
+        "delete_account": MessageLookupByLibrary.simpleMessage(
+            "Вы уверены что хотите удалить аккаунт ?"),
         "desc": MessageLookupByLibrary.simpleMessage("Описание"),
         "doc": MessageLookupByLibrary.simpleMessage("Документы"),
         "dog": MessageLookupByLibrary.simpleMessage("Договорная"),
@@ -151,6 +153,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "select_city": MessageLookupByLibrary.simpleMessage("Выберите город"),
         "select_country":
             MessageLookupByLibrary.simpleMessage("Выберите страну"),
+        "services": MessageLookupByLibrary.simpleMessage("Услуги"),
         "signin": MessageLookupByLibrary.simpleMessage("Вход"),
         "sum": MessageLookupByLibrary.simpleMessage("Сумма"),
         "surname": MessageLookupByLibrary.simpleMessage("Фамилия"),

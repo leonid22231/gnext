@@ -496,7 +496,7 @@ class TransportationPageState extends State<TransportationPage>
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(9),
-                                          color: GlobalsColor.userCardColor),
+                                          color: GlobalsColor.nonUserCardColor),
                                       child: Padding(
                                         padding: EdgeInsets.all(2.h),
                                         child: Column(
@@ -761,7 +761,7 @@ class TransportationPageState extends State<TransportationPage>
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(9),
-                                          color: GlobalsColor.userCardColor),
+                                          color: GlobalsColor.nonUserCardColor),
                                       child: Padding(
                                         padding: EdgeInsets.all(2.h),
                                         child: Column(

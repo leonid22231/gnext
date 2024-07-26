@@ -511,6 +511,7 @@ class _ProfilePage extends State<ProfilePage> {
                                         .findCountryByCity(user.city.id);
 
                                     CountryEntity initialCountry = list.first;
+
                                     CityEntity initialCity =
                                         initialCountry.cities.first;
                                     for (int i = 0; i < list.length; i++) {

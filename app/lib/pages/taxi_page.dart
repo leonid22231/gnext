@@ -609,7 +609,7 @@ class TaxiPageState extends State<TaxiPage> with TickerProviderStateMixin {
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(9),
-                                          color: GlobalsColor.userCardColor),
+                                          color: GlobalsColor.nonUserCardColor),
                                       child: Padding(
                                         padding: EdgeInsets.all(2.h),
                                         child: Column(

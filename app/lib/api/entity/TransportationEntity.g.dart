@@ -50,4 +50,5 @@ const _$TransportationCategoryEnumMap = {
   TransportationCategory.auto: 'auto',
   TransportationCategory.ex: 'ex',
   TransportationCategory.pog: 'pog',
+  TransportationCategory.assen: 'assen',
 };
