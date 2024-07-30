@@ -1,4 +1,3 @@
-import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:app/api/RestClient.dart';
 import 'package:app/api/entity/CityEntity.dart';
 import 'package:app/api/entity/OrderEntity.dart';
@@ -8,46 +7,41 @@ import 'package:app/api/entity/enums/OrderMode.dart';
 import 'package:app/api/entity/enums/TransportationCategory.dart';
 import 'package:app/api/entity/enums/UserRole.dart';
 import 'package:app/generated/l10n.dart';
-import 'package:app/pages/profile_page.dart';
-import 'package:app/pages/seconds/create_cargo.dart';
-import 'package:app/pages/seconds/order_page.dart';
 import 'package:app/pages/seconds/transportation_page.dart';
 import 'package:app/pages/seconds/user_profile.dart';
 import 'package:app/utils/GlobalsColors.dart';
 import 'package:app/utils/GlobalsWidgets.dart';
-import 'package:bottom_picker/bottom_picker.dart';
-import 'package:bottom_picker/resources/arrays.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class SamTransportPage extends StatefulWidget {
+class AssenTransportPage extends StatefulWidget {
   final bool sub;
   final CityEntity city;
-  const SamTransportPage({required this.sub, required this.city, super.key});
-
+  const AssenTransportPage({required this.sub, required this.city, super.key});
   @override
-  State<StatefulWidget> createState() => SamTransportPageState();
+  State<StatefulWidget> createState() => AssenTransportPageState();
 }
 
-class SamTransportPageState extends State<SamTransportPage>
+class AssenTransportPageState extends State<AssenTransportPage>
     with TickerProviderStateMixin {
   Mode selectedMode = Mode.CITY;
   late TabController _controller;
   CityEntity? otkuda;
   CityEntity? kuda;
   DateTime? date;
-  TransportationCategory category = TransportationCategory.sam;
   List<String> res = [];
+  List<Mode> supportedMods = [Mode.CITY, Mode.NONE];
+  TransportationCategory category = TransportationCategory.assen;
   @override
   void initState() {
     super.initState();
-    _controller = TabController(length: 3, vsync: this);
+    _controller = TabController(length: 2, vsync: this);
     otkuda = widget.city;
     WidgetsBinding.instance.addPostFrameCallback(
-        (_) => ChangeModeSamNotify(selectedMode).dispatch(context));
+        (_) => ChangeModeAssenNotify(selectedMode).dispatch(context));
   }
 
   @override
@@ -65,8 +59,8 @@ class SamTransportPageState extends State<SamTransportPage>
             labelStyle: const TextStyle(
                 color: Colors.white, fontWeight: FontWeight.bold),
             onTap: (index) {
-              selectedMode = Mode.values[index];
-              ChangeModeSamNotify(selectedMode).dispatch(context);
+              selectedMode = supportedMods[index];
+              ChangeModeAssenNotify(selectedMode).dispatch(context);
               setState(() {});
             },
             tabs: [
@@ -74,14 +68,11 @@ class SamTransportPageState extends State<SamTransportPage>
                 text: S.of(context).city,
               ),
               Tab(
-                text: S.of(context).no_city,
-              ),
-              Tab(
                 text: S.of(context).services,
               ),
             ],
           ),
-          _getBody(selectedMode)
+          _getBody(supportedMods[_controller.index])
         ],
       ),
     );
@@ -99,7 +90,7 @@ class SamTransportPageState extends State<SamTransportPage>
                 children: [
                   FutureBuilder(
                       future: RestClient(Dio()).searchOrders(
-                          OrderMode.SAM, widget.city.id, widget.city.id),
+                          OrderMode.ASSEN, widget.city.id, widget.city.id),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           List<OrderEntity> orders = snapshot.data!;
@@ -732,7 +723,7 @@ class SamTransportPageState extends State<SamTransportPage>
         MaterialPageRoute(
             builder: (context) => TransportationViewPage(
                   transportation: transportationEntity,
-                  title: "самосвал",
+                  title: "ассенизатор",
                 )));
   }
 
@@ -750,9 +741,9 @@ class SamTransportPageState extends State<SamTransportPage>
   }
 }
 
-class ChangeModeSamNotify extends Notification {
+class ChangeModeAssenNotify extends Notification {
   Mode mode;
-  ChangeModeSamNotify(this.mode);
+  ChangeModeAssenNotify(this.mode);
 }
 
 class CustomAddress {

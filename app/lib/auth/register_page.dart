@@ -378,12 +378,25 @@ class _RegisterPage extends State<RegisterPage> with TickerProviderStateMixin {
                                 builder: (context) => CodeEnterLoginPage(
                                     code: value,
                                     phone: phoneNumber,
-                                    niceCode: () {
+                                    niceCode: () async {
                                       Dio dio = Dio();
                                       RestClient client = RestClient(dio);
+
+                                      String notifyId;
+                                      if (Platform.isAndroid) {
+                                        notifyId = await FirebaseMessaging
+                                                .instance
+                                                .getToken() ??
+                                            "Null";
+                                      } else {
+                                        notifyId = await FirebaseMessaging
+                                                .instance
+                                                .getAPNSToken() ??
+                                            "Null";
+                                      }
                                       client
-                                          .loginConfirm(
-                                              phoneNumber, GlobalsWidgets.uid)
+                                          .loginConfirm(phoneNumber,
+                                              GlobalsWidgets.uid, notifyId)
                                           .then((value) async {
                                         SharedPreferences pref =
                                             await SharedPreferences

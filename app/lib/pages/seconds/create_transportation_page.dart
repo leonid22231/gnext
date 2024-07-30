@@ -450,13 +450,12 @@ class _CreateTransportationState extends State<CreateTransportationPage> {
                                   outcity,
                                   dateTime1!,
                                   properties)
-                              .then((value) {
-                            Navigator.pop(context);
-                          }).onError((error, stackTrace) {
+                              .onError((error, stackTrace) {
                             if (error is DioException) {
                               _displayErrorMotionToast(error.message!);
                             }
                           });
+                          Navigator.pop(context);
                         } else {
                           _displayErrorMotionToast(S.of(context).warning_1);
                         }

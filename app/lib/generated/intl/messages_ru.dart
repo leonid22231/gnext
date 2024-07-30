@@ -110,6 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "page10": MessageLookupByLibrary.simpleMessage("Грузчики"),
         "page11": MessageLookupByLibrary.simpleMessage("Автосалон"),
         "page12": MessageLookupByLibrary.simpleMessage("Такси межгород"),
+        "page13": MessageLookupByLibrary.simpleMessage(" Ассенизатор"),
         "page2": MessageLookupByLibrary.simpleMessage("Поиск груза"),
         "page3": MessageLookupByLibrary.simpleMessage("Найти эвакуатор"),
         "page4": MessageLookupByLibrary.simpleMessage("Манипулятор"),

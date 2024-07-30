@@ -9,6 +9,7 @@ import 'package:app/api/entity/enums/OrderMode.dart';
 import 'package:app/api/entity/enums/TransportationCategory.dart';
 import 'package:app/api/entity/enums/UserRole.dart';
 import 'package:app/generated/l10n.dart';
+import 'package:app/pages/assen_transport_page.dart';
 import 'package:app/pages/auto_transport_page.dart';
 import 'package:app/pages/chats/ChatPage.dart';
 import 'package:app/pages/catalog_page.dart';
@@ -65,12 +66,16 @@ class _MainRouteState extends State<MainRoute> {
       GlobalKey<AutoTransportPageState>();
   final GlobalKey<PogTransportPageState> _pogKey =
       GlobalKey<PogTransportPageState>();
+
+  final GlobalKey<AssenTransportPageState> _assenKey =
+      GlobalKey<AssenTransportPageState>();
   String selectTab = "";
   List<String> pages = [];
   Mode selectedMode = Mode.CITY;
   Mode selectedModeEv = Mode.CITY;
   Mode selectedModeTaxi = Mode.OUTCITY;
   Mode selectedModeMan = Mode.CITY;
+  Mode selectedModeAssen = Mode.CITY;
   //only
   Mode selectedModeEx = Mode.CITY;
   //only
@@ -93,6 +98,7 @@ class _MainRouteState extends State<MainRoute> {
       S.of(context).page8,
       S.of(context).page11,
       S.of(context).page12,
+      S.of(context).page13,
       "Чат"
     ];
     if (widget.userEntity.role == UserRole.SPECIALIST && activeTab == 0) {
@@ -700,6 +706,142 @@ class _MainRouteState extends State<MainRoute> {
         ],
       );
     }
+    //assen
+    if (index == 10 && selectedModeAssen != Mode.NONE) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          widget.userEntity.role == UserRole.USER
+              ? FloatingActionButton(
+                  heroTag: "btn1",
+                  onPressed: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(
+                            builder: (context) => CreateTransportationPage(
+                                  category: TransportationCategory.assen,
+                                  city: widget.userEntity.city,
+                                  createMode: selectedModeAssen,
+                                )))
+                        .then((value) {
+                      _assenKey.currentState?.update();
+                    });
+                  },
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50)),
+                  backgroundColor: const Color(0xff317EFA),
+                  child: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                )
+              : const SizedBox.shrink(),
+          widget.userEntity.role == UserRole.USER
+              ? SizedBox(
+                  height: 2.h,
+                )
+              : const SizedBox.shrink(),
+          // FloatingActionButton(
+          //   heroTag: "btn2",
+          //   onPressed: () {
+          //     Navigator.push(
+          //         context,
+          //         MaterialPageRoute(
+          //             builder: (context) => CustomChatPage(
+          //                 key: const Key("chat_1"),
+          //                 subscription: widget.userEntity.subscription,
+          //                 history: true,
+          //                 showTitle: true,
+          //                 title: S.of(context).page13,
+          //                 chatName: GlobalsWidgets.chats[0])));
+          //   },
+          //   shape:
+          //       RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+          //   backgroundColor: const Color(0xff317EFA),
+          //   child: const Icon(
+          //     Icons.chat,
+          //     color: Colors.white,
+          //   ),
+          // )
+        ],
+      );
+    } else if (index == 10 &&
+        selectedModeAssen == Mode.NONE &&
+        widget.userEntity.role == UserRole.USER) {
+      return FloatingActionButton.extended(
+        label: const Text(
+          "Мои заказы",
+          style: TextStyle(color: Colors.white),
+        ),
+        heroTag: "btn3",
+        onPressed: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute(
+                  builder: (context) => const MyTaxiOrdersPage(
+                        mode: OrderMode.ASSEN,
+                      )))
+              .then((value) {
+            _assenKey.currentState?.update();
+          });
+        },
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+        backgroundColor: const Color(0xff317EFA),
+      );
+    } else if (index == 10 &&
+        selectedModeAssen == Mode.NONE &&
+        widget.userEntity.role == UserRole.SPECIALIST) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          FloatingActionButton.extended(
+            label: const Text(
+              "Мои услуги",
+              style: TextStyle(color: Colors.white),
+            ),
+            heroTag: "btn3",
+            onPressed: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(
+                      builder: (context) => const MyServicesPage(
+                            mode: OrderMode.ASSEN,
+                          )))
+                  .then((value) {
+                _assenKey.currentState?.update();
+              });
+            },
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            backgroundColor: const Color(0xff317EFA),
+          ),
+          SizedBox(
+            height: 2.h,
+          ),
+          FloatingActionButton.extended(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CreateService(
+                            city: widget.userEntity.city,
+                            mode: OrderMode.ASSEN,
+                          )));
+            },
+            label: SizedBox(
+              width: 100.w - 20.w,
+              child: const Center(
+                child: Text(
+                  "Создать услугу +",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            backgroundColor: const Color(0xff317EFA),
+          )
+        ],
+      );
+    }
     //eva
     if (index == 2 && selectedModeEv != Mode.NONE) {
       return Column(
@@ -1113,6 +1255,16 @@ class _MainRouteState extends State<MainRoute> {
             return true;
           },
           child: TaxiPage(
+              sub: widget.userEntity.subscription,
+              city: widget.userEntity.city));
+    } else if (title.contains(S.of(context).page13)) {
+      return NotificationListener<ChangeModeAssenNotify>(
+          onNotification: (m) {
+            selectedModeAssen = m.mode;
+            setState(() {});
+            return true;
+          },
+          child: AssenTransportPage(
               sub: widget.userEntity.subscription,
               city: widget.userEntity.city));
     }

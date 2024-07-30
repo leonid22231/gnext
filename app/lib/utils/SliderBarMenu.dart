@@ -10,6 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SliderBarMenu extends StatelessWidget {
   final ValueNotifier imageValue = ValueNotifier(GlobalsWidgets.image);
@@ -289,6 +290,15 @@ class SliderBarMenu extends StatelessWidget {
                   ),
                 ),
                 S.of(context).page8),
+            Menu(
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(0),
+                  child: Image.asset(
+                    "assets/govno_icon_9.jpg",
+                    //fit: BoxFit.cover,
+                  ),
+                ),
+                S.of(context).page13),
             //Menu(Image.asset("assets/icon 8.png"), S.of(context).page9),
             //Menu(Image.asset("assets/icon 9.png"), S.of(context).page10),
           ]
@@ -409,6 +419,51 @@ class SliderBarMenu extends StatelessWidget {
                   ),
                 ),
               ),
+            ),
+          ),
+          const Align(
+            alignment: Alignment.center,
+            child: Text(
+              "Наши проекты:",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(1.h),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    launchUrl(
+                        Uri.parse(
+                            "https://play.google.com/store/apps/details?id=com.thedeveloper.stroy_messanger"),
+                        mode: LaunchMode.externalApplication);
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.network(
+                        height: 20.w,
+                        width: 20.w,
+                        "https://play-lh.googleusercontent.com/0s8LrqallJCmi8rA2N4XDXvKko6I8dTLyNtqS50MGGpReLE9i5Ie8onAjw-oaStmuA=w240-h480-rw"),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    launchUrl(
+                        Uri.parse(
+                            "https://play.google.com/store/apps/details?id=com.thedeveloper.builder_job"),
+                        mode: LaunchMode.externalApplication);
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.network(
+                        height: 20.w,
+                        width: 20.w,
+                        "https://play-lh.googleusercontent.com/GYhNpP12Kl595YXG9gLTfdXyUsFPuQ20wMYrUuFQgRR8m0dz-vOcz7b1jXGaHZRhsvw=w240-h480-rw"),
+                  ),
+                )
+              ],
             ),
           ),
           SizedBox(

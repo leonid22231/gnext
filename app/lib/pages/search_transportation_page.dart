@@ -880,8 +880,10 @@ class _SearchTransportationState extends State<SearchTransportationPage>
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                TransportationViewPage(transportation: transportationEntity)));
+            builder: (context) => TransportationViewPage(
+                  transportation: transportationEntity,
+                  title: "эвакуатор",
+                )));
   }
 
   Future<List<TransportationEntity>> getMyTransportation(bool out) {

@@ -726,8 +726,10 @@ class AutoTransportPageState extends State<AutoTransportPage>
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                TransportationViewPage(transportation: transportationEntity)));
+            builder: (context) => TransportationViewPage(
+                  transportation: transportationEntity,
+                  title: "автовоза",
+                )));
   }
 
   Future<List<TransportationEntity>> getMyTransportation(bool outCity) {

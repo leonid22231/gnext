@@ -1,10 +1,12 @@
 package com.thedeveloper.gnext.service;
 
 import com.thedeveloper.gnext.entity.CityEntity;
+import com.thedeveloper.gnext.entity.OrderEntity;
 import com.thedeveloper.gnext.entity.TransportationEntity;
 import com.thedeveloper.gnext.entity.UserEntity;
 import com.thedeveloper.gnext.enums.TransportationCategory;
 import com.thedeveloper.gnext.repository.TransportationRepository;
+import com.thedeveloper.gnext.utils.NotificationService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,8 @@ import java.util.List;
 @AllArgsConstructor
 public class TransportationService {
     TransportationRepository repository;
+    UserService userService;
+    NotificationService notificationService;
     public void delete(TransportationEntity entity){
         repository.delete(entity);
     }
@@ -31,5 +35,13 @@ public class TransportationService {
     }
     public void save(TransportationEntity transportationEntity){
         repository.save(transportationEntity);
+        for(UserEntity user: userService.findByCity(transportationEntity.getCity())){
+            if(!user.getId().equals(transportationEntity.getCreator().getId())){
+                notificationService.sendNotification(user);
+            }
+        }
+    }
+    public List<TransportationEntity> findAllAfter48Hours(){
+        return repository.findAllAfter48Hourse();
     }
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app/api/RestClient.dart';
 import 'package:app/api/entity/UserEntity.dart';
 import 'package:app/api/entity/enums/UserRole.dart';
@@ -189,6 +191,20 @@ class _LoginPageState extends State<LoginPage> {
                                                       await FirebaseAuth
                                                           .instance
                                                           .signInAnonymously();
+                                                      String notifyId;
+                                                      if (Platform.isAndroid) {
+                                                        notifyId =
+                                                            await FirebaseMessaging
+                                                                    .instance
+                                                                    .getToken() ??
+                                                                "Null";
+                                                      } else {
+                                                        notifyId =
+                                                            await FirebaseMessaging
+                                                                    .instance
+                                                                    .getAPNSToken() ??
+                                                                "Null";
+                                                      }
                                                       GlobalsWidgets.uid =
                                                           FirebaseAuth.instance
                                                               .currentUser!.uid;
@@ -197,7 +213,8 @@ class _LoginPageState extends State<LoginPage> {
                                                               phoneNumber,
                                                               password!,
                                                               GlobalsWidgets
-                                                                  .uid)
+                                                                  .uid,
+                                                              notifyId)
                                                           .then((value) async {
                                                         SharedPreferences pref =
                                                             await SharedPreferences

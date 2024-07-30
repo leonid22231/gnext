@@ -170,6 +170,16 @@ class S {
     );
   }
 
+  /// ` Ассенизатор`
+  String get page13 {
+    return Intl.message(
+      ' Ассенизатор',
+      name: 'page13',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Межгород`
   String get option1 {
     return Intl.message(

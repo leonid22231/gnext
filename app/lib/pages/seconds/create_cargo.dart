@@ -497,9 +497,7 @@ class _CreateCargoState extends State<CreateCargoPage> {
                                   outcity,
                                   properties,
                                   file)
-                              .then((value) {
-                            Navigator.pop(context);
-                          }).onError((error, stackTrace) {
+                              .onError((error, stackTrace) {
                             if (error is DioException) {
                               _displayErrorMotionToast(error.message!);
                             }
@@ -507,6 +505,7 @@ class _CreateCargoState extends State<CreateCargoPage> {
                         } else {
                           _displayErrorMotionToast(S.of(context).warning_1);
                         }
+                        Navigator.pop(context);
                       },
                       child: Text(
                         S.of(context).save,

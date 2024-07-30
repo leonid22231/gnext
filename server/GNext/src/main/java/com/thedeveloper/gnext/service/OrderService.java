@@ -5,6 +5,7 @@ import com.thedeveloper.gnext.entity.OrderEntity;
 import com.thedeveloper.gnext.entity.UserEntity;
 import com.thedeveloper.gnext.enums.OrderMode;
 import com.thedeveloper.gnext.repository.OrderRepository;
+import com.thedeveloper.gnext.utils.NotificationService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +15,15 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderService {
     OrderRepository repository;
+    NotificationService notificationService;
+    UserService userService;
     public void save(OrderEntity orderEntity){
         repository.save(orderEntity);
+        for(UserEntity user: userService.findByCity(orderEntity.getCity())){
+            if(!user.getId().equals(orderEntity.getCreator().getId())){
+                notificationService.sendNotification(user);
+            }
+        }
     }
     public void delete(OrderEntity orderEntity){
         repository.delete(orderEntity);
@@ -41,5 +49,7 @@ public class OrderService {
     public OrderEntity findById(Long id){
         return repository.findOrderEntityById(id);
     }
-
+    public List<OrderEntity> findAllAfter48Hours(){
+        return repository.findAllAfter48Hourse();
+    }
 }

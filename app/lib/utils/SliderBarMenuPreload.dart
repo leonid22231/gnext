@@ -75,6 +75,15 @@ class SliderBarMenuPreload extends StatelessWidget {
               ),
             ),
             S.of(context).page11),
+        Menu(
+            ClipRRect(
+              borderRadius: BorderRadius.circular(0),
+              child: Image.asset(
+                "assets/govno_icon_9.jpg",
+                //fit: BoxFit.cover,
+              ),
+            ),
+            S.of(context).page13),
         //Menu(Image.asset("assets/icon 8.png"), S.of(context).page9),
         //Menu(Image.asset("assets/icon 9.png"), S.of(context).page10),
       ]

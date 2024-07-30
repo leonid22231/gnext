@@ -37,8 +37,8 @@ abstract class RestClient {
   Future<UserEntity> login(
       @Query("phone") String phone, @Query("password") String password);
   @POST("user/login")
-  Future<UserEntity> loginConfirm(
-      @Query("phone") String phone, @Query("uid") String uid);
+  Future<UserEntity> loginConfirm(@Query("phone") String phone,
+      @Query("uid") String uid, @Query("notifyToken") String notifyToken);
   @POST("user/register")
   @MultiPart()
   Future<String> register(
@@ -73,8 +73,11 @@ abstract class RestClient {
   @GET("user/forgotPassword")
   Future<String> forgotPassword(@Query("phone") String phone);
   @POST("user/forgotPassword")
-  Future<UserEntity> forgotPasswordConfirm(@Query("phone") String phone,
-      @Query("password") String password, @Query("uid") String uid);
+  Future<UserEntity> forgotPasswordConfirm(
+      @Query("phone") String phone,
+      @Query("password") String password,
+      @Query("uid") String uid,
+      @Query("notifyToken") String notifyToken);
   @MultiPart()
   @POST("chat/file")
   Future<void> fileMessage(@Query("uid") String uid, @Query("name") String name,

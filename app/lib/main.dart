@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
+import 'dart:math' show Random;
 
 import 'package:app/api/RestClient.dart';
 import 'package:app/api/entity/UserEntity.dart';
@@ -22,6 +24,71 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+  _showNotification(message);
+  log("Message resive chat ${message.data['chat']} title[${message.data['title']}] body[${message.data['body']}]");
+}
+
+Future<void> _showNotification(RemoteMessage remotemessage) async {
+  log("From ${remotemessage.from} id ${remotemessage.messageId}");
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.reload();
+  const AndroidNotificationDetails androidNotificationDetails =
+      AndroidNotificationDetails(
+          'gnextlogistics_notification', 'Уведомления о заказах',
+          channelDescription: 'Уведомления о заказах',
+          importance: Importance.max,
+          priority: Priority.high,
+          ticker: 'ticker');
+  const NotificationDetails notificationDetails =
+      NotificationDetails(android: androidNotificationDetails);
+
+  await flutterLocalNotificationsPlugin.cancelAll();
+  await flutterLocalNotificationsPlugin.show(
+      Random().nextInt(100),
+      remotemessage.data["title"],
+      remotemessage.data['body'],
+      notificationDetails,
+      payload: 'item x');
+}
+
+Future<void> _requestPermissions() async {
+  if (Platform.isIOS || Platform.isMacOS) {
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            MacOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
+  } else if (Platform.isAndroid) {
+    final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+        flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+
+    final bool? grantedNotificationPermission =
+        await androidImplementation?.requestNotificationsPermission();
+  }
+}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,6 +99,28 @@ Future<void> main() async {
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   }
   FirebaseAuth auth = FirebaseAuth.instance;
+  log("${await FirebaseMessaging.instance.getToken()}");
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('@mipmap/ic_launcher_foreground');
+
+  DarwinInitializationSettings initializationSettingsDarwin =
+      const DarwinInitializationSettings(
+    requestAlertPermission: false,
+    requestBadgePermission: false,
+    requestSoundPermission: false,
+  );
+  final InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+    iOS: initializationSettingsDarwin,
+    macOS: initializationSettingsDarwin,
+  );
+  await flutterLocalNotificationsPlugin.initialize(
+    initializationSettings,
+  );
+  log("${await FirebaseMessaging.instance.getToken()}");
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  _requestPermissions();
   if (auth.currentUser != null) {
     debugPrint("Current user not null");
     GlobalsWidgets.uid = auth.currentUser!.uid;

@@ -721,8 +721,10 @@ class TaxiPageState extends State<TaxiPage> with TickerProviderStateMixin {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                TransportationViewPage(transportation: transportationEntity)));
+            builder: (context) => TransportationViewPage(
+                  transportation: transportationEntity,
+                  title: "такси",
+                )));
   }
 
   Future<List<TransportationEntity>> getMyTransportation() {

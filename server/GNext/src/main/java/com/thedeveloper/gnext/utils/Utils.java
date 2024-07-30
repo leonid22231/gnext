@@ -1,13 +1,9 @@
 package com.thedeveloper.gnext.utils;
 
-import com.thedeveloper.gnext.entity.StorisEntity;
-import com.thedeveloper.gnext.entity.UserEntity;
-import com.thedeveloper.gnext.entity.WalletEventEntity;
+import com.thedeveloper.gnext.entity.*;
 import com.thedeveloper.gnext.enums.EventResult;
 import com.thedeveloper.gnext.enums.WalletEventType;
-import com.thedeveloper.gnext.service.StorisService;
-import com.thedeveloper.gnext.service.UserService;
-import com.thedeveloper.gnext.service.WalletEventService;
+import com.thedeveloper.gnext.service.*;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +23,10 @@ public class Utils {
     UserService userService;
     @Autowired
     WalletEventService walletEventService;
+    @Autowired
+    OrderService orderService;
+    @Autowired
+    TransportationService transportationService;
     static int FREE_PERIOD = 7;
     static int SUB_DAY = 1;
     static int SUB_PRICE = 100;
@@ -34,7 +34,7 @@ public class Utils {
     public void init() throws InterruptedException {
         storiesService();
         subscriptionService();
-
+        orderAndTransportService();
     }
     WalletEventEntity paySubscription(UserEntity user){
         WalletEventEntity walletEventEntity = new WalletEventEntity();
@@ -90,6 +90,28 @@ public class Utils {
             }
         }).start();
     }
+    void orderAndTransportService(){
+        log.info("Start order and transport service");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true){
+                    for(OrderEntity order : orderService.findAllAfter48Hours()){
+                        orderService.delete(order);
+                    }
+                    for(TransportationEntity transportation : transportationService.findAllAfter48Hours()){
+                        transportationService.delete(transportation);
+                    }
+                    try {
+                        TimeUnit.HOURS.sleep(1);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }).start();
+    }
+
     void storiesService() throws InterruptedException {
         log.info("Start stories service");
         new Thread(new Runnable() {

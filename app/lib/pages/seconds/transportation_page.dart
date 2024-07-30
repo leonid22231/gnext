@@ -10,13 +10,15 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 
 class TransportationViewPage extends StatelessWidget {
   final TransportationEntity transportation;
-  const TransportationViewPage({required this.transportation, super.key});
+  final String title;
+  const TransportationViewPage(
+      {required this.transportation, required this.title, super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(S.of(context).page3,
+        title: Text("${S.of(context).search} $title",
             style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w700)),
       ),
       body: Padding(

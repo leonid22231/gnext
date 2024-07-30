@@ -47,6 +47,8 @@ class PogTransportPageState extends State<PogTransportPage>
     super.initState();
     _controller = TabController(length: 2, vsync: this);
     otkuda = widget.city;
+    WidgetsBinding.instance.addPostFrameCallback(
+        (_) => ChangeModePogNotify(selectedMode).dispatch(context));
   }
 
   @override
@@ -708,8 +710,10 @@ class PogTransportPageState extends State<PogTransportPage>
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                TransportationViewPage(transportation: transportationEntity)));
+            builder: (context) => TransportationViewPage(
+                  transportation: transportationEntity,
+                  title: "погрузчик",
+                )));
   }
 
   Future<List<TransportationEntity>> getMyTransportation(bool outCity) {

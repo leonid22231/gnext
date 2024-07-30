@@ -5,6 +5,7 @@ import com.thedeveloper.gnext.entity.OrderEntity;
 import com.thedeveloper.gnext.entity.UserEntity;
 import com.thedeveloper.gnext.enums.OrderMode;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,4 +18,8 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
     List<OrderEntity> findOrderEntitiesByActiveAndModeAndAddressTo_CityAndAddressFrom_City(boolean active, OrderMode mode, String cityTo, String cityFrom);
     OrderEntity findOrderEntityById(Long id);
     List<OrderEntity> findOrderEntitiesByCreator(UserEntity creator);
+    @Query(
+            value = "SELECT * FROM orders WHERE DATE_ADD(orders.create_date, interval 2 day ) < NOW();",
+            nativeQuery = true)
+    List<OrderEntity> findAllAfter48Hourse();
 }
