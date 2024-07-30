@@ -31,17 +31,16 @@ public class FirebaseConfiguration {
 
         return FirebaseApp.initializeApp(options);
     }
+
     @Bean
     GoogleCredentials googleCredentials() throws IOException {
         if (firebaseProperties.getServiceAccount() != null) {
             try (InputStream is = firebaseProperties.getServiceAccount().getInputStream()) {
                 return GoogleCredentials.fromStream(is);
             }
-        }
-        else {
+        } else {
             // Use standard credentials chain. Useful when running inside GKE
             return GoogleCredentials.getApplicationDefault();
         }
     }
 }
-
