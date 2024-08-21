@@ -181,20 +181,20 @@ class _ProfilePage extends State<ProfilePage> {
                                                       mainAxisSize:
                                                           MainAxisSize.min,
                                                       children: [
-                                                        OutlinedButton(
-                                                            onPressed: () {},
-                                                            child: const Text(
-                                                              "Russia - Visa / Master Card / МИР",
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .black),
-                                                            )),
-                                                        SizedBox(
-                                                          height: 1.h,
-                                                        ),
+                                                        // OutlinedButton(
+                                                        //     onPressed: () {},
+                                                        //     child: const Text(
+                                                        //       "Russia - Visa / Master Card / МИР",
+                                                        //       textAlign:
+                                                        //           TextAlign
+                                                        //               .center,
+                                                        //       style: TextStyle(
+                                                        //           color: Colors
+                                                        //               .black),
+                                                        //     )),
+                                                        // SizedBox(
+                                                        //   height: 1.h,
+                                                        // ),
                                                         OutlinedButton(
                                                             onPressed:
                                                                 () async {
@@ -474,38 +474,40 @@ class _ProfilePage extends State<ProfilePage> {
                                                                                   "Выберите сумму",
                                                                                   style: TextStyle(fontSize: 16.sp),
                                                                                 ),
-                                                                                content: Column(
-                                                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                                                  mainAxisSize: MainAxisSize.min,
-                                                                                  children: [
-                                                                                    Text("*Цены указаны с комиссией"),
-                                                                                    ListView.separated(
-                                                                                      shrinkWrap: true,
-                                                                                      itemCount: productDetailResponse.productDetails.length,
-                                                                                      itemBuilder: (context, index) {
-                                                                                        return OutlinedButton(
-                                                                                            onPressed: () {
-                                                                                              _inAppPurchase.buyConsumable(purchaseParam: PurchaseParam(productDetails: productDetailResponse.productDetails[index]));
-                                                                                            },
-                                                                                            child: Column(
-                                                                                              children: [
-                                                                                                Text(productDetailResponse.productDetails[index].title.split("\\(")[0], textAlign: TextAlign.center, style: TextStyle(color: Colors.black)),
-                                                                                                Text(
-                                                                                                  productDetailResponse.productDetails[index].price,
-                                                                                                  textAlign: TextAlign.center,
-                                                                                                  style: TextStyle(color: Colors.black),
-                                                                                                )
-                                                                                              ],
-                                                                                            ));
-                                                                                      },
-                                                                                      separatorBuilder: (context, index) {
-                                                                                        return SizedBox(
-                                                                                          height: 1.h,
-                                                                                        );
-                                                                                      },
-                                                                                    )
-                                                                                  ],
-                                                                                ),
+                                                                                content: SizedBox(
+                                                                                    width: 100.w,
+                                                                                    child: Column(
+                                                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                      mainAxisSize: MainAxisSize.min,
+                                                                                      children: [
+                                                                                        Text("*Цены указаны с комиссией"),
+                                                                                        ListView.separated(
+                                                                                          shrinkWrap: true,
+                                                                                          itemCount: productDetailResponse.productDetails.length,
+                                                                                          itemBuilder: (context, index) {
+                                                                                            return OutlinedButton(
+                                                                                                onPressed: () {
+                                                                                                  _inAppPurchase.buyConsumable(purchaseParam: PurchaseParam(productDetails: productDetailResponse.productDetails[index]));
+                                                                                                },
+                                                                                                child: Column(
+                                                                                                  children: [
+                                                                                                    Text(productDetailResponse.productDetails[index].title.split("\\(")[0], textAlign: TextAlign.center, style: TextStyle(color: Colors.black)),
+                                                                                                    Text(
+                                                                                                      productDetailResponse.productDetails[index].price,
+                                                                                                      textAlign: TextAlign.center,
+                                                                                                      style: TextStyle(color: Colors.black),
+                                                                                                    )
+                                                                                                  ],
+                                                                                                ));
+                                                                                          },
+                                                                                          separatorBuilder: (context, index) {
+                                                                                            return SizedBox(
+                                                                                              height: 1.h,
+                                                                                            );
+                                                                                          },
+                                                                                        )
+                                                                                      ],
+                                                                                    )),
                                                                                 actions: [
                                                                                   TextButton(
                                                                                     style: TextButton.styleFrom(
