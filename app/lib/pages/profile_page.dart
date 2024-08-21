@@ -444,8 +444,100 @@ class _ProfilePage extends State<ProfilePage> {
                                                                           .black),
                                                                 ))
                                                             : Platform.isIOS
-                                                                ? const SizedBox
-                                                                    .shrink()
+                                                                ? OutlinedButton(
+                                                                    onPressed:
+                                                                        () async {
+                                                                      List<String>
+                                                                          _kProductIds =
+                                                                          [
+                                                                        "pay_101",
+                                                                        "pay_300",
+                                                                        "pay_500"
+                                                                      ];
+                                                                      final ProductDetailsResponse
+                                                                          productDetailResponse =
+                                                                          await _inAppPurchase
+                                                                              .queryProductDetails(_kProductIds.toSet());
+                                                                      debugPrint(
+                                                                          "Not found size ${productDetailResponse.notFoundIDs.toString()}");
+                                                                      debugPrint(
+                                                                          "Found size ${productDetailResponse.productDetails.length}");
+                                                                      showDialog(
+                                                                          context:
+                                                                              context,
+                                                                          builder:
+                                                                              (context) {
+                                                                            return StatefulBuilder(builder:
+                                                                                (context, state) {
+                                                                              return AlertDialog(
+                                                                                title: Text(
+                                                                                  "Выберите сумму",
+                                                                                  style: TextStyle(fontSize: 16.sp),
+                                                                                ),
+                                                                                content: Column(
+                                                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                  mainAxisSize: MainAxisSize.min,
+                                                                                  children: [
+                                                                                    Text("*Цены указаны с комиссией"),
+                                                                                    ListView.separated(
+                                                                                      shrinkWrap: true,
+                                                                                      itemCount: productDetailResponse.productDetails.length,
+                                                                                      itemBuilder: (context, index) {
+                                                                                        return OutlinedButton(
+                                                                                            onPressed: () {
+                                                                                              _inAppPurchase.buyConsumable(purchaseParam: PurchaseParam(productDetails: productDetailResponse.productDetails[index]));
+                                                                                            },
+                                                                                            child: Column(
+                                                                                              children: [
+                                                                                                Text(productDetailResponse.productDetails[index].title.split("\\(")[0], textAlign: TextAlign.center, style: TextStyle(color: Colors.black)),
+                                                                                                Text(
+                                                                                                  productDetailResponse.productDetails[index].price,
+                                                                                                  textAlign: TextAlign.center,
+                                                                                                  style: TextStyle(color: Colors.black),
+                                                                                                )
+                                                                                              ],
+                                                                                            ));
+                                                                                      },
+                                                                                      separatorBuilder: (context, index) {
+                                                                                        return SizedBox(
+                                                                                          height: 1.h,
+                                                                                        );
+                                                                                      },
+                                                                                    )
+                                                                                  ],
+                                                                                ),
+                                                                                actions: [
+                                                                                  TextButton(
+                                                                                    style: TextButton.styleFrom(
+                                                                                      textStyle: Theme.of(context).textTheme.labelLarge,
+                                                                                    ),
+                                                                                    child: Text(S.of(context).cancel),
+                                                                                    onPressed: () {
+                                                                                      Navigator.pop(context);
+                                                                                    },
+                                                                                  ),
+                                                                                  TextButton(
+                                                                                    style: TextButton.styleFrom(
+                                                                                      textStyle: Theme.of(context).textTheme.labelLarge,
+                                                                                    ),
+                                                                                    child: Text(S.of(context).pay),
+                                                                                    onPressed: () async {},
+                                                                                  ),
+                                                                                ],
+                                                                              );
+                                                                            });
+                                                                          });
+                                                                    },
+                                                                    child:
+                                                                        const Text(
+                                                                      "Apple Pay",
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .center,
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              Colors.black),
+                                                                    ))
                                                                 : const SizedBox
                                                                     .shrink()
                                                       ],

@@ -99,7 +99,7 @@ Future<void> main() async {
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   }
   FirebaseAuth auth = FirebaseAuth.instance;
-  log("${await FirebaseMessaging.instance.getToken()}");
+  //log("${await FirebaseMessaging.instance.getToken()}");
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('@mipmap/ic_launcher_foreground');
@@ -118,7 +118,7 @@ Future<void> main() async {
   await flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
   );
-  log("${await FirebaseMessaging.instance.getToken()}");
+  //log("${await FirebaseMessaging.instance.getToken()}");
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   _requestPermissions();
   if (auth.currentUser != null) {
@@ -202,13 +202,34 @@ class _MyApp extends State<MyApp> {
           if (purchaseStatus == PurchaseStatus.purchased) {
             Dio dio = Dio();
             RestClient client = RestClient(dio);
-            client
-                .walletEvent(GlobalsWidgets.uid, WalletEvent.ADD,
-                    double.parse(productId.split("_")[1]))
-                .then((value) {
-              GlobalsWidgets.wallet += double.parse(productId.split("_")[1]);
-              Navigator.pop(context);
-            });
+            double payment;
+            bool success = true;
+            if (productId.split("_")[1] == "101") {
+              payment = 100;
+            } else {
+              try {
+                payment = double.parse(productId.split("_")[1]);
+              } catch (e) {
+                payment = 0;
+                success = false;
+              }
+            }
+            if (success) {
+              client
+                  .walletEvent(GlobalsWidgets.uid, WalletEvent.ADD, payment)
+                  .then((value) {
+                GlobalsWidgets.wallet += double.parse(productId.split("_")[1]);
+                Navigator.pop(context);
+              });
+            } else {
+              client
+                  .walletEvent(GlobalsWidgets.uid, WalletEvent.ADD, payment)
+                  .then((value) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Ошибка оплаты")));
+                Navigator.pop(context);
+              });
+            }
           }
         });
       }
@@ -281,7 +302,11 @@ class _MyApp extends State<MyApp> {
                   : PreloadPage(),
             );
           } else {
-            return const SizedBox.shrink();
+            return const SizedBox(
+              child: Center(
+                child: Text("main.dart error localization"),
+              ),
+            );
           }
         },
       );
@@ -297,7 +322,11 @@ class _MyApp extends State<MyApp> {
       loginBloc.add(
         ToggleLanguageEvent(lng),
       );
-    } else {}
+    } else {
+      loginBloc.add(
+        ToggleLanguageEvent("ru"),
+      );
+    }
   }
 
   Future<UserEntity> getUser() {
